@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="location_category"
+        app:title="Location">
+
+        <SwitchPreferenceCompat
+            app:key="localization"
+            app:title="Enable detection"/>
+
+        <ListPreference
+            app:key="location"
+            app:title="Choose your location"
+            app:entries="@array/locations"
+            app:entryValues="@array/locations"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="user_category"
+        app:title="Status">
+
+        <ListPreference
+            app:key="status"
+            app:title="Choose your status"
+            app:entries="@array/status"
+            app:entryValues="@array/status">
+
+        </ListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="help_category"
+        app:title="Help">
+
+        <Preference
+            app:key="feedback"
+            app:title="Send feedback"
+            app:summary="Report technical issues or suggest new features"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="locations">
+        <item>Alameda</item>
+        <item>Taguspark</item>
+    </string-array>
+
+    <string-array name="status">
+        <item>Student</item>
+        <item>Professor</item>
+        <item>Researcher</item>
+        <item>Staff</item>
+        <item>General Public</item>
+    </string-array>
+</resources>
