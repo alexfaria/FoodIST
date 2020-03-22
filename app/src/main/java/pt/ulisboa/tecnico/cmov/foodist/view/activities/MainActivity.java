@@ -1,15 +1,21 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.activities;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
-import android.location.LocationManager;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
 
 import android.util.Log;
 import android.view.View;
@@ -17,9 +23,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
-import pt.ulisboa.tecnico.cmov.foodist.view.fragments.SettingsFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private final int LOCATION_CODE = 1000;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
@@ -59,7 +70,55 @@ public class MainActivity extends AppCompatActivity {
             Log.i("MainActivity", "Launch SettingsActivity");
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    private void checkPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    LOCATION_CODE);
+        } else {
+            requestLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            requestLocation();
+        }
+    }
+
+    public void requestLocation() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+            if (location != null) {
+
+            } else {
+                // Ask user to set a campus
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 }

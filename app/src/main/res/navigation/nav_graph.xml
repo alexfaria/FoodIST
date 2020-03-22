@@ -3,26 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/DiningListFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/DiningListFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DiningListFragment"
+        android:label="Dining List Fragment"
+        tools:layout="@layout/fragment_dining_list">
 
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            app:destination="@id/DishFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/DishFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DishFragment"
+        android:label="Dish Fragment"
+        tools:layout="@layout/fragment_dish">
 
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_DiningList_to_Dish"
+            app:destination="@id/DiningListFragment" />
     </fragment>
 </navigation>
