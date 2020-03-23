@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DiningListAdapter;
 
 public class DiningListFragment extends Fragment {
@@ -31,11 +32,13 @@ public class DiningListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DiningListAdapter(new String[] {
-                "Arroz de Pato", "Bacalhau à Brás", "Esparguete à Bolonhesa",
-                "Strogonoff de Frango", "Hambúrguer no Pão", "Vaca Estufada",
-                "Polvo à Lagareiro", "Pato Guizado", "Lulas Fritas", "Prego no Prato",
-                "Cozido à Portuguesa", "Bacalhau com Natas"
+        adapter = new DiningListAdapter(new DiningOption[] {
+                new DiningOption("Cantina", "12:30-14:30 / 19:30-21:30"),
+                new DiningOption("Bar de Civil", "8:00-22:00"),
+                new DiningOption("Bar de Matemática", "10:00-20:00"),
+                new DiningOption("Bar do Pavilhão Central", "8:00-22:00"),
+                new DiningOption("Bar de Mecânica", "9:00-16:00"),
+                new DiningOption("Bar da Associação de Estudantes", "8:00-20:00"),
         });
         recyclerView.setAdapter(adapter);
         return view;
