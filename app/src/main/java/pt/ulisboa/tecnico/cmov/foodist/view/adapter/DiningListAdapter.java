@@ -5,11 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 
 public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.DiningListViewHolder> {
 
@@ -18,17 +20,19 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
     // you provide access to all the views for a data item in a view holder
     public static class DiningListViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public Button btn;
+        public TextView name;
+        public TextView openingHours;
         public DiningListViewHolder(View view) {
             super(view);
-            btn = view.findViewById(R.id.dishBtn);
+            name = view.findViewById(R.id.serviceName);
+            openingHours = view.findViewById(R.id.openingHours);
         }
     }
 
-    private String[] dishes;
+    private DiningOption[] diningOptions;
 
-    public DiningListAdapter(String[] dishes) {
-        this.dishes = dishes;
+    public DiningListAdapter(DiningOption[] diningOptions) {
+        this.diningOptions = diningOptions;
     }
 
     @NonNull
@@ -42,12 +46,13 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
 
     @Override
     public void onBindViewHolder(@NonNull DiningListViewHolder holder, int position) {
-        holder.btn.setText(dishes[position]);
+        holder.name.setText(diningOptions[position].getName());
+        holder.openingHours.setText(diningOptions[position].getOpeningHours());
     }
 
     @Override
     public int getItemCount() {
-        return dishes.length;
+        return diningOptions.length;
     }
 
 }
