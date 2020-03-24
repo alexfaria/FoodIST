@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/DiningListFragment"
-        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DiningListFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DiningOptionsFragment"
         android:label="Dining List Fragment"
         tools:layout="@layout/fragment_dining_list">
 

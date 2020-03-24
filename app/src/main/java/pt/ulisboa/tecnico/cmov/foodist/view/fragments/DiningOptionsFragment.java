@@ -6,19 +6,33 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
+import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DiningListAdapter;
+import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DiningOptionsViewModel;
 
-public class DiningListFragment extends Fragment {
+public class DiningOptionsFragment extends Fragment {
+
+    private DiningOptionsViewModel viewModel;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(DiningOptionsViewModel.class);
+        App app = (App) getContext().getApplicationContext();
+        viewModel.init(app.getChannel());
+    }
 
     @Override
     public View onCreateView(
@@ -27,19 +41,11 @@ public class DiningListFragment extends Fragment {
     ) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dining_list, container, false);
-
         recyclerView = view.findViewById(R.id.dining_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DiningListAdapter(new DiningOption[] {
-                new DiningOption("Cantina", "12:30-14:30 / 19:30-21:30"),
-                new DiningOption("Bar de Civil", "8:00-22:00"),
-                new DiningOption("Bar de Matemática", "10:00-20:00"),
-                new DiningOption("Bar do Pavilhão Central", "8:00-22:00"),
-                new DiningOption("Bar de Mecânica", "9:00-16:00"),
-                new DiningOption("Bar da Associação de Estudantes", "8:00-20:00"),
-        });
+        adapter = new DiningListAdapter(viewModel.getDiningOptions());
         recyclerView.setAdapter(adapter);
         return view;
     }

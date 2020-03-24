@@ -7,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,9 +31,9 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
         }
     }
 
-    private DiningOption[] diningOptions;
+    private List<DiningOption> diningOptions;
 
-    public DiningListAdapter(DiningOption[] diningOptions) {
+    public DiningListAdapter(List<DiningOption> diningOptions) {
         this.diningOptions = diningOptions;
     }
 
@@ -46,13 +48,14 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
 
     @Override
     public void onBindViewHolder(@NonNull DiningListViewHolder holder, int position) {
-        holder.name.setText(diningOptions[position].getName());
-        holder.openingHours.setText(diningOptions[position].getOpeningHours());
+        DiningOption diningOption = diningOptions.get(position);
+        holder.name.setText(diningOption.getName());
+        holder.openingHours.setText(diningOption.getOpeningHours());
     }
 
     @Override
     public int getItemCount() {
-        return diningOptions.length;
+        return diningOptions.size();
     }
 
 }
