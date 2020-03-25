@@ -6,18 +6,18 @@ import androidx.lifecycle.ViewModel;
 import io.grpc.ManagedChannel;
 import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 
-import pt.ulisboa.tecnico.cmov.foodist.repository.FoodServiceRepository;
+import pt.ulisboa.tecnico.cmov.foodist.repository.DiningOptionsRepository;
 
 public class DiningOptionsViewModel extends ViewModel {
 
-    private FoodServiceRepository repository;
+    private DiningOptionsRepository repository;
 
     public void init(ManagedChannel channel) {
         if (repository == null)
-            repository = new FoodServiceRepository(channel);
+            repository = new DiningOptionsRepository(channel);
     }
 
     public List<DiningOption> getDiningOptions() {
-        return repository.getFoodServices();
+        return repository.getDiningOptions();
     }
 }

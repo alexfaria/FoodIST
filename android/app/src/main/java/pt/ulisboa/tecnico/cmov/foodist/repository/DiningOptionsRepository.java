@@ -9,15 +9,15 @@ import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodservice.Empty;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
 
-public class FoodServiceRepository {
+public class DiningOptionsRepository {
 
     private final ManagedChannel channel;
 
-    public FoodServiceRepository(ManagedChannel channel) {
+    public DiningOptionsRepository(ManagedChannel channel) {
         this.channel = channel;
     }
 
-    public List<DiningOption> getFoodServices() {
+    public List<DiningOption> getDiningOptions() {
         /*FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         stub.getFoodServices(Empty.newBuilder().build())*/
         return Arrays.asList(

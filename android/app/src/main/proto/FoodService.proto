@@ -7,6 +7,17 @@ option java_package = "pt.ulisboa.tecnico.cmov.foodservice";
 
 message Empty {}
 
+message DiningOption {
+    string name = 1;
+    string openingHours = 2;
+}
+
+message GetFoodServicesRequest {
+    string name = 1;
+    string campus = 2;
+    string status = 3;
+}
+
 message FoodService {
     string name = 1;
     string openingHours = 2;
@@ -15,7 +26,7 @@ message FoodService {
     double longitude = 5;
 }
 
-message GetDishRequest {
+message GetDishesRequest {
     string foodServiceName = 1;
 }
 
@@ -25,6 +36,7 @@ message Dish {
 }
 
 service FoodServer {
-    rpc getFoodServices(Empty) returns (stream FoodService);
-    rpc getDishes(GetDishRequest) returns (stream Dish);
+    rpc getDiningOptions(Empty) returns (stream DiningOption);
+    rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodService);
+    rpc getDishes(GetDishesRequest) returns (stream Dish);
 }
