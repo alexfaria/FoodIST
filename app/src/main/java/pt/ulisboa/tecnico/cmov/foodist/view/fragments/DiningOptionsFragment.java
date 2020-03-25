@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
-import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DiningListAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DiningOptionsViewModel;
@@ -40,7 +39,7 @@ public class DiningOptionsFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_dining_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_dining_options, container, false);
         recyclerView = view.findViewById(R.id.dining_recycler_view);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getContext());

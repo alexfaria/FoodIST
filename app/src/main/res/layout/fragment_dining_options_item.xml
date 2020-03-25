@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="6dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="2dp"
     app:cardElevation="6dp">
 
     <LinearLayout
@@ -20,13 +20,14 @@
             android:layout_height="wrap_content"
             android:padding="1dp"
             android:textColor="@color/colorBlack"
-            android:textSize="32sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/openingHours"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="1dp"
+            android:textSize="14sp"
             android:textColor="@color/colorBlack"/>
 
     </LinearLayout>

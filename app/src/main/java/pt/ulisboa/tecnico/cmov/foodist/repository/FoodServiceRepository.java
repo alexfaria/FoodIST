@@ -21,7 +21,7 @@ public class FoodServiceRepository {
         /*FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         stub.getFoodServices(Empty.newBuilder().build())*/
         return Arrays.asList(
-                new DiningOption("Cantina", "12:30-14:30 / 19:30-21:30"),
+                new DiningOption("Cantina", "12:30-14:30, 19:30-21:30"),
                 new DiningOption("Bar de Civil", "8:00-22:00"),
                 new DiningOption("Bar de Matemática", "10:00-20:00"),
                 new DiningOption("Bar do Pavilhão Central", "8:00-22:00"),

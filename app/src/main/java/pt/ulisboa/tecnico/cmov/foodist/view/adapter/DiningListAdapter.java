@@ -3,8 +3,6 @@ package pt.ulisboa.tecnico.cmov.foodist.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
@@ -42,7 +40,7 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
     public DiningListAdapter.DiningListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_dining_list_item, parent, false);
+                .inflate(R.layout.fragment_dining_options_item, parent, false);
         return new DiningListViewHolder(view);
     }
 
