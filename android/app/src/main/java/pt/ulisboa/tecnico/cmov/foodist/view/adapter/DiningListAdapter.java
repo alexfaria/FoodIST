@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.foodist.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -22,17 +23,22 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
         // each data item is just a string in this case
         public TextView name;
         public TextView openingHours;
+
         public DiningListViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.serviceName);
             openingHours = view.findViewById(R.id.openingHours);
+
         }
+
     }
 
     private List<DiningOption> diningOptions;
+    private View.OnClickListener listener;
 
-    public DiningListAdapter(List<DiningOption> diningOptions) {
+    public DiningListAdapter(List<DiningOption> diningOptions, View.OnClickListener listener) {
         this.diningOptions = diningOptions;
+        this.listener = listener;
     }
 
     @NonNull
@@ -41,6 +47,7 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
         // create a new view
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_dining_options_item, parent, false);
+        view.setOnClickListener(listener);
         return new DiningListViewHolder(view);
     }
 

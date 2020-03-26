@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.viewmodel;
 
+import android.os.Handler;
+
 import java.util.List;
 
 import androidx.lifecycle.ViewModel;
@@ -17,7 +19,7 @@ public class DiningOptionsViewModel extends ViewModel {
             repository = new DiningOptionsRepository(channel);
     }
 
-    public List<DiningOption> getDiningOptions() {
-        return repository.getDiningOptions();
+    public void getDiningOptions(Handler handler) {
+        repository.getDiningOptions(handler);
     }
 }

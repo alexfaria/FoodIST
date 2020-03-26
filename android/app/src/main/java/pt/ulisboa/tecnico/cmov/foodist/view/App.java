@@ -8,7 +8,7 @@ import pt.ulisboa.tecnico.cmov.foodist.R;
 
 public class App extends Application {
 
-    private final String HOST = "localhost";
+    private final String HOST = "10.0.2.2";
     private final int PORT = 8080;
 
     private ManagedChannel mChannel;
