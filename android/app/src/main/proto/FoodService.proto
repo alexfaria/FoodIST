@@ -5,9 +5,12 @@ package foodserver;
 option java_multiple_files = true;
 option java_package = "pt.ulisboa.tecnico.cmov.foodservice";
 
-message Empty {}
+message GetDiningOptionsRequest {
+    string campus = 1;
+    string status = 2;
+}
 
-message DiningOption {
+message DiningOptionDto {
     string name = 1;
     string openingHours = 2;
 }
@@ -18,7 +21,7 @@ message GetFoodServicesRequest {
     string status = 3;
 }
 
-message FoodService {
+message FoodServiceDto {
     string name = 1;
     string openingHours = 2;
     int64 queueTime = 3;
@@ -30,13 +33,13 @@ message GetDishesRequest {
     string foodServiceName = 1;
 }
 
-message Dish {
+message DishDto {
     string name = 1;
     int64 price = 2;
 }
 
 service FoodServer {
-    rpc getDiningOptions(Empty) returns (stream DiningOption);
-    rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodService);
-    rpc getDishes(GetDishesRequest) returns (stream Dish);
+    rpc getDiningOptions(GetDiningOptionsRequest) returns (stream DiningOptionDto);
+    rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodServiceDto);
+    rpc getDishes(GetDishesRequest) returns (stream DishDto);
 }
