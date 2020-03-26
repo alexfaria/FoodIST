@@ -35,12 +35,12 @@ public class DishFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        String name = getArguments().getString("name");
         return view;
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         /*
         view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
             @Override
