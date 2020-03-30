@@ -14,7 +14,6 @@ public class FoodClient {
                 .usePlaintext()
                 .build();
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
-        stub.getFoodServices(Empty.newBuilder().build()).forEachRemaining(System.out::println);
     }
 
 }

@@ -3,26 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/DiningListFragment">
+    app:startDestination="@id/DiningOptionsFragment">
 
     <fragment
-        android:id="@+id/DiningListFragment"
+        android:id="@+id/DiningOptionsFragment"
         android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DiningOptionsFragment"
-        android:label="Dining List Fragment"
+        android:label="Dining Options Fragment"
         tools:layout="@layout/fragment_dining_options">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/DishFragment" />
+            android:id="@+id/action_DiningOptions_to_FoodService"
+            app:destination="@id/FoodServiceFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/DishFragment"
-        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DishFragment"
-        android:label="Dish Fragment"
-        tools:layout="@layout/fragment_dish">
 
-        <action
-            android:id="@+id/action_DiningList_to_Dish"
-            app:destination="@id/DiningListFragment" />
+    <fragment
+        android:id="@+id/FoodServiceFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.FoodServiceFragment"
+        android:label="FoodService Fragment"
+        tools:layout="@layout/fragment_food_service">
+
     </fragment>
 </navigation>

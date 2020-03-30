@@ -68,7 +68,7 @@ public class DiningOptionsFragment extends Fragment implements Handler.Callback 
                 args.putString("name", serviceName.getText().toString());
                 NavHostFragment
                         .findNavController(DiningOptionsFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment, args);
+                        .navigate(R.id.action_DiningOptions_to_FoodService, args);
             }
         });
         recyclerView.setAdapter(adapter);
