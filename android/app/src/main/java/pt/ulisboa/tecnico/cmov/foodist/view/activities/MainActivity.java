@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         if (sharedPreferences.getString("campus", "").isEmpty())
-            checkPermissions();
+            //checkPermissions();
         toolbar.setTitle("Técnico " + sharedPreferences.getString("campus",""));
     }
 
