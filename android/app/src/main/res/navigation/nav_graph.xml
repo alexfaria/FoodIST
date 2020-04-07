@@ -19,7 +19,7 @@
     <fragment
         android:id="@+id/FoodServiceFragment"
         android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.FoodServiceFragment"
-        android:label="FoodService Fragment"
+        android:label="Food Service Fragment"
         tools:layout="@layout/fragment_food_service">
 
         <action
@@ -30,7 +30,24 @@
     <fragment
         android:id="@+id/FoodMenuFragment"
         android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.FoodMenuFragment"
-        android:label="FoodMenu Fragment"
+        android:label="Food Menu Fragment"
         tools:layout="@layout/fragment_food_menu">
+
+        <action
+            android:id="@+id/action_FoodMenu_to_AddToMenu"
+            app:destination="@id/AddToMenuFragment" />
+        <action
+            android:id="@+id/action_FoodMenu_to_Dish"
+            app:destination="@id/DishFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/AddToMenuFragment"
+        android:label="Add To Menu Fragment">
+    </fragment>
+
+    <fragment
+        android:id="@+id/DishFragment"
+        android:label="Dish Fragment">
     </fragment>
 </navigation>
