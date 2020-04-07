@@ -22,5 +22,15 @@
         android:label="FoodService Fragment"
         tools:layout="@layout/fragment_food_service">
 
+        <action
+            android:id="@+id/action_FoodService_to_FoodMenu"
+            app:destination="@id/FoodMenuFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/FoodMenuFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.FoodMenuFragment"
+        android:label="FoodMenu Fragment"
+        tools:layout="@layout/fragment_food_menu">
     </fragment>
 </navigation>
