@@ -8,7 +8,8 @@
 
         <SwitchPreferenceCompat
             app:key="localization"
-            app:title="Enable localization"/>
+            app:title="Enable localization"
+            app:defaultValue="true"/>
 
         <ListPreference
             app:key="campus"

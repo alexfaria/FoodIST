@@ -1,17 +1,24 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,8 +26,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
+import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -33,25 +40,26 @@ import pt.ulisboa.tecnico.cmov.foodist.R;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private final int LOCATION_CODE = 1000;
+    private final int PERMISSION_ID = 44;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SharedPreferences sharedPreferences;
 
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        if (sharedPreferences.getString("campus", "").isEmpty())
-            //checkPermissions();
-        toolbar.setTitle("Técnico " + sharedPreferences.getString("campus",""));
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
     }
 
     @Override
@@ -80,64 +88,87 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus")) {
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            toolbar.setTitle("Técnico" + sharedPreferences.getString("campus", ""));
-        }
+        if (key.equals("campus"))
+            toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
     }
 
-    private void checkPermissions() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[] {
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    LOCATION_CODE);
-        } else {
-            requestLocation();
-        }
+    private boolean checkPermissions() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                PERMISSION_ID
+        );
+    }
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null)
+            return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                    || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        return false;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_CODE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            sharedPreferences.edit().putBoolean("localization", true).apply();
-            requestLocation();
+        if (requestCode == PERMISSION_ID) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            }
         }
     }
 
-    public void requestLocation() {
-        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
-            boolean success = true;
-            if (location != null) {
-                try {
-                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                    List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    Address addr = address.get(0);
-                    Log.d("MainActivity", "Location: " + addr.getPostalCode());
-                    switch (addr.getPostalCode()) {
-                        case "1049-001":
-                            sharedPreferences.edit().putString("campus", "Alameda").apply();
-                            break;
-                        case "2744-016":
-                            sharedPreferences.edit().putString("campus", "Taguspark").apply();
-                            break;
-                        default:
-                            success = false;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    success = false;
-                }
-            }
-            if (!success || location == null) {
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                Toast.makeText(this, "Please choose your campus", Toast.LENGTH_LONG).show();
+    private void getLastLocation(){
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(
+                        location -> {
+                            if (location != null) {
+                                Log.d("MainActivity", "Location latitude: " + location.getLatitude());
+                                Log.d("MainActivity", "Location longitude: " + location.getLongitude());
+                                try {
+                                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                                    List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                    Address addr = address.get(0);
+                                    Log.d("MainActivity", "Location: " + addr.getPostalCode());
+                                    switch (addr.getPostalCode()) {
+                                        case "1049-001":
+                                            Log.d("MainActivity", "Located in Técnico Alameda");
+                                            sharedPreferences.edit().putString("campus", "Alameda").apply();
+                                            break;
+                                        case "2744-016":
+                                            Log.d("MainActivity", "Located in Técnico Taguspark");
+                                            sharedPreferences.edit().putString("campus", "Taguspark").apply();
+                                            break;
+                                        default:
+                                            Log.d("MainActivity", "Located in Elsewhere");
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                );
+            } else {
+                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
-        });
+        } else {
+            requestPermissions();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sharedPreferences.getBoolean("localization", true))
+            getLastLocation();
     }
 
     @Override
