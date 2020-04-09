@@ -1,31 +1,92 @@
+import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
+import model.Dish;
+import model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodservice.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
-    private List<DiningOptionDto> diningOptions = new ArrayList<>();
-    private List<FoodServiceDto> foodServices = new ArrayList<>();
+    private HashMap<String, FoodService> foodServices = new HashMap<>();
 
     public FoodServiceImpl() {
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Cantina Social").setOpeningHours("9:00-21:00").build()); // 38.736382, -9.136967
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Cantina Civil").setOpeningHours("9:00-21:00").build()); // 38.737732, -9.140482
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar de Civil").setOpeningHours("8:00-22:00").build()); // 38.737066, -9.140007
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar de Matemática").setOpeningHours("10:00-20:00").build()); // 38.735610, -9.139690
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar de Química").setOpeningHours("8:00-18:00").build()); // 38.736012, -9.138324
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar do Pavilhão Central").setOpeningHours("8:00-22:00").build()); // 38.736610, -9.139605
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar de Mecânica").setOpeningHours("9:00-16:00").build()); // 38.737422, -9.137403
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar da AEIST").setOpeningHours("8:00-00:00").build()); // 38.736382, -9.136967
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Bar da Bola AEIST").setOpeningHours("8:00-18:00").build()); // 38.736131, -9.137807
-        diningOptions.add(DiningOptionDto.newBuilder().setName("Restaurante/Bar Sena").setOpeningHours("8:00-19:00").build()); // 38.737715, -9.138638
+        foodServices.put("Cantina Social", new FoodService("Cantina Social", "Alameda", "9:00-21:00", 38.736382, -9.136967));
+        foodServices.put("Cantina de Civil", new FoodService("Cantina de Civil", "Alameda","9:00-21:00", 38.737732, -9.140482));
+        foodServices.put("Bar de Civil", new FoodService("Bar de Civil", "Alameda","8:00-20:00", 38.737066, -9.140007));
+        foodServices.put("Bar de Matemática", new FoodService("Bar de Matemática", "Alameda","10:00-20:00", 38.735610, -9.139690));
+        foodServices.put("Bar de Química", new FoodService("Bar de Química", "Alameda","8:00-18:00", 38.736012, -9.138324));
+        foodServices.put("Bar do Pavilhão Central", new FoodService("Bar do Pavilhão Central", "Alameda","8:00-22:00", 38.736610, -9.139605));
+        foodServices.put("Bar de Mecânica", new FoodService("Bar de Mecânica", "Alameda","9:00-16:00", 38.737422, -9.137403));
+        foodServices.put("Bar da AEIST", new FoodService("Bar da AEIST", "Alameda","8:00-00:00", 38.736382, -9.136967));
+        foodServices.put("Bar da Bola AEIST", new FoodService("Bar da Bola AEIST", "Alameda","8:00-18:00", 38.736131, -9.137807));
+        foodServices.put("Restaurante/Bar Sena", new FoodService("Restaurante/Bar Sena", "Alameda","8:00-19:00", 38.737715, -9.138638));
+        foodServices.put("Cantina", new FoodService("Cantina", "Taguspark", "9:00-21:00", 38.736902, -9.302608));
+        foodServices.put("Snack/Bar Praxe Bar", new FoodService("Snack/Bar Praxe Bar", "Taguspark","8:00-18:00",38.736902, -9.302608));
+        foodServices.put("Restaurante/Bar Campus do Taguspark", new FoodService("Restaurante/Bar Campus do Taguspark", "Taguspark","8:00-22:00",38.736563, -9.302200));
     }
 
     @Override
-    public void getDiningOptions(GetDiningOptionsRequest request, StreamObserver<DiningOptionDto> responseObserver) {
+    public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
         System.out.println("$ GetFoodServices");
-        diningOptions.forEach(responseObserver::onNext);
+        foodServices.values().forEach(fs -> {
+            if (fs.getCampus().equals(request.getCampus()))
+                responseObserver.onNext(FoodServiceDto
+                        .newBuilder()
+                        .setName(fs.getName())
+                        .setOpeningHours(fs.getOpeningHours())
+                        .setLatitude(fs.getLatitude())
+                        .setLongitude(fs.getLongitude())
+                        .build());
+        });
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void getDishes(GetDishesRequest request, StreamObserver<DishDto> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null)
+            foodService.getMenu().values().forEach(d ->
+                responseObserver.onNext(DishDto
+                        .newBuilder()
+                        .setName(d.getName())
+                        .setCost(d.getCost())
+                        .build()));
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void putDish(PutDishRequest request, StreamObserver<Empty> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null)
+            foodService.addMenuItem(new Dish(request.getDishName(), request.getDishCost()));
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getDishPhotos(GetDishPhotosRequest request, StreamObserver<PhotoDto> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null) {
+            Dish dish = foodService.getMenu().get(request.getDishName());
+            if (dish != null)
+                dish.getPhotos().forEach(bytes ->
+                        responseObserver.onNext(PhotoDto.newBuilder().setData(ByteString.copyFrom(bytes)).build())
+                );
+        }
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void putDishPhoto(PutDishPhotoRequest request, StreamObserver<Empty> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null) {
+            Dish dish = foodService.getMenu().get(request.getDishName());
+            if (dish != null)
+                dish.addPhoto(request.getPhoto().toByteArray());
+        }
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
 }
