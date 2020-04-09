@@ -19,42 +19,45 @@
             android:id="@+id/foodServiceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="Name"
+            android:layout_marginStart="24dp"
+            android:layout_marginLeft="24dp"
+            android:text="@string/food_service_name"
             android:textSize="32sp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/foodServiceOpening"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/foodServiceOpening"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/foodServiceOpening"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:text="Opening Hours:"
+            android:layout_marginStart="48dp"
+            android:layout_marginLeft="48dp"
+            android:text="@string/food_service_opening"
             android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@id/foodServiceName"
+            app:layout_constraintBottom_toBottomOf="@id/foodServiceQueue"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/foodServiceQueue"/>
+            app:layout_constraintTop_toBottomOf="@id/foodServiceName" />
 
         <TextView
             android:id="@+id/foodServiceQueue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:text="Estimated Time:"
+            android:layout_marginStart="48dp"
+            android:layout_marginLeft="48dp"
+            android:text="@string/food_service_queue"
             android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@id/foodServiceOpening"
             app:layout_constraintBottom_toTopOf="@id/menuBtn"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/foodServiceOpening" />
 
         <Button
             android:id="@+id/menuBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Menu"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:text="@string/menu_viewer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -79,6 +82,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:background="#00FFFFFF"
+            android:contentDescription="@string/fullscreen"
             android:src="@drawable/ic_full_screen_black_24dp" />
 
     </RelativeLayout>
