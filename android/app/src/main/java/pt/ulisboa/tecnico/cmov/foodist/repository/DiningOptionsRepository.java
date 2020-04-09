@@ -11,7 +11,9 @@ import io.grpc.ManagedChannel;
 import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodservice.DiningOptionDto;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
+import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDiningOptionsRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 
 public class DiningOptionsRepository {
 
@@ -22,7 +24,6 @@ public class DiningOptionsRepository {
     }
 
     public void getDiningOptions(Handler handler) {
-        //FoodServerGrpc.FoodServerStub stub = FoodServerGrpc.newStub(channel);
         /*
         return Arrays.asList(
                 new DiningOption("Cantina", "12:30-14:30, 19:30-21:30"),
@@ -36,10 +37,10 @@ public class DiningOptionsRepository {
             @Override
             public void run() {
                 FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
-                Iterator<DiningOptionDto> diningOptionsDto = stub.getDiningOptions(GetDiningOptionsRequest.newBuilder().build());
+                Iterator<FoodServiceDto> foodServicesDtos = stub.getFoodServices(GetFoodServicesRequest.newBuilder().setCampus("Alameda").build());
                 ArrayList<DiningOption> diningOptions = new ArrayList<>();
-                while (diningOptionsDto.hasNext()) {
-                    DiningOptionDto dto = diningOptionsDto.next();
+                while (foodServicesDtos.hasNext()) {
+                    FoodServiceDto dto = foodServicesDtos.next();
                     DiningOption dOption = new DiningOption(dto.getName(), dto.getOpeningHours());
                     diningOptions.add(dOption);
                 }
