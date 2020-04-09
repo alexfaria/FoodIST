@@ -5,9 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 import io.grpc.ManagedChannel;
 import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;

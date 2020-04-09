@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
+
+import com.google.android.gms.maps.MapView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 

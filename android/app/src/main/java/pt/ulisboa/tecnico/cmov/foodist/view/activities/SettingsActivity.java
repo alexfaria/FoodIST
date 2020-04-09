@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.activities;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 

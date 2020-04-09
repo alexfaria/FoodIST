@@ -2,12 +2,9 @@ package pt.ulisboa.tecnico.cmov.foodist.view.viewmodel;
 
 import android.os.Handler;
 
-import java.util.List;
-
 import androidx.lifecycle.ViewModel;
-import io.grpc.ManagedChannel;
-import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 
+import io.grpc.ManagedChannel;
 import pt.ulisboa.tecnico.cmov.foodist.repository.DiningOptionsRepository;
 
 public class DiningOptionsViewModel extends ViewModel {

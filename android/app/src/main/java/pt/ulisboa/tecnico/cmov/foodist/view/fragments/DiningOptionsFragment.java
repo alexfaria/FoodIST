@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
-import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DiningListAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DiningOptionsViewModel;

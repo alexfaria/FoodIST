@@ -4,7 +4,6 @@ import android.app.Application;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import pt.ulisboa.tecnico.cmov.foodist.R;
 
 public class App extends Application {
 

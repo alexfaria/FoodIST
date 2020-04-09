@@ -10,15 +10,11 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,11 +22,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Toast;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +32,7 @@ import java.util.Locale;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location> {
 
     private final int PERMISSION_ID = 44;
 
@@ -126,34 +120,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private void getLastLocation(){
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(
-                        location -> {
-                            if (location != null) {
-                                Log.d("MainActivity", "Location latitude: " + location.getLatitude());
-                                Log.d("MainActivity", "Location longitude: " + location.getLongitude());
-                                try {
-                                    Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                                    List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                    Address addr = address.get(0);
-                                    Log.d("MainActivity", "Location: " + addr.getPostalCode());
-                                    switch (addr.getPostalCode()) {
-                                        case "1049-001":
-                                            Log.d("MainActivity", "Located in Técnico Alameda");
-                                            sharedPreferences.edit().putString("campus", "Alameda").apply();
-                                            break;
-                                        case "2744-016":
-                                            Log.d("MainActivity", "Located in Técnico Taguspark");
-                                            sharedPreferences.edit().putString("campus", "Taguspark").apply();
-                                            break;
-                                        default:
-                                            Log.d("MainActivity", "Located in Elsewhere");
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                );
+                fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this);
             } else {
                 Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -161,6 +128,34 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         } else {
             requestPermissions();
+        }
+    }
+
+    @Override
+    public void onSuccess(Location location) {
+        if (location != null) {
+            Log.d("MainActivity", "Location latitude: " + location.getLatitude());
+            Log.d("MainActivity", "Location longitude: " + location.getLongitude());
+            try {
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                Address addr = address.get(0);
+                Log.d("MainActivity", "Location: " + addr.getPostalCode());
+                switch (addr.getPostalCode()) {
+                    case "1049-001":
+                        Log.d("MainActivity", "Located in Técnico Alameda");
+                        sharedPreferences.edit().putString("campus", "Alameda").apply();
+                        break;
+                    case "2744-016":
+                        Log.d("MainActivity", "Located in Técnico Taguspark");
+                        sharedPreferences.edit().putString("campus", "Taguspark").apply();
+                        break;
+                    default:
+                        Log.d("MainActivity", "Located in " + addr.getFeatureName());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -178,4 +173,5 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
+
 }
