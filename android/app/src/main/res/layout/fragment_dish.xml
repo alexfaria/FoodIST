@@ -30,26 +30,25 @@
             android:contentDescription="@string/dish_photo_viewer"
             app:srcCompat="@android:drawable/ic_menu_upload" />
 
-        <Button
+        <ImageButton
             android:id="@+id/nextPhotoBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/next_dish_photo"
+            android:src="@drawable/ic_chevron_right_black_24dp"
             android:background="#00FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/prevPhotoBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/previous_dish_photo"
+            android:src="@drawable/ic_chevron_left_black_24dp"
             android:background="#00FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
