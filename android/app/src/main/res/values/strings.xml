@@ -16,9 +16,10 @@
     <string name="fullscreen">Fullscreen</string>
     <!--Fragment Food Menu-->
     <string name="add_menu">Add Item</string>
-    <!--Fragment Food Menu Item-->
+    <!--Fragment Dish-->
     <string name="dish_photo_viewer">Photo Viewer</string>
     <string name="next_dish_photo">Next</string>
     <string name="previous_dish_photo">Previous</string>
-    <string name="back_to_dish_menu">Back</string>
+    <string name="dish_name">Dish Name</string>
+    <string name="dish_price">Dish Price</string>
 </resources>
