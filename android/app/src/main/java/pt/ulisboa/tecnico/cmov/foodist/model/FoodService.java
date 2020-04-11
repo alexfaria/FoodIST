@@ -5,37 +5,48 @@ import java.util.List;
 public class FoodService {
 
     private String name;
+    private String openingHours;
+    private double latitude;
+    private double longitude;
     private int walkTime;
     private int queueTime;
-    private String openingHours;
-    private List<Dish> menu;
 
-    public FoodService(String name, int walkTime, int queueTime, String openingHours, List<Dish> menu) {
+    public FoodService(String name, String openingHours, double latitude, double longitude) {
         this.name = name;
-        this.walkTime = walkTime;
-        this.queueTime = queueTime;
         this.openingHours = openingHours;
-        this.menu = menu;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getOpeningHours() {
+        return openingHours;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     public int getWalkTime() {
         return walkTime;
+    }
+
+    public void setWalkTime(int walkTime) {
+        this.walkTime = walkTime;
     }
 
     public int getQueueTime() {
         return queueTime;
     }
 
-    public String getOpeningHours() {
-        return openingHours;
+    public void setQueueTime(int queueTime) {
+        this.queueTime = queueTime;
     }
-
-    public List<Dish> getMenu() {
-        return menu;
-    }
-
 }
