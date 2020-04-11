@@ -56,11 +56,12 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
-    public void putDish(PutDishRequest request, StreamObserver<Empty> responseObserver) {
+    public void putDish(PutDishRequest request, StreamObserver<PutDishResponse> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
+        boolean success = false;
         if (foodService != null)
-            foodService.addMenuItem(new Dish(request.getDishName(), request.getDishCost()));
-        responseObserver.onNext(Empty.newBuilder().build());
+            success = foodService.addMenuItem(new Dish(request.getDishName(), request.getDishCost()));
+        responseObserver.onNext(PutDishResponse.newBuilder().setSuccess(success).build());
         responseObserver.onCompleted();
     }
 

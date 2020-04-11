@@ -42,6 +42,10 @@ message PutDishPhotoRequest {
     bytes photo = 3;
 }
 
+message PutDishResponse {
+    bool success = 1;
+}
+
 message DishDto {
     string name = 1;
     float cost = 2;
@@ -54,7 +58,7 @@ message PhotoDto {
 service FoodServer {
     rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodServiceDto);
     rpc getDishes(GetDishesRequest) returns (stream DishDto);
-    rpc putDish(PutDishRequest) returns (Empty);
+    rpc putDish(PutDishRequest) returns (PutDishResponse);
     rpc getDishPhotos(GetDishPhotosRequest) returns (stream PhotoDto);
     rpc putDishPhoto(PutDishPhotoRequest) returns (Empty);
 }

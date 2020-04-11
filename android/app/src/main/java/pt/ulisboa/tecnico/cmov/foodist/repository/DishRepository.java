@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.repository;
 
+import android.os.Handler;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -49,10 +51,15 @@ public class DishRepository {
         return ld;
     }
 
-    public boolean putDish(String foodServiceName, Dish dish) {
-        FoodRoomDatabase.databaseWriteExecutor.execute(() ->
-            dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), foodServiceName))
-        );
-        return true;
+    public LiveData<Boolean> putDish(String foodServiceName, Dish dish) {
+        LiveData<Boolean> ld = foodServer.putDish(foodServiceName, dish);
+        ld.observeForever(success -> {
+            if (success) {
+                FoodRoomDatabase.databaseWriteExecutor.execute(() ->
+                        dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), foodServiceName))
+                );
+            }
+        });
+        return ld;
     }
 }

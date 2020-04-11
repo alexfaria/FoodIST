@@ -1,12 +1,15 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -58,12 +61,14 @@ public class AddMenuFragment extends Fragment {
             }
             try {
                 float cost = Float.parseFloat(costStr);
-                if (viewModel.putDish(foodServiceNameArg, new Dish(name, cost)))
-                    NavHostFragment
-                            .findNavController(AddMenuFragment.this)
-                            .popBackStack();
-                else
-                    dishName.setError("Name already exists!");
+                viewModel.putDish(foodServiceNameArg, new Dish(name, cost)).observe(this, success -> {
+                    if (success)
+                        NavHostFragment
+                                .findNavController(AddMenuFragment.this)
+                                .popBackStack();
+                    else
+                        dishName.setError("Already exists a dish with the given name!");
+                });
             } catch (NumberFormatException e) {
                 dishCost.setError("Not a valid number!");
             }

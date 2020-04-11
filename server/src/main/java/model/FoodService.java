@@ -46,8 +46,11 @@ public class FoodService {
         return menu;
     }
 
-    public void addMenuItem(Dish dish) {
-        if (!menu.containsKey(dish.getName()))
+    public boolean addMenuItem(Dish dish) {
+        if (!menu.containsKey(dish.getName())) {
             menu.put(dish.getName(), dish);
+            return true;
+        }
+        return false;
     }
 }
