@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
@@ -35,8 +36,8 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
     private List<DiningOption> diningOptions;
     private View.OnClickListener listener;
 
-    public DiningListAdapter(List<DiningOption> diningOptions, View.OnClickListener listener) {
-        this.diningOptions = diningOptions;
+    public DiningListAdapter(View.OnClickListener listener) {
+        diningOptions = new ArrayList<>();
         this.listener = listener;
     }
 
@@ -60,6 +61,11 @@ public class DiningListAdapter extends RecyclerView.Adapter<DiningListAdapter.Di
     @Override
     public int getItemCount() {
         return diningOptions.size();
+    }
+
+    public void setData(List<DiningOption> data) {
+        diningOptions = data;
+        notifyDataSetChanged();
     }
 
 }

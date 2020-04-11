@@ -1,36 +1,58 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
 import android.animation.ObjectAnimator;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+
+import java.util.Locale;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.animation.ViewWeightAnimation;
+import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 public class DishFragment extends Fragment {
 
     private static final int IMG_LAYOUT_STATE_CONTRACTED = 0;
     private static final int IMG_LAYOUT_STATE_EXPANDED = 1;
-    private int imgLayoutState = 0;
 
     private ConstraintLayout foodServiceContainer;
+    private TextView name;
+    private TextView cost;
 
     private ConstraintLayout imagesContainer;
     private ImageView imgView;
+    private int imgIndex = 0;
+    private int imgLayoutState = 0;
 
-    /*@Override
+    private DishViewModel viewModel;
+
+    private String foodServiceNameArg;
+    private String dishNameArg;
+
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }*/
+        foodServiceNameArg = getArguments().getString("foodServiceName");
+        dishNameArg = getArguments().getString("dishName");
+        if (isAdded()) {
+            viewModel = ViewModelProviders.of(this).get(DishViewModel.class);
+            viewModel.init((App) getContext().getApplicationContext());
+        }
+    }
 
     @Override
     public View onCreateView(
@@ -39,6 +61,8 @@ public class DishFragment extends Fragment {
     ) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
+        name = view.findViewById(R.id.dish_name);
+        cost = view.findViewById(R.id.dish_price);
         imgView = view.findViewById(R.id.DishPhoto);
         //imgView.onCreate(savedInstanceState);
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +79,17 @@ public class DishFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        viewModel.getDish(foodServiceNameArg, dishNameArg).observe(this, dish -> {
+            name.setText(dish.getName());
+            cost.setText(String.format(Locale.getDefault(), "%f€", dish.getCost()));
+            Bitmap img = dish.getPhoto(imgIndex);
+            if (img != null)
+                imgView.setImageBitmap(img);
+        });
     }
 
     private void expandImgAnimation(){
@@ -95,15 +130,5 @@ public class DishFragment extends Fragment {
         imgAnimation.start();
     }
 
-    /*public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(DishFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-            }
-        });*/
 }
 

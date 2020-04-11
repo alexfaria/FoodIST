@@ -44,10 +44,17 @@
     <fragment
         android:id="@+id/AddToMenuFragment"
         android:label="Add To Menu Fragment">
+
+        <action
+            android:id="@+id/action_AddToMenu_to_FoodMenu"
+            app:popUpTo="@id/FoodMenuFragment"
+            />
     </fragment>
 
     <fragment
         android:id="@+id/DishFragment"
-        android:label="Dish Fragment">
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DishFragment"
+        android:label="Dish Fragment"
+        tools:layout="@layout/fragment_dish">
     </fragment>
 </navigation>
