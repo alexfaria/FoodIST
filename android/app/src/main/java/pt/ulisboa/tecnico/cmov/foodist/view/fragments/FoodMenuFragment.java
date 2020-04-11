@@ -53,9 +53,8 @@ public class FoodMenuFragment extends Fragment {
         recyclerView = view.findViewById(R.id.menu_recycler_view);
         recyclerView.setHasFixedSize(true);
         adapter = new FoodMenuAdapter(v -> {
-            Bundle args = new Bundle();
+            Bundle args = getArguments();
             TextView dishName = v.findViewById(R.id.dishName);
-            args.putString("foodServiceName", foodServiceNameArg);
             args.putString("dishName", dishName.getText().toString());
             NavHostFragment
                     .findNavController(FoodMenuFragment.this)
@@ -66,13 +65,9 @@ public class FoodMenuFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         view.findViewById(R.id.addMenuBtn).setOnClickListener(v -> {
-            viewModel.putDish(foodServiceNameArg,
-                    new Dish("Arroz de Pato", 4.5f));
-                /*
-                NavHostFragment
+            NavHostFragment
                     .findNavController(FoodMenuFragment.this)
-                    .navigate(R.id.action_FoodMenu_to_AddToMenu));
-                 */
+                    .navigate(R.id.action_FoodMenu_to_AddToMenu, getArguments());
         });
         return view;
     }

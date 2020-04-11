@@ -25,7 +25,7 @@ public class DishViewModel extends ViewModel {
         return repository.getDish(foodServiceName, name);
     }
 
-    public void putDish(String foodServiceName, Dish dish) {
-        repository.putDish(foodServiceName, dish);
+    public boolean putDish(String foodServiceName, Dish dish) {
+        return repository.putDish(foodServiceName, dish);
     }
 }

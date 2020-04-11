@@ -49,9 +49,10 @@ public class DishRepository {
         return ld;
     }
 
-    public void putDish(String foodServiceName, Dish dish) {
+    public boolean putDish(String foodServiceName, Dish dish) {
         FoodRoomDatabase.databaseWriteExecutor.execute(() ->
             dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), foodServiceName))
         );
+        return true;
     }
 }
