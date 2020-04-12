@@ -1,8 +1,10 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +25,13 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.animation.ViewWeightAnimation;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
+import static android.app.Activity.RESULT_OK;
+
 public class DishFragment extends Fragment {
 
     private static final int IMG_LAYOUT_STATE_CONTRACTED = 0;
     private static final int IMG_LAYOUT_STATE_EXPANDED = 1;
+    private static final int CAMERA_REQUEST_CODE = 100;
 
     private ConstraintLayout foodServiceContainer;
     private TextView name;
@@ -68,6 +73,9 @@ public class DishFragment extends Fragment {
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+                /*
                 if(imgLayoutState == IMG_LAYOUT_STATE_CONTRACTED){
                     imgLayoutState = IMG_LAYOUT_STATE_EXPANDED;
                     expandImgAnimation();
@@ -75,7 +83,7 @@ public class DishFragment extends Fragment {
                 else if(imgLayoutState == IMG_LAYOUT_STATE_EXPANDED){
                     imgLayoutState = IMG_LAYOUT_STATE_CONTRACTED;
                     contractImgAnimation();
-                }
+                }*/
             }
         });
         return view;
@@ -89,7 +97,28 @@ public class DishFragment extends Fragment {
             Bitmap img = dish.getPhoto(imgIndex);
             if (img != null)
                 imgView.setImageBitmap(img);
+            view.findViewById(R.id.nextPhotoBtn).setOnClickListener(v -> {
+                Log.d("DishFragment", "Next image button clicked!");
+                if (imgIndex < dish.getNumberOfPhotos())
+                    imgView.setImageBitmap(dish.getPhoto(imgIndex));
+            });
+            view.findViewById(R.id.prevPhotoBtn).setOnClickListener(v -> {
+                Log.d("DishFragment", "Previous image button clicked!");
+                if (imgIndex > 0)
+                    imgView.setImageBitmap(dish.getPhoto(imgIndex));
+            });
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            if (imageBitmap != null) {
+                imgView.setImageBitmap(imageBitmap);
+            }
+        }
     }
 
     private void expandImgAnimation(){

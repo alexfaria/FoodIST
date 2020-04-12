@@ -25,6 +25,13 @@ public class Dish {
         return cost;
     }
 
+    public List<Bitmap> getPhotos() {
+        return photos;
+    }
+
+    public int getNumberOfPhotos() {
+        return photos.size();
+    }
 
     public Bitmap getPhoto(int index) {
         if (index < photos.size())
