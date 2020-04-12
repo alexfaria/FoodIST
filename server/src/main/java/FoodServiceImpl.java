@@ -1,4 +1,3 @@
-import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import model.Dish;
 import model.FoodService;
@@ -56,6 +55,22 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
+    public void getDish(GetDishRequest request, StreamObserver<DishWithPhotosDto> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null) {
+            Dish dish = foodService.getMenu().get(request.getDishName());
+            DishWithPhotosDto.Builder dtoBuilder = DishWithPhotosDto
+                    .newBuilder()
+                    .setName(dish.getName())
+                    .setCost(dish.getCost());
+            if (dish.hasPhotos())
+                dtoBuilder.addAllPhotos(dish.getPhotos());
+            responseObserver.onNext(dtoBuilder.build());
+        }
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void putDish(PutDishRequest request, StreamObserver<PutDishResponse> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         boolean success = false;
@@ -66,25 +81,12 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
-    public void getDishPhotos(GetDishPhotosRequest request, StreamObserver<PhotoDto> responseObserver) {
-        FoodService foodService = foodServices.get(request.getFoodServiceName());
-        if (foodService != null) {
-            Dish dish = foodService.getMenu().get(request.getDishName());
-            if (dish != null)
-                dish.getPhotos().forEach(bytes ->
-                        responseObserver.onNext(PhotoDto.newBuilder().setData(ByteString.copyFrom(bytes)).build())
-                );
-        }
-        responseObserver.onCompleted();
-    }
-
-    @Override
     public void putDishPhoto(PutDishPhotoRequest request, StreamObserver<Empty> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             Dish dish = foodService.getMenu().get(request.getDishName());
             if (dish != null)
-                dish.addPhoto(request.getPhoto().toByteArray());
+                dish.addPhoto(request.getPhoto());
         }
         responseObserver.onNext(Empty.newBuilder().build());
         responseObserver.onCompleted();

@@ -1,16 +1,20 @@
 package model;
 
+import com.google.protobuf.ByteString;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dish {
 
     private String name;
     private float cost;
-    private List<byte[]> photos;
+    private List<ByteString> photos;
 
     public Dish(String name, float cost) {
         this.name = name;
         this.cost = cost;
+        photos = new ArrayList<>();
     }
 
     public String getName() {
@@ -21,11 +25,13 @@ public class Dish {
         return cost;
     }
 
-    public List<byte[]> getPhotos() {
+    public boolean hasPhotos() { return photos.size() > 0; }
+
+    public List<ByteString> getPhotos() {
         return photos;
     }
 
-    public void addPhoto(byte[] photo) {
+    public void addPhoto(ByteString photo) {
         photos.add(photo);
     }
 }
