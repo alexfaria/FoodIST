@@ -16,8 +16,10 @@ import java.util.concurrent.Executors;
 import io.grpc.ManagedChannel;
 import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
+import pt.ulisboa.tecnico.cmov.foodservice.DishDto;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
+import pt.ulisboa.tecnico.cmov.foodservice.GetDishesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishRequest;
 
@@ -43,6 +45,17 @@ public class FoodServer {
             diningOptions.add(dOption);
         }
         return diningOptions;
+    }
+
+    public ArrayList<Dish> getDishes(String foodServiceName) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        Iterator<DishDto> dishesDto = stub.getDishes(GetDishesRequest.newBuilder().setFoodServiceName(foodServiceName).build());
+        ArrayList<Dish> dishes = new ArrayList<>();
+        while (dishesDto.hasNext()) {
+            DishDto dto = dishesDto.next();
+            dishes.add(new Dish(dto.getName(), dto.getCost()));
+        }
+        return dishes;
     }
 
     public boolean putDish(String foodServiceName, Dish dish) {

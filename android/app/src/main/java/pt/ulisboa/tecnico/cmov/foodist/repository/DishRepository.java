@@ -4,10 +4,12 @@ import android.os.Handler;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.RoomDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.FoodRoomDatabase;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.DishDao;
@@ -39,6 +41,7 @@ public class DishRepository {
             }
             ld.postValue(foodServices);
         });
+        refreshDishes(foodServiceName);
         return ld;
     }
 
@@ -62,5 +65,19 @@ public class DishRepository {
             ld.postValue(success);
         });
         return ld;
+    }
+
+    private void refreshDishes(String foodServiceName) {
+        FoodServer.serverExecutor.execute(() -> {
+            ArrayList<Dish> dishes = foodServer.getDishes(foodServiceName);
+            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                for(Dish d : dishes)
+                    dishDao.insert(new DishDBEntity(d.getName(), d.getCost(), foodServiceName));
+            });
+        });
+    }
+
+    private void refreshDish(String foodServiceName, String name) {
+
     }
 }
