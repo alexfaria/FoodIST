@@ -52,13 +52,14 @@ public class DishRepository {
     }
 
     public LiveData<Boolean> putDish(String foodServiceName, Dish dish) {
-        LiveData<Boolean> ld = foodServer.putDish(foodServiceName, dish);
-        ld.observeForever(success -> {
-            if (success) {
-                FoodRoomDatabase.databaseWriteExecutor.execute(() ->
-                        dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), foodServiceName))
-                );
-            }
+        MutableLiveData<Boolean> ld = new MutableLiveData<>();
+        FoodServer.serverExecutor.execute(() -> {
+            boolean success = foodServer.putDish(foodServiceName, dish);
+            if (success)
+                FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                    dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), foodServiceName));
+                });
+            ld.postValue(success);
         });
         return ld;
     }

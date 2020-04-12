@@ -24,7 +24,7 @@ import pt.ulisboa.tecnico.cmov.foodservice.PutDishRequest;
 public class FoodServer {
 
     private static final int NUMBER_OF_THREADS = 4;
-    private static final ExecutorService serverExecutor =
+    public static final ExecutorService serverExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     private final ManagedChannel channel;
@@ -45,19 +45,14 @@ public class FoodServer {
         return diningOptions;
     }
 
-    public LiveData<Boolean> putDish(String foodServiceName, Dish dish) {
-        MutableLiveData<Boolean> ld = new MutableLiveData<>();
-        serverExecutor.execute(() -> {
-            FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
-            boolean success = stub.putDish(PutDishRequest
+    public boolean putDish(String foodServiceName, Dish dish) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        return stub.putDish(PutDishRequest
                     .newBuilder()
                     .setFoodServiceName(foodServiceName)
                     .setDishName(dish.getName())
                     .setDishCost(dish.getCost())
-                    .build()
-            ).getSuccess();
-            ld.postValue(success);
-        });
-        return ld;
+                    .build())
+                .getSuccess();
     }
 }
