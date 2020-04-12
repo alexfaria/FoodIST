@@ -52,6 +52,7 @@
             android:layout_height="match_parent"
             android:clickable="false"
             android:contentDescription="@string/dish_photo_viewer"
+            android:scaleType="fitXY"
             app:srcCompat="@android:drawable/ic_menu_upload" />
 
         <ImageButton
