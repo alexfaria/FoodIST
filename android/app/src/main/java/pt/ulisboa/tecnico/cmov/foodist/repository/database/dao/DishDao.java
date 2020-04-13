@@ -21,4 +21,7 @@ public interface DishDao {
 
     @Query("select * from dish_table where foodServiceName = :foodServiceName and name = :name")
     LiveData<DishDBEntity> get(String foodServiceName, String name);
+
+    @Query("update dish_table set number_of_photos=:numberOfPhotos where foodServiceName=:foodServiceName and name = :name")
+    void updateNumberOfPhotos(String foodServiceName, String name, int numberOfPhotos);
 }

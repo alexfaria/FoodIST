@@ -99,13 +99,13 @@ public class DishFragment extends Fragment {
                 imgView.setImageBitmap(img);
             view.findViewById(R.id.nextPhotoBtn).setOnClickListener(v -> {
                 Log.d("DishFragment", "Next image button clicked!");
-                if (imgIndex < dish.getNumberOfPhotos())
-                    imgView.setImageBitmap(dish.getPhoto(imgIndex));
+                if (imgIndex < dish.getNumberOfPhotos()-1)
+                    imgView.setImageBitmap(dish.getPhoto(++imgIndex));
             });
             view.findViewById(R.id.prevPhotoBtn).setOnClickListener(v -> {
                 Log.d("DishFragment", "Previous image button clicked!");
                 if (imgIndex > 0)
-                    imgView.setImageBitmap(dish.getPhoto(imgIndex));
+                    imgView.setImageBitmap(dish.getPhoto(--imgIndex));
             });
         });
     }
@@ -117,6 +117,7 @@ public class DishFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             if (imageBitmap != null) {
                 imgView.setImageBitmap(imageBitmap);
+                viewModel.putDishPhoto(foodServiceNameArg, dishNameArg, imageBitmap);
             }
         }
     }

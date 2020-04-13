@@ -50,6 +50,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                         .newBuilder()
                         .setName(d.getName())
                         .setCost(d.getCost())
+                        .setNumberOfPhotos(d.getNumberOfPhotos())
                         .build()));
         responseObserver.onCompleted();
     }
@@ -81,14 +82,15 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
-    public void putDishPhoto(PutDishPhotoRequest request, StreamObserver<Empty> responseObserver) {
+    public void putDishPhoto(PutDishPhotoRequest request, StreamObserver<PutDishPhotoResponse> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             Dish dish = foodService.getMenu().get(request.getDishName());
-            if (dish != null)
-                dish.addPhoto(request.getPhoto());
+            if (dish != null) {
+                int index = dish.addPhoto(request.getPhoto());
+                responseObserver.onNext(PutDishPhotoResponse.newBuilder().setIndex(index).build());
+            }
         }
-        responseObserver.onNext(Empty.newBuilder().build());
         responseObserver.onCompleted();
     }
 

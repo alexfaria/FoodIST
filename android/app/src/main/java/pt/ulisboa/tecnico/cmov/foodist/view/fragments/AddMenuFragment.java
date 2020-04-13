@@ -61,7 +61,7 @@ public class AddMenuFragment extends Fragment {
             }
             try {
                 float cost = Float.parseFloat(costStr);
-                viewModel.putDish(foodServiceNameArg, new Dish(name, cost)).observe(this, success -> {
+                viewModel.putDish(foodServiceNameArg, new Dish(name, cost, 0)).observe(this, success -> {
                     if (success)
                         NavHostFragment
                                 .findNavController(AddMenuFragment.this)

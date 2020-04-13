@@ -27,11 +27,14 @@ public class Dish {
 
     public boolean hasPhotos() { return photos.size() > 0; }
 
+    public int getNumberOfPhotos() { return photos.size(); }
+
     public List<ByteString> getPhotos() {
         return photos;
     }
 
-    public void addPhoto(ByteString photo) {
+    public synchronized int addPhoto(ByteString photo) {
         photos.add(photo);
+        return photos.size()-1;
     }
 }

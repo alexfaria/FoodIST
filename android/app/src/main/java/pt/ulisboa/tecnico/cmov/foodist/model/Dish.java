@@ -9,11 +9,13 @@ public class Dish {
 
     private String name;
     private float cost;
+    private int numberOfPhotos;
     private List<Bitmap> photos;
 
-    public Dish(String name, float cost) {
+    public Dish(String name, float cost, int numberOfPhotos) {
         this.name = name;
         this.cost = cost;
+        this.numberOfPhotos = numberOfPhotos;
         this.photos = new ArrayList<>();
     }
 
@@ -30,7 +32,7 @@ public class Dish {
     }
 
     public int getNumberOfPhotos() {
-        return photos.size();
+        return numberOfPhotos;
     }
 
     public Bitmap getPhoto(int index) {

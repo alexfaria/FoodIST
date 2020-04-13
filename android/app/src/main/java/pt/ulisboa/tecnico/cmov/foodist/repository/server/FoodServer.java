@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.protobuf.ByteString;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoResponse;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishRequest;
 
 public class FoodServer {
@@ -59,7 +62,7 @@ public class FoodServer {
         ArrayList<Dish> dishes = new ArrayList<>();
         while (dishesDto.hasNext()) {
             DishDto dto = dishesDto.next();
-            dishes.add(new Dish(dto.getName(), dto.getCost()));
+            dishes.add(new Dish(dto.getName(), dto.getCost(), dto.getNumberOfPhotos()));
         }
         return dishes;
     }
@@ -71,8 +74,9 @@ public class FoodServer {
                 .setFoodServiceName(foodServiceName)
                 .setDishName(dishName)
                 .build());
-        Dish dish = new Dish(dishDto.getName(), dishDto.getCost());
-        for(ByteString photo : dishDto.getPhotosList())
+        List<ByteString> photosList = dishDto.getPhotosList();
+        Dish dish = new Dish(dishDto.getName(), dishDto.getCost(), photosList.size());
+        for(ByteString photo : photosList)
             dish.addPhoto(BitmapFactory.decodeByteArray(photo.toByteArray(), 0, photo.size()));
         return dish;
     }
@@ -86,5 +90,18 @@ public class FoodServer {
                     .setDishCost(dish.getCost())
                     .build())
                 .getSuccess();
+    }
+
+    public int putDishPhoto(String foodServiceName, String dishName, Bitmap photo) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        PutDishPhotoResponse putDishPhotoResponse = stub.putDishPhoto(PutDishPhotoRequest
+                .newBuilder()
+                .setFoodServiceName(foodServiceName)
+                .setDishName(dishName)
+                .setPhoto(ByteString.copyFrom(stream.toByteArray()))
+                .build());
+        return putDishPhotoResponse.getIndex();
     }
 }

@@ -51,6 +51,7 @@ public abstract class FoodRoomDatabase extends RoomDatabase {
             databaseWriteExecutor.execute(() -> {
                 // Populate the database in the background.
                 // If you want to start with more words, just add them.
+                //INSTANCE.clearAllTables();
                 FoodServiceDao dao = INSTANCE.foodServiceDao();
                 dao.insert(new FoodServiceDBEntity("Cantina Social", "Alameda", "9:00-21:00", 38.736382, -9.136967));
                 dao.insert(new FoodServiceDBEntity("Cantina de Civil", "Alameda","9:00-21:00", 38.737732, -9.140482));

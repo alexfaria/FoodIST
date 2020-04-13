@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.repository.cache.BitmapCache;
@@ -36,7 +37,7 @@ public class DishRepository {
             List<Dish> foodServices = new ArrayList<>();
             if (dishDB != null)
                 for (DishDBEntity d : dishDB)
-                    foodServices.add(new Dish(d.getName(), d.getCost()));
+                    foodServices.add(new Dish(d.getName(), d.getCost(), d.getNumberOfPhotos()));
             ld.postValue(foodServices);
         });
         refreshDishes(foodServiceName);
@@ -47,9 +48,10 @@ public class DishRepository {
         MutableLiveData<Dish> ld = new MutableLiveData<>();
         dishDao.get(foodServiceName, name).observeForever(dishDB -> {
             if (dishDB != null) {
-                Dish dish = new Dish(dishDB.getName(), dishDB.getCost());
+                Dish dish = new Dish(dishDB.getName(), dishDB.getCost(), dishDB.getNumberOfPhotos());
+                String key = generateKeyFrom(foodServiceName, name);
                 for (int i = 0; i < dishDB.getNumberOfPhotos(); i++) {
-                    bitmapCache.get(foodServiceName + name + i, bitmap -> {
+                    bitmapCache.get(key+i, bitmap -> {
                         if (bitmap != null) {
                             dish.addPhoto(bitmap);
                             ld.postValue(dish);
@@ -75,6 +77,17 @@ public class DishRepository {
         return ld;
     }
 
+    public void putDishPhoto(String foodServiceName, String dishName, Bitmap photo) {
+        FoodServer.serverExecutor.execute(() -> {
+            int index  = foodServer.putDishPhoto(foodServiceName, dishName, photo);
+            String key = generateKeyFrom(foodServiceName, dishName);
+            bitmapCache.put(key+index, photo);
+            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                dishDao.updateNumberOfPhotos(foodServiceName, dishName, index+1);
+            });
+        });
+    }
+
     private void refreshDishes(String foodServiceName) {
         FoodServer.serverExecutor.execute(() -> {
             ArrayList<Dish> dishes = foodServer.getDishes(foodServiceName);
@@ -89,11 +102,18 @@ public class DishRepository {
         FoodServer.serverExecutor.execute(() -> {
             Dish dish = foodServer.getDish(foodServiceName, name);
             List<Bitmap> photos = dish.getPhotos();
-            for (int i = 0; i < photos.size(); i++)
-                bitmapCache.put(foodServiceName + name + i, photos.get(i));
+            String key = generateKeyFrom(foodServiceName, name);
+            for (int i = 0; i < photos.size(); i++) {
+                bitmapCache.put(key+i, photos.get(i));
+            }
             FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
                 dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), dish.getNumberOfPhotos(), foodServiceName));
             });
         });
+    }
+
+    private String generateKeyFrom(String foodServiceName, String dishName) {
+        String key = String.format(Locale.getDefault(),"%s_%s_", foodServiceName, dishName);
+        return key.replaceAll("[ /]", "").toLowerCase();
     }
 }

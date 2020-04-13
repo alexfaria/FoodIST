@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.viewmodel;
 
-import android.os.Handler;
+import android.graphics.Bitmap;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -29,5 +29,9 @@ public class DishViewModel extends ViewModel {
 
     public LiveData<Boolean> putDish(String foodServiceName, Dish dish) {
         return repository.putDish(foodServiceName, dish);
+    }
+
+    public void putDishPhoto(String foodServiceName, String dishName, Bitmap photo) {
+        repository.putDishPhoto(foodServiceName, dishName, photo);
     }
 }
