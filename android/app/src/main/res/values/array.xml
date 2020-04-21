@@ -7,8 +7,6 @@
 
     <string-array name="status">
         <item>Student</item>
-        <item>Professor</item>
-        <item>Researcher</item>
         <item>Staff</item>
         <item>General Public</item>
     </string-array>

@@ -1,20 +1,22 @@
 package model;
 
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FoodService {
 
     private String name;
     private String campus;
-    private String openingHours;
+    private Map<String, OpeningHours> openingHours;
     private double latitude;
     private double longitude;
 
     private HashMap<String, Dish> menu;
 
-    public FoodService(String name, String campus, String openingHours, double latitude, double longitude) {
+    public FoodService(String name, String campus, Map<String, OpeningHours> openingHours, double latitude, double longitude) {
         this.name = name;
         this.campus = campus;
         this.openingHours = openingHours;
@@ -30,8 +32,8 @@ public class FoodService {
 
     public String getCampus() { return campus; }
 
-    public String getOpeningHours() {
-        return openingHours;
+    public OpeningHours getOpeningHours(String status) {
+        return openingHours.get(status);
     }
 
     public double getLatitude() {
