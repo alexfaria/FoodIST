@@ -10,25 +10,20 @@ import pt.ulisboa.tecnico.cmov.foodist.view.activities.MainActivity;
 
 public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
-    private MainActivity mainActivity;
+    private OnPeersChangedListener listener;
 
-    public SimWifiP2pBroadcastReceiver(MainActivity mainActivity) {
+    public SimWifiP2pBroadcastReceiver(OnPeersChangedListener listener) {
         super();
-        this.mainActivity = mainActivity;
+        this.listener = listener;
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        Log.d("wifip2p", action);
-        //Log.d("wifip2p", intent);
-        if (SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
+        if (SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action))
             // Request available peers from the wifi p2p manager. This is an
             // asynchronous call and the calling activity is notified with a
             // callback on PeerListListener.onPeersAvailable()
-
-            // Toast.makeText(mActivity, "Peer list changed", Toast.LENGTH_SHORT).show();
-            mainActivity.requestPeers();
-        }
+            listener.onPeersChanged();
     }
 }

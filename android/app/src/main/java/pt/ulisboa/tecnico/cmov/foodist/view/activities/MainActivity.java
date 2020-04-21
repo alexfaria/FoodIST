@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,6 +33,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,21 +42,28 @@ import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
 import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
-import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
+import pt.ulisboa.tecnico.cmov.foodist.service.OnPeersChangedListener;
 import pt.ulisboa.tecnico.cmov.foodist.service.SimWifiP2pBroadcastReceiver;
+import pt.ulisboa.tecnico.cmov.foodist.view.App;
+import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location>, SimWifiP2pManager.PeerListListener {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location>, SimWifiP2pManager.PeerListListener, OnPeersChangedListener {
 
     private final int PERMISSION_ID = 44;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SharedPreferences sharedPreferences;
+    private FoodServiceViewModel viewModel;
 
     private SimWifiP2pBroadcastReceiver mReceiver;
     private SimWifiP2pManager mManager;
     private SimWifiP2pManager.Channel mChannel = null;
+    private String connectedFoodService;
 
+    private String campus;
+    private List<String> foodServicesNames = new ArrayList<>();
 
     public Location getmUserLocation() {
         return mUserLocation;
@@ -72,12 +81,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        viewModel = new ViewModelProvider(this).get(FoodServiceViewModel.class);
+        viewModel.init((App) getApplicationContext());
+
+        campus = sharedPreferences.getString("campus", "");
+        if (!campus.isEmpty())
+            retrieveFoodServicesNames(campus);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
 
         // register broadcast receiver
+        /*
         IntentFilter filter = new IntentFilter();
         filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION);
         mReceiver = new SimWifiP2pBroadcastReceiver(this);
@@ -85,8 +101,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         Intent intent = new Intent(getApplicationContext(), SimWifiP2pService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-
-        SimWifiP2pSocketManager.Init(getApplicationContext());
+         */
     }
 
     @Override
@@ -115,8 +130,19 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus"))
-            toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
+        if (key.equals("campus")) {
+            campus = sharedPreferences.getString("campus", "");
+            retrieveFoodServicesNames(campus);
+            toolbar.setTitle("Técnico " + campus);
+        }
+    }
+
+    private void checkCampus() {
+        if (sharedPreferences.getString("campus", "").isEmpty()) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            Toast.makeText(this, "Please choose your campus", Toast.LENGTH_LONG).show();
+        }
     }
 
     private boolean checkPermissions() {
@@ -146,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (requestCode == PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
+            } else {
+                sharedPreferences.edit().putBoolean("localization", false).apply();
+                checkCampus();
             }
         }
     }
@@ -186,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         break;
                     default:
                         Log.d("MainActivity", "Located in " + addr.getFeatureName());
+                        checkCampus();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -198,33 +228,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onResume();
         if (sharedPreferences.getBoolean("localization", true))
             getLastLocation();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        PreferenceManager
-                .getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(this);
-        unregisterReceiver(mReceiver);
-    }
-
-
-    public void requestPeers() {
-        mManager.requestPeers(mChannel, MainActivity.this);
-    }
-
-    @Override
-    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
-        StringBuilder peersStr = new StringBuilder();
-
-        // compile list of devices in range
-        for (SimWifiP2pDevice device : peers.getDeviceList()) {
-            String devstr = "" + device.deviceName + " (" + device.getVirtIp() + ")\n";
-            peersStr.append(devstr);
-        }
-
-        Log.d("wifip2p", peersStr.toString());
+        else
+            checkCampus();
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -242,4 +247,44 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             mChannel = null;
         }
     };
+
+    @Override
+    public void onPeersChanged() {
+        mManager.requestPeers(mChannel, this);
+    }
+
+    @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+        // list of devices in range
+        if (foodServicesNames == null) return;
+        for (SimWifiP2pDevice device : peers.getDeviceList()) {
+            if (connectedFoodService == null)
+                if (foodServicesNames.contains(device.deviceName)) {
+                    viewModel.addToFoodServiceQueue(campus, device.deviceName);
+                    connectedFoodService = device.deviceName; // ToDo change device name to handle spaces
+                    return;
+                }
+            else
+                if (connectedFoodService.equals(device.deviceName))
+                    return;
+        }
+        viewModel.removeFromFoodServiceQueue(campus, connectedFoodService);
+        connectedFoodService = null;
+    }
+
+    private void retrieveFoodServicesNames(String campus) {
+        viewModel.getFoodServices(campus).observe(this, foodServices -> {
+            for(FoodService fs: foodServices)
+                foodServicesNames.add(fs.getName());
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+        //unregisterReceiver(mReceiver);
+    }
 }
