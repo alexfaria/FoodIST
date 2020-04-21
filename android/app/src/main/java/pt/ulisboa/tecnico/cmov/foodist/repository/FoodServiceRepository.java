@@ -1,28 +1,17 @@
 package pt.ulisboa.tecnico.cmov.foodist.repository;
 
-import android.app.Application;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.FoodRoomDatabase;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.FoodServiceDao;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.FoodServiceDBEntity;
 import pt.ulisboa.tecnico.cmov.foodist.repository.server.FoodServer;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
-import pt.ulisboa.tecnico.cmov.foodservice.DiningOptionDto;
-import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
-import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
-import pt.ulisboa.tecnico.cmov.foodservice.GetDiningOptionsRequest;
-import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 
 public class FoodServiceRepository {
 
@@ -35,27 +24,14 @@ public class FoodServiceRepository {
         foodServer = application.getServer();
     }
 
-    public void getDiningOptions(Handler handler) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArrayList("values", foodServer.getDiningOptions("Alameda"));
-                Message message = new Message();
-                message.setData(bundle);
-                handler.sendMessage(message);
-            }
-        }).start();
-    }
-
-    public LiveData<List<DiningOption>> getFoodServices(String campus) {
-        MutableLiveData<List<DiningOption>> ld = new MutableLiveData<>();
+    public LiveData<List<FoodService>> getFoodServices(String campus) {
+        MutableLiveData<List<FoodService>> ld = new MutableLiveData<>();
         foodServiceDao.getAll(campus).observeForever(fsDB -> {
-            List<DiningOption> foodServices = new ArrayList<>();
+            List<FoodService> foodServices = new ArrayList<>();
             if (fsDB != null) {
                 for(FoodServiceDBEntity fs : fsDB) {
                     foodServices.add(
-                            new DiningOption(fs.getName(), fs.getOpeningHours())
+                            new FoodService(fs.getName(), fs.getOpeningHours(), fs.getLatitude(), fs.getLongitude())
                     );
                 }
             }
@@ -71,6 +47,15 @@ public class FoodServiceRepository {
                 ld.postValue(new FoodService(fsDB.getName(), fsDB.getOpeningHours(), fsDB.getLatitude(), fsDB.getLongitude()));
         });
         return ld;
+    }
+
+    public void addToFoodServiceQueue(String campus, String name) {
+        // ToDo
+        //foodServer.addToFoodServiceQueue(campus, name);
+    }
+
+    public void removeFromFoodServiceQueue(String campus, String name) {
+        //foodServer.removeFromFoodServiceQueue(campus, name);
     }
 
 }

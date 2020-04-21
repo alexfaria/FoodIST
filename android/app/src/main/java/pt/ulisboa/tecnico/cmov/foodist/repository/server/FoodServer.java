@@ -2,12 +2,6 @@ package pt.ulisboa.tecnico.cmov.foodist.repository.server;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.protobuf.ByteString;
 
@@ -19,8 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.grpc.ManagedChannel;
-import pt.ulisboa.tecnico.cmov.foodist.model.DiningOption;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
+import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodservice.DishDto;
 import pt.ulisboa.tecnico.cmov.foodservice.DishWithPhotosDto;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
@@ -44,13 +38,13 @@ public class FoodServer {
         this.channel = channel;
     }
 
-    public ArrayList<DiningOption> getDiningOptions(String campus) {
+    public ArrayList<FoodService> getFoodServices(String campus) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         Iterator<FoodServiceDto> foodServicesDtos = stub.getFoodServices(GetFoodServicesRequest.newBuilder().setCampus(campus).build());
-        ArrayList<DiningOption> diningOptions = new ArrayList<>();
+        ArrayList<FoodService> diningOptions = new ArrayList<>();
         while (foodServicesDtos.hasNext()) {
             FoodServiceDto dto = foodServicesDtos.next();
-            DiningOption dOption = new DiningOption(dto.getName(), dto.getOpeningHours());
+            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getLatitude(), dto.getLongitude());
             diningOptions.add(dOption);
         }
         return diningOptions;

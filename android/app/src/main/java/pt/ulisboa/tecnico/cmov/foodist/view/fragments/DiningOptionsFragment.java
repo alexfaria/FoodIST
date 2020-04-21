@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
-import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DiningListAdapter;
+import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
 public class DiningOptionsFragment extends Fragment {
@@ -27,7 +27,7 @@ public class DiningOptionsFragment extends Fragment {
     private SharedPreferences sharedPreferences;
 
     private RecyclerView recyclerView;
-    private DiningListAdapter adapter;
+    private FoodServicesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     @Override
@@ -49,7 +49,7 @@ public class DiningOptionsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dining_options, container, false);
         recyclerView = view.findViewById(R.id.dining_recycler_view);
         recyclerView.setHasFixedSize(true);
-        adapter = new DiningListAdapter(v -> {
+        adapter = new FoodServicesAdapter(v -> {
             Bundle args = new Bundle();
             TextView serviceName = v.findViewById(R.id.serviceName);
             args.putString("foodServiceName", serviceName.getText().toString());
