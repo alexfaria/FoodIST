@@ -9,7 +9,7 @@ import pt.ulisboa.tecnico.cmov.foodist.repository.server.FoodServer;
 
 public class App extends Application {
 
-    private final String HOST = "10.0.2.2";
+    private final String HOST = "192.168.1.64";
     private final int PORT = 8080;
 
     private FoodServer foodServer;

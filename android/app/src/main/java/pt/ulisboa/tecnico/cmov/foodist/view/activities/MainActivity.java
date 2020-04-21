@@ -1,8 +1,11 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.activities;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -10,6 +13,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -30,14 +35,26 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
+import pt.inesc.termite.wifidirect.SimWifiP2pManager;
+import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
+import pt.inesc.termite.wifidirect.sockets.SimWifiP2pSocketManager;
 import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.service.SimWifiP2pBroadcastReceiver;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location> {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location>, SimWifiP2pManager.PeerListListener {
 
     private final int PERMISSION_ID = 44;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SharedPreferences sharedPreferences;
+
+    private SimWifiP2pBroadcastReceiver mReceiver;
+    private SimWifiP2pManager mManager;
+    private SimWifiP2pManager.Channel mChannel = null;
+
 
     public Location getmUserLocation() {
         return mUserLocation;
@@ -59,6 +76,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
+
+        // register broadcast receiver
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION);
+        mReceiver = new SimWifiP2pBroadcastReceiver(this);
+        registerReceiver(mReceiver, filter);
+
+        Intent intent = new Intent(getApplicationContext(), SimWifiP2pService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+        SimWifiP2pSocketManager.Init(getApplicationContext());
     }
 
     @Override
@@ -178,6 +206,40 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         PreferenceManager
                 .getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
+        unregisterReceiver(mReceiver);
     }
 
+
+    public void requestPeers() {
+        mManager.requestPeers(mChannel, MainActivity.this);
+    }
+
+    @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+        StringBuilder peersStr = new StringBuilder();
+
+        // compile list of devices in range
+        for (SimWifiP2pDevice device : peers.getDeviceList()) {
+            String devstr = "" + device.deviceName + " (" + device.getVirtIp() + ")\n";
+            peersStr.append(devstr);
+        }
+
+        Log.d("wifip2p", peersStr.toString());
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // callbacks for service binding, passed to bindService()
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mManager = new SimWifiP2pManager(new Messenger(service));
+            mChannel = mManager.initialize(getApplication(), getMainLooper(), null);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mManager = null;
+            mChannel = null;
+        }
+    };
 }

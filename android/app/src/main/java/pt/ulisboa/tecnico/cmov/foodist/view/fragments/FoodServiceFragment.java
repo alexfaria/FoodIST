@@ -338,7 +338,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
 
                 Marker marker = googleMap.addMarker(new MarkerOptions()
                 .position(endLocation)
-                .title("Trip #" + index)
+                .title(foodService.getName())
                 .snippet("Duration: " + polylineData.getLeg().duration
                 ));
 
@@ -373,7 +373,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onInfoWindowClick(final Marker marker) {
         Log.d("onInfoWindowClick", "clicked");
-        if (marker.getTitle().contains("Trip #")) {
+        if (!marker.getTitle().contains("You")) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("Open Google Maps?")
                     .setCancelable(true)

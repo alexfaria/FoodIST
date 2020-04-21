@@ -24,6 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
+        <service android:name="pt.inesc.termite.wifidirect.service.SimWifiP2pService" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
