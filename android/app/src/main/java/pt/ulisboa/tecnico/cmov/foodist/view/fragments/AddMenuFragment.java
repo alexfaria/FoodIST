@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,14 +22,21 @@ import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
+import static android.app.Activity.RESULT_OK;
+
+
+
 public class AddMenuFragment extends Fragment {
+
+    private static final int CAMERA_REQUEST_CODE = 100;
 
     private EditText dishName;
     private EditText dishCost;
-
+    private Bitmap dishPhoto;
     private DishViewModel viewModel;
 
     private String foodServiceNameArg;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +70,11 @@ public class AddMenuFragment extends Fragment {
             }
             try {
                 float cost = Float.parseFloat(costStr);
-                viewModel.putDish(foodServiceNameArg, new Dish(name, cost, 0)).observe(this, success -> {
+                Dish dish = new Dish(name, cost, 0);
+                if(dishPhoto != null) {
+                    dish.addPhoto(dishPhoto);
+                }
+                viewModel.putDish(foodServiceNameArg, dish).observe(this, success -> {
                     if (success)
                         NavHostFragment
                                 .findNavController(AddMenuFragment.this)
@@ -73,7 +86,23 @@ public class AddMenuFragment extends Fragment {
                 dishCost.setError("Not a valid number!");
             }
         });
+        view.findViewById(R.id.uploadBtn).setOnClickListener(new View.OnClickListener() {
+            public void onClick (View v){
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+            }
+        });
         return view;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            if (imageBitmap != null) {
+                dishPhoto = imageBitmap;
+            }
+        }
     }
 
 }
