@@ -8,6 +8,8 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,8 +35,9 @@ public class AddMenuFragment extends Fragment {
     private EditText dishName;
     private EditText dishCost;
     private Bitmap dishPhoto;
-    private DishViewModel viewModel;
+    private CheckBox dishPhotoCheckbox;
 
+    private DishViewModel viewModel;
     private String foodServiceNameArg;
 
 
@@ -57,6 +60,8 @@ public class AddMenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_add_to_menu, container, false);
         dishName = view.findViewById(R.id.newDishName);
         dishCost = view.findViewById(R.id.newDishCost);
+        dishPhotoCheckbox = view.findViewById(R.id.photoCheckBox);
+        dishPhotoCheckbox.setEnabled(false);
         view.findViewById(R.id.submitBtn).setOnClickListener(v -> {
             String name = dishName.getText().toString();
             if (name.isEmpty()) {
@@ -101,6 +106,8 @@ public class AddMenuFragment extends Fragment {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             if (imageBitmap != null) {
                 dishPhoto = imageBitmap;
+                dishPhotoCheckbox.setChecked(true);
+                Toast.makeText(this.getContext(), "Your photo was uploaded successfully!", Toast.LENGTH_LONG).show();
             }
         }
     }

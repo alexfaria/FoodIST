@@ -26,5 +26,6 @@
     <string name="new_dish_name">Name</string>
     <string name="new_dish_price">Cost</string>
     <string name="submit_button">Submit</string>
-    <string name="upload_button">Upload</string>
+    <string name="upload_button">Upload photo</string>
+    <string name="optional">(Optional)</string>
 </resources>
