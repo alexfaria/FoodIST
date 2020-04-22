@@ -2,11 +2,12 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Scanner;
 
 public class FoodServer {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         FoodServiceImpl service = new FoodServiceImpl();
         Server svc = ServerBuilder
                 .forPort(8080)

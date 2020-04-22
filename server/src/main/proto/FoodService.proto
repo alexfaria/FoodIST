@@ -34,15 +34,16 @@ message PutDishRequest {
     string foodServiceName = 1;
     string dishName = 2;
     float dishCost = 3;
+    bytes dishPhoto = 4;
+}
+
+message PutDishResponse {
+    bool success = 1;
 }
 
 message GetDishPhotosRequest {
     string foodServiceName = 1;
     string dishName = 2;
-}
-
-message PutDishResponse {
-    bool success = 1;
 }
 
 message PutDishPhotoRequest {

@@ -1,3 +1,4 @@
+import com.google.protobuf.ByteString;
 import io.grpc.stub.StreamObserver;
 import model.Dish;
 import model.FoodService;
@@ -100,8 +101,13 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     public void putDish(PutDishRequest request, StreamObserver<PutDishResponse> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         boolean success = false;
-        if (foodService != null)
-            success = foodService.addMenuItem(new Dish(request.getDishName(), request.getDishCost()));
+        if (foodService != null) {
+            Dish dish = new Dish(request.getDishName(), request.getDishCost());
+            ByteString dishPhoto = request.getDishPhoto();
+            if (!dishPhoto.isEmpty())
+                dish.addPhoto(dishPhoto);
+            success = foodService.addMenuItem(dish);
+        }
         responseObserver.onNext(PutDishResponse.newBuilder().setSuccess(success).build());
         responseObserver.onCompleted();
     }

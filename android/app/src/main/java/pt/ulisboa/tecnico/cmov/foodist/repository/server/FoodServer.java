@@ -77,13 +77,18 @@ public class FoodServer {
 
     public boolean putDish(String foodServiceName, Dish dish) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
-        return stub.putDish(PutDishRequest
-                    .newBuilder()
-                    .setFoodServiceName(foodServiceName)
-                    .setDishName(dish.getName())
-                    .setDishCost(dish.getCost())
-                    .build())
-                .getSuccess();
+        PutDishRequest.Builder builder = PutDishRequest
+                .newBuilder()
+                .setFoodServiceName(foodServiceName)
+                .setDishName(dish.getName())
+                .setDishCost(dish.getCost());
+        Bitmap photo = dish.getPhoto(0);
+        if (photo != null) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            builder.setDishPhoto(ByteString.copyFrom(stream.toByteArray()));
+        }
+        return stub.putDish(builder.build()).getSuccess();
     }
 
     public int putDishPhoto(String foodServiceName, String dishName, Bitmap photo) {
