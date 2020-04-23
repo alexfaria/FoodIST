@@ -21,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
-public class DiningOptionsFragment extends Fragment {
+public class DiningOptionsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private FoodServiceViewModel viewModel;
     private SharedPreferences sharedPreferences;
@@ -37,6 +37,7 @@ public class DiningOptionsFragment extends Fragment {
             viewModel = new ViewModelProvider(requireActivity()).get(FoodServiceViewModel.class);
             viewModel.init((App) getContext().getApplicationContext());
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         }
     }
 
@@ -65,9 +66,18 @@ public class DiningOptionsFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.getFoodServices(sharedPreferences.getString("campus", "")).observe(this, data -> {
+        retrieveFoodServices(sharedPreferences.getString("campus", ""));
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("campus"))
+            retrieveFoodServices(sharedPreferences.getString("campus", ""));
+    }
+
+    private void retrieveFoodServices(String campus) {
+        viewModel.getFoodServices(campus).observe(this, data -> {
             adapter.setData(data);
         });
     }
-
 }
