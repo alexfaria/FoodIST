@@ -80,4 +80,10 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
             adapter.setData(data);
         });
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
 }

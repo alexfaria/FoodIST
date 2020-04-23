@@ -84,14 +84,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         viewModel = new ViewModelProvider(this).get(FoodServiceViewModel.class);
         viewModel.init((App) getApplicationContext());
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         campus = sharedPreferences.getString("campus", "");
         if (!campus.isEmpty())
             retrieveFoodServicesNames(campus);
+        toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = LocationRequest.create();
@@ -105,8 +106,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 onSuccess(locationResult.getLastLocation());
             }
         };
-
-        toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
 
         // register broadcast receiver
         /*
@@ -185,14 +184,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_ID) {
+        if (requestCode == PERMISSION_ID)
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                sharedPreferences.edit().putBoolean("localization", true).apply();
                 getLastLocation();
-            } else {
-                sharedPreferences.edit().putBoolean("localization", false).apply();
-                checkCampus();
-            }
-        }
+            } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    sharedPreferences.edit().putBoolean("localization", false).apply();
+                    checkCampus();
+                }
     }
 
     private void getLastLocation(){
@@ -299,9 +298,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PreferenceManager
-                .getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(this);
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         //unregisterReceiver(mReceiver);
     }
 }
