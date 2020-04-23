@@ -1,38 +1,37 @@
 package model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class OpeningHours {
 
-    public static final SimpleDateFormat df;
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    static {
-        df = new SimpleDateFormat("HH:mm");
-        df.setTimeZone(TimeZone.getTimeZone("GMT"));
+    private final LocalTime open;
+    private final LocalTime close;
+
+    public OpeningHours(String openingHours) {
+        String[] time = openingHours.split("-");
+        open = LocalTime.parse(time[0], formatter);
+        close = LocalTime.parse(time[1], formatter);
     }
 
-    private final Date open;
-    private final Date close;
-
-    public OpeningHours(String openingHours) throws ParseException {
-        String[] split = openingHours.split("-");
-        this.open = df.parse(split[0]);
-        this.close = df.parse(split[1]);
-    }
-
-    public Date getOpen() {
+    public LocalTime getOpen() {
         return open;
     }
 
-    public Date getClose() {
+    public LocalTime getClose() {
         return close;
+    }
+
+    public boolean isAvailable(LocalTime current) {
+        return open.isBefore(current) && close.isAfter(current);
     }
 
     @Override
     public String toString() {
-        return df.format(open) + "-" + df.format(close);
+        return open.format(formatter) + "-" + close.format(formatter);
     }
 }

@@ -6,64 +6,64 @@ import model.OpeningHours;
 import pt.ulisboa.tecnico.cmov.foodservice.*;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     private HashMap<String, FoodService> foodServices = new HashMap<>();
 
-    public FoodServiceImpl() throws ParseException {
-        Map<String, OpeningHours> restaurants  = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("9:00-21:00"));
-            put("Staff", new OpeningHours("8:00-22:00"));
+    public FoodServiceImpl() {
+        Map<String, OpeningHours> restaurants = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("09:00-21:00"));
+            put("Staff", new OpeningHours("08:00-22:00"));
             put("General Public", new OpeningHours("12:00-14:00"));
         }};
-        Map<String, OpeningHours> bars  = new HashMap<String, OpeningHours>() {{
+        Map<String, OpeningHours> bars = new HashMap<String, OpeningHours>() {{
             put("Student", new OpeningHours("10:00-20:00"));
-            put("Staff", new OpeningHours("8:00-22:00"));
+            put("Staff", new OpeningHours("08:00-22:00"));
             put("General Public", new OpeningHours("11:00-18:00"));
         }};
-        Map<String, OpeningHours> lateBars  = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("12:00-00:00"));
+        Map<String, OpeningHours> lateBars = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("12:00-23:00"));
             put("Staff", new OpeningHours("12:00-20:00"));
             put("General Public", new OpeningHours("14:00-18:00"));
         }};
         foodServices.put("Cantina Social", new FoodService("Cantina Social", "Alameda", restaurants, 38.736382, -9.136967));
-        foodServices.put("Cantina de Civil", new FoodService("Cantina de Civil", "Alameda",restaurants, 38.737732, -9.140482));
-        foodServices.put("Bar de Civil", new FoodService("Bar de Civil", "Alameda",bars, 38.737066, -9.140007));
-        foodServices.put("Bar de Matemática", new FoodService("Bar de Matemática", "Alameda",bars, 38.735610, -9.139690));
-        foodServices.put("Bar de Química", new FoodService("Bar de Química", "Alameda",bars, 38.736012, -9.138324));
-        foodServices.put("Bar do Pavilhão Central", new FoodService("Bar do Pavilhão Central", "Alameda",bars, 38.736610, -9.139605));
-        foodServices.put("Bar de Mecânica", new FoodService("Bar de Mecânica", "Alameda",bars, 38.737422, -9.137403));
-        foodServices.put("Bar da AEIST", new FoodService("Bar da AEIST", "Alameda",lateBars, 38.736382, -9.136967));
-        foodServices.put("Bar da Bola AEIST", new FoodService("Bar da Bola AEIST", "Alameda",lateBars, 38.736131, -9.137807));
-        foodServices.put("Restaurante/Bar Sena", new FoodService("Restaurante/Bar Sena", "Alameda",restaurants, 38.737715, -9.138638));
+        foodServices.put("Cantina de Civil", new FoodService("Cantina de Civil", "Alameda", restaurants, 38.737732, -9.140482));
+        foodServices.put("Bar de Civil", new FoodService("Bar de Civil", "Alameda", bars, 38.737066, -9.140007));
+        foodServices.put("Bar de Matemática", new FoodService("Bar de Matemática", "Alameda", bars, 38.735610, -9.139690));
+        foodServices.put("Bar de Química", new FoodService("Bar de Química", "Alameda", bars, 38.736012, -9.138324));
+        foodServices.put("Bar do Pavilhão Central", new FoodService("Bar do Pavilhão Central", "Alameda", bars, 38.736610, -9.139605));
+        foodServices.put("Bar de Mecânica", new FoodService("Bar de Mecânica", "Alameda", bars, 38.737422, -9.137403));
+        foodServices.put("Bar da AEIST", new FoodService("Bar da AEIST", "Alameda", lateBars, 38.736382, -9.136967));
+        foodServices.put("Bar da Bola AEIST", new FoodService("Bar da Bola AEIST", "Alameda", lateBars, 38.736131, -9.137807));
+        foodServices.put("Restaurante/Bar Sena", new FoodService("Restaurante/Bar Sena", "Alameda", restaurants, 38.737715, -9.138638));
         foodServices.put("Cantina", new FoodService("Cantina", "Taguspark", restaurants, 38.736902, -9.302608));
-        foodServices.put("Snack/Bar Praxe Bar", new FoodService("Snack/Bar Praxe Bar", "Taguspark",lateBars,38.736902, -9.302608));
-        foodServices.put("Restaurante/Bar Campus do Taguspark", new FoodService("Restaurante/Bar Campus do Taguspark", "Taguspark",restaurants,38.736563, -9.302200));
+        foodServices.put("Snack/Bar Praxe Bar", new FoodService("Snack/Bar Praxe Bar", "Taguspark", lateBars, 38.736902, -9.302608));
+        foodServices.put("Restaurante/Bar Campus do Taguspark", new FoodService("Restaurante/Bar Campus do Taguspark", "Taguspark", restaurants, 38.736563, -9.302200));
     }
 
     @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
         System.out.println("$ GetFoodServices");
-        String time = OpeningHours.df.format(new Date());
-        try {
-            Date current = OpeningHours.df.parse(time);
-            foodServices.values().forEach(fs -> {
-                OpeningHours openingHours = fs.getOpeningHours(request.getStatus());
-                if (fs.getCampus().equals(request.getCampus())
-                        && openingHours.getOpen().before(current) && openingHours.getClose().after(current))
-                    responseObserver.onNext(FoodServiceDto
-                            .newBuilder()
-                            .setName(fs.getName())
-                            .setOpeningHours(openingHours.toString())
-                            .setLatitude(fs.getLatitude())
-                            .setLongitude(fs.getLongitude())
-                            .build());
-            });
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
+        foodServices.values().forEach(fs -> {
+            OpeningHours openingHours = fs.getOpeningHours(request.getStatus());
+            if (fs.getCampus().equals(request.getCampus())
+                    && openingHours.isAvailable(current))
+                responseObserver.onNext(FoodServiceDto
+                        .newBuilder()
+                        .setName(fs.getName())
+                        .setOpeningHours(openingHours.toString())
+                        .setLatitude(fs.getLatitude())
+                        .setLongitude(fs.getLongitude())
+                        .build());
+        });
         responseObserver.onCompleted();
     }
 
@@ -72,12 +72,12 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null)
             foodService.getMenu().values().forEach(d ->
-                responseObserver.onNext(DishDto
-                        .newBuilder()
-                        .setName(d.getName())
-                        .setCost(d.getCost())
-                        .setNumberOfPhotos(d.getNumberOfPhotos())
-                        .build()));
+                    responseObserver.onNext(DishDto
+                            .newBuilder()
+                            .setName(d.getName())
+                            .setCost(d.getCost())
+                            .setNumberOfPhotos(d.getNumberOfPhotos())
+                            .build()));
         responseObserver.onCompleted();
     }
 
