@@ -68,10 +68,23 @@ message DishWithPhotosDto {
     repeated bytes photos = 3;
 }
 
+message AddToFoodServiceQueueRequest {
+    string campus = 1;
+    string foodServiceName = 2;
+}
+
+message RemoveFromFoodServiceQueueRequest {
+    string campus = 1;
+    string foodServiceName = 2;
+}
+
 service FoodServer {
     rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodServiceDto);
     rpc getDishes(GetDishesRequest) returns (stream DishDto);
     rpc getDish(GetDishRequest) returns (DishWithPhotosDto);
     rpc putDish(PutDishRequest) returns (PutDishResponse);
     rpc putDishPhoto(PutDishPhotoRequest) returns (PutDishPhotoResponse);
+    rpc addToFoodServiceQueue(AddToFoodServiceQueueRequest) returns (Empty);
+    rpc removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest) returns (Empty);
+    // rpc getWaitTime(GetWaitTimeRequest) returns (GetWaitTimeResponse);
 }

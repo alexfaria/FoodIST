@@ -51,11 +51,11 @@ public class FoodServiceRepository {
 
     public void addToFoodServiceQueue(String campus, String name) {
         // ToDo
-        //foodServer.addToFoodServiceQueue(campus, name);
+        foodServer.addToFoodServiceQueue(campus, name);
     }
 
     public void removeFromFoodServiceQueue(String campus, String name) {
-        //foodServer.removeFromFoodServiceQueue(campus, name);
+        foodServer.removeFromFoodServiceQueue(campus, name);
     }
 
 }
