@@ -29,6 +29,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -53,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private final int PERMISSION_ID = 44;
 
+    private LocationRequest locationRequest;
+    private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SharedPreferences sharedPreferences;
     private FoodServiceViewModel viewModel;
@@ -89,6 +94,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             retrieveFoodServicesNames(campus);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setNumUpdates(1);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                if (locationResult == null) return;
+                onSuccess(locationResult.getLastLocation());
+            }
+        };
 
         toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
 
@@ -220,7 +236,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        } else
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
     }
 
     @Override
