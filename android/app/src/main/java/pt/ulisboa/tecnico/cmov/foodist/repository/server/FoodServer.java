@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import io.grpc.ManagedChannel;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
+import pt.ulisboa.tecnico.cmov.foodservice.AddToFoodServiceQueueRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.DishDto;
 import pt.ulisboa.tecnico.cmov.foodservice.DishWithPhotosDto;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
@@ -25,6 +26,7 @@ import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoResponse;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.RemoveFromFoodServiceQueueRequest;
 
 public class FoodServer {
 
@@ -103,5 +105,23 @@ public class FoodServer {
                 .setPhoto(ByteString.copyFrom(stream.toByteArray()))
                 .build());
         return putDishPhotoResponse.getIndex();
+    }
+
+    public void addToFoodServiceQueue(String campus, String foodServiceName) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        stub.addToFoodServiceQueue(AddToFoodServiceQueueRequest
+                .newBuilder()
+                .setFoodServiceName(foodServiceName)
+                .setCampus(campus)
+                .build());
+    }
+
+    public void removeFromFoodServiceQueue(String campus, String foodServiceName) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        stub.removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest
+                .newBuilder()
+                .setFoodServiceName(foodServiceName)
+                .setCampus(campus)
+                .build());
     }
 }

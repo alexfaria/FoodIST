@@ -5,17 +5,14 @@ import model.FoodService;
 import model.OpeningHours;
 import pt.ulisboa.tecnico.cmov.foodservice.*;
 
-import java.text.ParseException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
-    private HashMap<String, FoodService> foodServices = new HashMap<>();
+    private final HashMap<String, FoodService> foodServices = new HashMap<>();
 
     public FoodServiceImpl() {
         Map<String, OpeningHours> restaurants = new HashMap<String, OpeningHours>() {{
@@ -125,4 +122,21 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void addToFoodServiceQueue(AddToFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null) {
+            foodService.addToQueue();
+        }
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null) {
+            foodService.removeFromQueue();
+        }
+        responseObserver.onCompleted();
+    }
 }
