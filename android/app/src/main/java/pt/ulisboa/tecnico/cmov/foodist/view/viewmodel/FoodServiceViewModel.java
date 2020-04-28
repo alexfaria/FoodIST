@@ -17,8 +17,8 @@ public class FoodServiceViewModel extends ViewModel {
         repository = new FoodServiceRepository(application);
     }
 
-    public LiveData<List<FoodService>> getFoodServices(String campus) {
-        return repository.getFoodServices(campus);
+    public LiveData<List<FoodService>> getFoodServices(String campus, String status) {
+        return repository.getFoodServices(campus, status);
     }
 
     public LiveData<FoodService> getFoodService(String campus, String name) {

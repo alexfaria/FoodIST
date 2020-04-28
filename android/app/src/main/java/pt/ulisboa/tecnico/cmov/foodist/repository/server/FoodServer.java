@@ -38,9 +38,10 @@ public class FoodServer {
         this.channel = channel;
     }
 
-    public ArrayList<FoodService> getFoodServices(String campus) {
+    public ArrayList<FoodService> getFoodServices(String campus, String status) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
-        Iterator<FoodServiceDto> foodServicesDtos = stub.getFoodServices(GetFoodServicesRequest.newBuilder().setCampus(campus).build());
+        Iterator<FoodServiceDto> foodServicesDtos = stub.getFoodServices(
+                GetFoodServicesRequest.newBuilder().setCampus(campus).setStatus(status).build());
         ArrayList<FoodService> diningOptions = new ArrayList<>();
         while (foodServicesDtos.hasNext()) {
             FoodServiceDto dto = foodServicesDtos.next();

@@ -24,7 +24,7 @@ public class FoodServiceRepository {
         foodServer = application.getServer();
     }
 
-    public LiveData<List<FoodService>> getFoodServices(String campus) {
+    public LiveData<List<FoodService>> getFoodServices(String campus, String status) {
         MutableLiveData<List<FoodService>> ld = new MutableLiveData<>();
         foodServiceDao.getAll(campus).observeForever(fsDB -> {
             List<FoodService> foodServices = new ArrayList<>();
@@ -37,6 +37,10 @@ public class FoodServiceRepository {
             }
             ld.postValue(foodServices);
         });
+        /*
+        FoodServer.serverExecutor.execute(() -> {
+            ld.postValue(foodServer.getFoodServices(campus, status));
+        });*/
         return ld;
     }
 

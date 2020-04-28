@@ -66,17 +66,22 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        retrieveFoodServices(sharedPreferences.getString("campus", ""));
+        String campus = sharedPreferences.getString("campus", "");
+        String status = sharedPreferences.getString("status", "");
+        if (!campus.isEmpty() && !status.isEmpty())
+            retrieveFoodServices(campus, status);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus"))
-            retrieveFoodServices(sharedPreferences.getString("campus", ""));
+        if (key.equals("campus") || key.equals("status"))
+            retrieveFoodServices(
+                    sharedPreferences.getString("campus", ""),
+                    sharedPreferences.getString("status", ""));
     }
 
-    private void retrieveFoodServices(String campus) {
-        viewModel.getFoodServices(campus).observe(this, data -> {
+    private void retrieveFoodServices(String campus, String status) {
+        viewModel.getFoodServices(campus, status).observe(this, data -> {
             adapter.setData(data);
         });
     }
