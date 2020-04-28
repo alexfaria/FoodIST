@@ -57,6 +57,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                         .newBuilder()
                         .setName(fs.getName())
                         .setOpeningHours(openingHours.toString())
+                        .setQueueTime(fs.getAverageQueueTime())
                         .setLatitude(fs.getLatitude())
                         .setLongitude(fs.getLongitude())
                         .build());

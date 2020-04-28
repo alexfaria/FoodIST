@@ -47,7 +47,7 @@ public class FoodServer {
         ArrayList<FoodService> diningOptions = new ArrayList<>();
         while (foodServicesDtos.hasNext()) {
             FoodServiceDto dto = foodServicesDtos.next();
-            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getLatitude(), dto.getLongitude());
+            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getQueueTime(),dto.getLatitude(), dto.getLongitude());
             diningOptions.add(dOption);
         }
         return diningOptions;

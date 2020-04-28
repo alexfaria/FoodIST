@@ -45,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="10dp"
-            android:text="0 min"
             android:textSize="14sp"
             android:textColor="@color/colorBlack"
             android:drawableLeft="@drawable/ic_queue_black_12dp"

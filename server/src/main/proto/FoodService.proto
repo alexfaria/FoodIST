@@ -15,7 +15,7 @@ message GetFoodServicesRequest {
 message FoodServiceDto {
     string name = 1;
     string openingHours = 2;
-    int64 queueTime = 3;
+    int32 queueTime = 3;
     double latitude = 4;
     double longitude = 5;
 }

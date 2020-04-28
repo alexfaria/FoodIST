@@ -6,14 +6,15 @@ public class FoodService {
 
     private String name;
     private String openingHours;
+    private int queueTime;
     private double latitude;
     private double longitude;
     private int walkTime;
-    private int queueTime;
 
-    public FoodService(String name, String openingHours, double latitude, double longitude) {
+    public FoodService(String name, String openingHours, int queueTime,double latitude, double longitude) {
         this.name = name;
         this.openingHours = openingHours;
+        this.queueTime = queueTime;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -24,6 +25,10 @@ public class FoodService {
 
     public String getOpeningHours() {
         return openingHours;
+    }
+
+    public int getQueueTime() {
+        return queueTime;
     }
 
     public double getLatitude() {
@@ -40,13 +45,5 @@ public class FoodService {
 
     public void setWalkTime(int walkTime) {
         this.walkTime = walkTime;
-    }
-
-    public int getQueueTime() {
-        return queueTime;
-    }
-
-    public void setQueueTime(int queueTime) {
-        this.queueTime = queueTime;
     }
 }

@@ -85,7 +85,7 @@ public class FoodService {
         System.out.println("getAverageQueueTime: " + getAverageQueueTime());
     }
 
-    public float getAverageQueueTime() {
-        return queueTimeTotal / queueTimeCount;
+    public int getAverageQueueTime() {
+        return (int)((queueTimeTotal / queueTimeCount) * 60);
     }
 }

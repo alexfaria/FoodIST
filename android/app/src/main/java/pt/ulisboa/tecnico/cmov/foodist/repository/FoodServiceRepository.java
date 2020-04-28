@@ -31,7 +31,7 @@ public class FoodServiceRepository {
             if (fsDB != null) {
                 for(FoodServiceDBEntity fs : fsDB) {
                     foodServices.add(
-                            new FoodService(fs.getName(), fs.getOpeningHours(), fs.getLatitude(), fs.getLongitude())
+                            new FoodService(fs.getName(), fs.getOpeningHours(), fs.getQueueTime(),fs.getLatitude(), fs.getLongitude())
                     );
                 }
             }
@@ -41,6 +41,7 @@ public class FoodServiceRepository {
         FoodServer.serverExecutor.execute(() -> {
             ld.postValue(foodServer.getFoodServices(campus, status));
         });*/
+        refreshFoodServices(campus, status);
         return ld;
     }
 
@@ -48,9 +49,19 @@ public class FoodServiceRepository {
         MutableLiveData<FoodService> ld = new MutableLiveData<>();
         foodServiceDao.get(campus, name).observeForever(fsDB -> {
             if (fsDB != null)
-                ld.postValue(new FoodService(fsDB.getName(), fsDB.getOpeningHours(), fsDB.getLatitude(), fsDB.getLongitude()));
+                ld.postValue(new FoodService(fsDB.getName(), fsDB.getOpeningHours(), fsDB.getQueueTime(),fsDB.getLatitude(), fsDB.getLongitude()));
         });
         return ld;
+    }
+
+    private void refreshFoodServices(String campus, String status) {
+        FoodServer.serverExecutor.execute(() -> {
+            ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
+            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                for (FoodService fs : foodServices)
+                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus,fs.getOpeningHours(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+            });
+        });
     }
 
     public void addToFoodServiceQueue(String campus, String name) {
