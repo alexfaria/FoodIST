@@ -36,7 +36,7 @@
 - y -> clientes na fila
 - [ ] guid entrou na fila e agora saiu da fila
 
-- a = mx+b
+- [ ] a = mx+b
 - a - quantas pessoas saem da fila por min
 - b - tabuleiro ate sentar para comer 
 
