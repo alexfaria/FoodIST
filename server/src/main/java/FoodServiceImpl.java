@@ -17,16 +17,22 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     public FoodServiceImpl() {
         Map<String, OpeningHours> restaurants = new HashMap<String, OpeningHours>() {{
             put("Student", new OpeningHours("09:00-21:00"));
+            put("Professor", new OpeningHours("08:00-22:00"));
+            put("Researcher", new OpeningHours("08:00-22:00"));
             put("Staff", new OpeningHours("08:00-22:00"));
             put("General Public", new OpeningHours("12:00-14:00"));
         }};
         Map<String, OpeningHours> bars = new HashMap<String, OpeningHours>() {{
             put("Student", new OpeningHours("10:00-20:00"));
+            put("Professor", new OpeningHours("08:00-22:00"));
+            put("Researcher", new OpeningHours("08:00-22:00"));
             put("Staff", new OpeningHours("08:00-22:00"));
             put("General Public", new OpeningHours("11:00-18:00"));
         }};
         Map<String, OpeningHours> lateBars = new HashMap<String, OpeningHours>() {{
             put("Student", new OpeningHours("12:00-23:00"));
+            put("Professor", new OpeningHours("12:00-20:00"));
+            put("Researcher", new OpeningHours("12:00-20:00"));
             put("Staff", new OpeningHours("12:00-20:00"));
             put("General Public", new OpeningHours("14:00-18:00"));
         }};
@@ -47,7 +53,8 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
-        LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
+        // LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
+        LocalTime current = LocalTime.of(14, 0);
         foodServices.values().forEach(fs -> {
             OpeningHours openingHours = fs.getOpeningHours(request.getStatus());
             if (fs.getCampus().equals(request.getCampus())

@@ -18,14 +18,6 @@ public class OpeningHours {
         close = LocalTime.parse(time[1], formatter);
     }
 
-    public LocalTime getOpen() {
-        return open;
-    }
-
-    public LocalTime getClose() {
-        return close;
-    }
-
     public boolean isAvailable(LocalTime current) {
         return open.isBefore(current) && close.isAfter(current);
     }
