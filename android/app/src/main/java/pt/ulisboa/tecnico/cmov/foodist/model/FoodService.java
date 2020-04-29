@@ -17,6 +17,7 @@ public class FoodService {
         this.queueTime = queueTime;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.walkTime = 0;
     }
 
     public String getName() {

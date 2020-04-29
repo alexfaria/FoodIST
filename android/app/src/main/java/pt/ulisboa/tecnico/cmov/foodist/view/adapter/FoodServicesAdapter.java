@@ -25,12 +25,14 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
         public TextView name;
         public TextView openingHours;
         public TextView queueTime;
+        public TextView walkTime;
 
         public FoodServicesViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.serviceName);
             openingHours = view.findViewById(R.id.openingHours);
             queueTime = view.findViewById(R.id.queueTime);
+            walkTime = view.findViewById(R.id.walkTime);
         }
 
     }
@@ -59,6 +61,7 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
         holder.name.setText(fs.getName());
         holder.openingHours.setText(fs.getOpeningHours());
         holder.queueTime.setText(String.format(Locale.getDefault(), "%d min", fs.getQueueTime()));
+        holder.walkTime.setText(String.format(Locale.getDefault(), "%d min", fs.getWalkTime()));
     }
 
     @Override

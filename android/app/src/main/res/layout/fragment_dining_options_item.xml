@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/serviceName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="10dp"
@@ -22,6 +22,22 @@
             android:textSize="16sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/walkTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="10dp"
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp"
+            android:drawableLeft="@drawable/ic_directions_walk_black_12dp"
+            android:drawableStart="@drawable/ic_directions_walk_black_12dp"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="@id/serviceName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/serviceName"/>
 
         <TextView
             android:id="@+id/openingHours"
@@ -38,6 +54,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/serviceName"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <RatingBar
+            android:id="@+id/rating"
+            style="@android:style/Widget.DeviceDefault.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/queueTime"
+            app:layout_constraintStart_toEndOf="@id/openingHours"
+            app:layout_constraintTop_toBottomOf="@id/serviceName" />
 
         <TextView
             android:id="@+id/queueTime"
