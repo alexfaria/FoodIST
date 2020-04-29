@@ -70,10 +70,9 @@ public class FoodServiceRepository {
         });
     }
 
-    public void removeFromFoodServiceQueue(String campus, String name) {
+    public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
         FoodServer.serverExecutor.execute(() -> {
-            foodServer.removeFromFoodServiceQueue(campus, name);
+            foodServer.removeFromFoodServiceQueue(campus, name, uuid);
         });
     }
-
 }

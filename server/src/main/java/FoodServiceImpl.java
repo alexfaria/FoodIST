@@ -57,7 +57,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                         .newBuilder()
                         .setName(fs.getName())
                         .setOpeningHours(openingHours.toString())
-                        .setQueueTime(fs.getAverageQueueTime())
+                        .setQueueTime(fs.getQueueWaitTime())
                         .setLatitude(fs.getLatitude())
                         .setLongitude(fs.getLongitude())
                         .build());
@@ -127,7 +127,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     public void addToFoodServiceQueue(AddToFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
-            foodService.addToQueue();
+            foodService.addToQueue(request.getUUID());
         }
         responseObserver.onCompleted();
     }
@@ -136,7 +136,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     public void removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
-            foodService.removeFromQueue();
+            foodService.removeFromQueue(request.getUUID());
         }
         responseObserver.onCompleted();
     }

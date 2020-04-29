@@ -29,7 +29,7 @@ public class FoodServiceViewModel extends ViewModel {
         repository.addToFoodServiceQueue(campus, name);
     }
 
-    public void removeFromFoodServiceQueue(String campus, String name) {
-        repository.removeFromFoodServiceQueue(campus, name);
+    public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
+        repository.removeFromFoodServiceQueue(campus, name, uuid);
     }
 }

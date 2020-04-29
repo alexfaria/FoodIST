@@ -1,6 +1,11 @@
 package pt.ulisboa.tecnico.cmov.foodist.view;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+
+import androidx.preference.PreferenceManager;
+
+import java.util.UUID;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -24,6 +29,15 @@ public class App extends Application {
                 .build();
         foodServer = new FoodServer(channel);
         bitmapCache = new BitmapCache(this);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String uuid = sharedPreferences.getString("uuid", "");
+
+        if (uuid.isEmpty()) {
+            uuid = UUID.randomUUID().toString();
+            sharedPreferences.edit().putString("uuid", uuid.toString()).apply();
+        }
     }
 
     public FoodServer getServer() {

@@ -116,7 +116,7 @@ public class FoodServer {
                 .build());
     }
 
-    public void removeFromFoodServiceQueue(String campus, String foodServiceName) {
+    public void removeFromFoodServiceQueue(String campus, String foodServiceName, String uuid) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         stub.removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest
                 .newBuilder()

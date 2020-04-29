@@ -71,11 +71,13 @@ message DishWithPhotosDto {
 message AddToFoodServiceQueueRequest {
     string campus = 1;
     string foodServiceName = 2;
+    string UUID = 3;
 }
 
 message RemoveFromFoodServiceQueueRequest {
     string campus = 1;
     string foodServiceName = 2;
+    string UUID = 3;
 }
 
 service FoodServer {
