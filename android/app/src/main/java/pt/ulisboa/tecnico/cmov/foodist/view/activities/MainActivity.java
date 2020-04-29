@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
@@ -90,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         campus = sharedPreferences.getString("campus", "");
-        if (!campus.isEmpty())
-            retrieveFoodServicesNames(campus);
+        String status = sharedPreferences.getString("status", "");
+        if (!campus.isEmpty() && !status.isEmpty())
+            retrieveFoodServicesNames(campus, status);
         toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -145,9 +147,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus")) {
+        if (key.equals("campus") || key.equals("status")) {
             campus = sharedPreferences.getString("campus", "");
-            retrieveFoodServicesNames(campus);
+            retrieveFoodServicesNames(campus, sharedPreferences.getString("status", ""));
             toolbar.setTitle("Técnico " + campus);
         }
     }
@@ -189,12 +191,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 sharedPreferences.edit().putBoolean("localization", true).apply();
                 getLastLocation();
             } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    sharedPreferences.edit().putBoolean("localization", false).apply();
-                    checkCampus();
-                }
+                sharedPreferences.edit().putBoolean("localization", false).apply();
+                checkCampus();
+            }
     }
 
-    private void getLastLocation(){
+    private void getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this);
@@ -279,18 +281,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     viewModel.addToFoodServiceQueue(campus, device.deviceName);
                     connectedFoodService = device.deviceName; // ToDo change device name to handle spaces
                     return;
-                }
-            else
-                if (connectedFoodService.equals(device.deviceName))
+                } else if (connectedFoodService.equals(device.deviceName))
                     return;
         }
-        viewModel.removeFromFoodServiceQueue(campus, connectedFoodService);
+        String uuid = sharedPreferences.getString("uuid", "");
+        viewModel.removeFromFoodServiceQueue(campus, connectedFoodService, uuid);
         connectedFoodService = null;
     }
 
-    private void retrieveFoodServicesNames(String campus) {
-        viewModel.getFoodServices(campus).observe(this, foodServices -> {
-            for(FoodService fs: foodServices)
+    private void retrieveFoodServicesNames(String campus, String status) {
+        viewModel.getFoodServices(campus, status).observe(this, foodServices -> {
+            for (FoodService fs : foodServices)
                 foodServicesNames.add(fs.getName());
         });
     }

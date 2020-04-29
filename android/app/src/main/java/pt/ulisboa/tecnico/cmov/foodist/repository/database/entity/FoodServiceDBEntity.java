@@ -20,16 +20,20 @@ public class FoodServiceDBEntity {
     @ColumnInfo(name = "opening_hours")
     private String openingHours;
 
+    @ColumnInfo(name = "queue_time")
+    private int queueTime;
+
     @ColumnInfo(name = "latitude")
     private double latitude;
 
     @ColumnInfo(name = "longitude")
     private double longitude;
 
-    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, String openingHours, double latitude, double longitude) {
+    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, String openingHours, int queueTime, double latitude, double longitude) {
         this.name = name;
         this.campus = campus;
         this.openingHours = openingHours;
+        this.queueTime = queueTime;
         this.latitude = latitude;
         this.longitude = longitude;
     }
@@ -44,6 +48,10 @@ public class FoodServiceDBEntity {
 
     public String getOpeningHours() {
         return openingHours;
+    }
+
+    public int getQueueTime() {
+        return queueTime;
     }
 
     public double getLatitude() {

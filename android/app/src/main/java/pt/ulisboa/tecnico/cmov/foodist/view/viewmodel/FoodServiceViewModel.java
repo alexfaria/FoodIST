@@ -17,8 +17,8 @@ public class FoodServiceViewModel extends ViewModel {
         repository = new FoodServiceRepository(application);
     }
 
-    public LiveData<List<FoodService>> getFoodServices(String campus) {
-        return repository.getFoodServices(campus);
+    public LiveData<List<FoodService>> getFoodServices(String campus, String status) {
+        return repository.getFoodServices(campus, status);
     }
 
     public LiveData<FoodService> getFoodService(String campus, String name) {
@@ -29,7 +29,7 @@ public class FoodServiceViewModel extends ViewModel {
         repository.addToFoodServiceQueue(campus, name);
     }
 
-    public void removeFromFoodServiceQueue(String campus, String name) {
-        repository.removeFromFoodServiceQueue(campus, name);
+    public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
+        repository.removeFromFoodServiceQueue(campus, name, uuid);
     }
 }

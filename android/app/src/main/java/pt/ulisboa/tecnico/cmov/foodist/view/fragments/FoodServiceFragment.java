@@ -112,11 +112,10 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         view.findViewById(R.id.fullScreenBtn).setOnClickListener(v -> {
-            if(mapLayoutState == MAP_LAYOUT_STATE_CONTRACTED){
+            if (mapLayoutState == MAP_LAYOUT_STATE_CONTRACTED) {
                 mapLayoutState = MAP_LAYOUT_STATE_EXPANDED;
                 expandMapAnimation();
-            }
-            else if(mapLayoutState == MAP_LAYOUT_STATE_EXPANDED){
+            } else if (mapLayoutState == MAP_LAYOUT_STATE_EXPANDED) {
                 mapLayoutState = MAP_LAYOUT_STATE_CONTRACTED;
                 contractMapAnimation();
             }
@@ -143,14 +142,16 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                 if (googleMap != null) {
                     LatLng foodServiceCoord = new LatLng(fs.getLatitude(), fs.getLongitude());
                     googleMap.addMarker(new MarkerOptions().position(foodServiceCoord).title(fs.getName()));
-                    LatLng userPosition = new LatLng(mUserPosition.getLatitude(), mUserPosition.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(userPosition).title("You"));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(foodServiceCoord, MAP_ZOOM_LEVEL));
-                    calculateDirections(foodServiceCoord);
+                    
+                    if (mUserPosition != null) {
+                        LatLng userPosition = new LatLng(mUserPosition.getLatitude(), mUserPosition.getLongitude());
+                        googleMap.addMarker(new MarkerOptions().position(userPosition).title("You"));
+
+                        calculateDirections(foodServiceCoord);
+                    }
                 }
             });
-
-
     }
 
     @Override
@@ -163,7 +164,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         googleMap.setOnPolylineClickListener(this);
     }
 
-    private void calculateDirections(LatLng foodServiceCoord){
+    private void calculateDirections(LatLng foodServiceCoord) {
         Log.d(TAG, "calculateDirections:        calculating directions.");
 
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
@@ -195,32 +196,32 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
 
             @Override
             public void onFailure(Throwable e) {
-                Log.e(TAG, "calculateDirections: Failed to get directions: " + e.getMessage() );
+                Log.e(TAG, "calculateDirections: Failed to get directions: " + e.getMessage());
             }
         });
     }
 
-    private void addPolylinesToMap(final DirectionsResult result){
+    private void addPolylinesToMap(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
-                if(mPolyLinesData.size() > 0){
-                    for(PolylineData polylineData: mPolyLinesData){
+                if (mPolyLinesData.size() > 0) {
+                    for (PolylineData polylineData : mPolyLinesData) {
                         polylineData.getPolyline().remove();
                     }
                     mPolyLinesData.clear();
                     mPolyLinesData = new ArrayList<>();
                 }
                 double duration = 999999999;
-                for(DirectionsRoute route: result.routes){
+                for (DirectionsRoute route : result.routes) {
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
 
                     // This loops through all the LatLng coordinates of ONE polyline.
-                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                    for (com.google.maps.model.LatLng latLng : decodedPath) {
 
 //                        Log.d(TAG, "run: latlng: " + latLng.toString());
 
@@ -281,7 +282,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         mapView.onLowMemory();
     }
 
-    private void expandMapAnimation(){
+    private void expandMapAnimation() {
         ViewWeightAnimation mapAnimationWrapper = new ViewWeightAnimation(mapContainer);
         ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
                 "weight",
@@ -300,7 +301,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         mapAnimation.start();
     }
 
-    private void contractMapAnimation(){
+    private void contractMapAnimation() {
         ViewWeightAnimation mapAnimationWrapper = new ViewWeightAnimation(mapContainer);
         ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
                 "weight",
@@ -322,10 +323,10 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onPolylineClick(Polyline polyline) {
         int index = 0;
-        for(PolylineData polylineData: mPolyLinesData){
+        for (PolylineData polylineData : mPolyLinesData) {
             index++;
             Log.d(TAG, "onPolylineClick: toString: " + polylineData.toString());
-            if(polyline.getId().equals(polylineData.getPolyline().getId())){
+            if (polyline.getId().equals(polylineData.getPolyline().getId())) {
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.blue1));
                 polylineData.getPolyline().setZIndex(1);
 
@@ -337,14 +338,13 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                 LatLng endLocation = new LatLng(foodService.getLatitude(), foodService.getLongitude());
 
                 Marker marker = googleMap.addMarker(new MarkerOptions()
-                .position(endLocation)
-                .title(foodService.getName())
-                .snippet("Duration: " + polylineData.getLeg().duration
-                ));
+                        .position(endLocation)
+                        .title(foodService.getName())
+                        .snippet("Duration: " + polylineData.getLeg().duration
+                        ));
 
                 marker.showInfoWindow();
-            }
-            else{
+            } else {
                 polylineData.getPolyline().setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
                 polylineData.getPolyline().setZIndex(0);
             }
@@ -352,7 +352,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    public void zoomRoute(List<LatLng> lstLatLngRoute) {
+    private void zoomRoute(List<LatLng> lstLatLngRoute) {
 
         if (googleMap == null || lstLatLngRoute == null || lstLatLngRoute.isEmpty()) return;
 

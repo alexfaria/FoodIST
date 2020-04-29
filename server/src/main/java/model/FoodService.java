@@ -1,9 +1,12 @@
 package model;
 
+import edu.princeton.cs.algs4.LinearRegression;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class FoodService {
@@ -14,12 +17,13 @@ public class FoodService {
     private double latitude;
     private double longitude;
 
-    private int queueCurrentSize;
-    private float queueTimeCount;
-    private long queueTimeTotal;
-    private ArrayList<LocalTime> queueArrivalTimes;
-
     private HashMap<String, Dish> menu;
+
+    // TODO: use Tuple<LocalTime, Integer> as a value
+    private HashMap<String, LocalTime> queueArrivalTime; // UUID -> ArrivalTime
+    private HashMap<String, Integer> queueClientCount; // UUID -> other clients in queue on arrival
+    private ArrayList<Double> LRx; // time difference between arrival time and departure
+    private ArrayList<Double> LRy; // how many other clients were present upon arrival
 
     public FoodService(String name, String campus, Map<String, OpeningHours> openingHours, double latitude, double longitude) {
         this.name = name;
@@ -30,10 +34,11 @@ public class FoodService {
 
         this.menu = new HashMap<>();
 
-        this.queueCurrentSize = 0;
-        this.queueTimeCount = 0;
-        this.queueTimeTotal = 0;
-        this.queueArrivalTimes = new ArrayList<>();
+        this.queueArrivalTime = new HashMap<>();
+        this.queueClientCount = new HashMap<>();
+
+        this.LRx = new ArrayList<>();
+        this.LRy = new ArrayList<>();
     }
 
     public String getName() {
@@ -68,24 +73,38 @@ public class FoodService {
         return false;
     }
 
-    public void addToQueue() {
-        queueCurrentSize++;
-        queueArrivalTimes.add(LocalTime.now());
+    public void addToQueue(String UUID) {
+        queueArrivalTime.put(UUID, LocalTime.now());
+        queueClientCount.put(UUID, queueArrivalTime.size() - 1);
     }
 
-    public void removeFromQueue() {
-        queueCurrentSize--;
-        queueTimeCount++;
+    public void removeFromQueue(String UUID) {
+        int queueSizeOnArrival = queueClientCount.remove(UUID);
+        LocalTime arrivalTime = queueArrivalTime.remove(UUID);
 
-        LocalTime arrivalTime = queueArrivalTimes.remove(0);
         Duration duration = Duration.between(LocalTime.now(), arrivalTime);
 
-        queueTimeTotal += duration.getSeconds();
-
-        System.out.println("getAverageQueueTime: " + getAverageQueueTime());
+        LRx.add((double) duration.getSeconds());
+        LRy.add((double) queueSizeOnArrival);
     }
 
-    public float getAverageQueueTime() {
-        return queueTimeTotal / queueTimeCount;
+    public int getQueueWaitTime() {
+        // seconds
+        double[] lrx = new double[LRx.size()];
+        Iterator<Double> iterator = LRx.iterator();
+        for (int i = 0; i < lrx.length; i++) {
+            lrx[i] = iterator.next();
+        }
+
+        double[] lry = new double[LRy.size()];
+        iterator = LRy.iterator();
+        for (int i = 0; i < lry.length; i++) {
+            lry[i] = iterator.next();
+        }
+
+        LinearRegression lr = new LinearRegression(lrx, lry);
+		
+		// minutes
+        return (int) lr.predict(queueClientCount.size()) / 60;
     }
 }

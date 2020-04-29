@@ -11,5 +11,4 @@ public class FoodClient {
                 .build();
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
     }
-
 }

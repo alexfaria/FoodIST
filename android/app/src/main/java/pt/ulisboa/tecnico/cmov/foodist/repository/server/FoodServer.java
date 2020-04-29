@@ -40,13 +40,14 @@ public class FoodServer {
         this.channel = channel;
     }
 
-    public ArrayList<FoodService> getFoodServices(String campus) {
+    public ArrayList<FoodService> getFoodServices(String campus, String status) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
-        Iterator<FoodServiceDto> foodServicesDtos = stub.getFoodServices(GetFoodServicesRequest.newBuilder().setCampus(campus).build());
+        Iterator<FoodServiceDto> foodServicesDtos = stub.getFoodServices(
+                GetFoodServicesRequest.newBuilder().setCampus(campus).setStatus(status).build());
         ArrayList<FoodService> diningOptions = new ArrayList<>();
         while (foodServicesDtos.hasNext()) {
             FoodServiceDto dto = foodServicesDtos.next();
-            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getLatitude(), dto.getLongitude());
+            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getQueueTime(),dto.getLatitude(), dto.getLongitude());
             diningOptions.add(dOption);
         }
         return diningOptions;
@@ -115,7 +116,7 @@ public class FoodServer {
                 .build());
     }
 
-    public void removeFromFoodServiceQueue(String campus, String foodServiceName) {
+    public void removeFromFoodServiceQueue(String campus, String foodServiceName, String uuid) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         stub.removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest
                 .newBuilder()

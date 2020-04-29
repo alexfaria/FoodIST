@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
@@ -23,12 +24,13 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
         // each data item is just a string in this case
         public TextView name;
         public TextView openingHours;
+        public TextView queueTime;
 
         public FoodServicesViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.serviceName);
             openingHours = view.findViewById(R.id.openingHours);
-
+            queueTime = view.findViewById(R.id.queueTime);
         }
 
     }
@@ -56,6 +58,7 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
         FoodService fs = foodServices.get(position);
         holder.name.setText(fs.getName());
         holder.openingHours.setText(fs.getOpeningHours());
+        holder.queueTime.setText(String.format(Locale.getDefault(), "%d min", fs.getQueueTime()));
     }
 
     @Override

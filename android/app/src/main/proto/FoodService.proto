@@ -21,7 +21,7 @@ message GetFoodServiceRequest {
 message FoodServiceDto {
     string name = 1;
     string openingHours = 2;
-    int64 queueTime = 3;
+    int32 queueTime = 3;
     double latitude = 4;
     double longitude = 5;
 }
@@ -77,11 +77,13 @@ message DishWithPhotosDto {
 message AddToFoodServiceQueueRequest {
     string campus = 1;
     string foodServiceName = 2;
+    string UUID = 3;
 }
 
 message RemoveFromFoodServiceQueueRequest {
     string campus = 1;
     string foodServiceName = 2;
+    string UUID = 3;
 }
 
 service FoodServer {
