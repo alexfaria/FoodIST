@@ -14,7 +14,7 @@
         <ListPreference
             app:key="campus"
             app:title="Choose your campus"
-            app:defaultValue="Alameda"
+            app:defaultValue="@string/default_campus"
             app:entries="@array/locations"
             app:entryValues="@array/locations"/>
 
@@ -27,7 +27,7 @@
         <ListPreference
             app:key="status"
             app:title="Choose your status"
-            app:defaultValue="Student"
+            app:defaultValue="@string/default_status"
             app:entries="@array/status"
             app:entryValues="@array/status">
 

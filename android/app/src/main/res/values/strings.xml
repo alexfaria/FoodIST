@@ -28,4 +28,7 @@
     <string name="submit_button">Submit</string>
     <string name="upload_button">Upload photo</string>
     <string name="optional">(Optional)</string>
+    <!--Default Settings-->
+    <string name="default_campus">Alameda</string>
+    <string name="default_status">Student</string>
 </resources>

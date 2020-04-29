@@ -18,8 +18,6 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.Duration;
-
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
@@ -70,30 +68,28 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String campus = sharedPreferences.getString("campus", "");
-        String status = sharedPreferences.getString("status", "");
-        if (!campus.isEmpty() && !status.isEmpty())
-            retrieveFoodServices(campus, status);
+        retrieveFoodServices();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals("campus") || key.equals("status"))
-            retrieveFoodServices(
-                    sharedPreferences.getString("campus", ""),
-                    sharedPreferences.getString("status", ""));
+            retrieveFoodServices();
     }
 
-    private void retrieveFoodServices(String campus, String status) {
-        viewModel.getFoodServices(campus, status).observe(this, data -> {
-            if (data.size() > 0)
-                adapter.setData(data);
-            else {
-                Toast toast = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.CENTER, 0,0);
-                toast.show();
-            }
-        });
+    private void retrieveFoodServices() {
+        String campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
+        String status = sharedPreferences.getString("status", getString(R.string.default_status));
+        if (!campus.isEmpty() && !status.isEmpty())
+            viewModel.getFoodServices(campus, status).observe(this, data -> {
+                if (data.size() > 0)
+                    adapter.setData(data);
+                else {
+                    Toast toast = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            });
     }
 
     @Override

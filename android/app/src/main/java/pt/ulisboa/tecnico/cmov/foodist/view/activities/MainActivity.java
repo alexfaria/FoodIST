@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private String connectedFoodService;
 
     private String campus;
+    private String status;
     private List<String> foodServicesNames = new ArrayList<>();
 
     public Location getmUserLocation() {
@@ -90,11 +91,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        campus = sharedPreferences.getString("campus", "");
-        String status = sharedPreferences.getString("status", "");
-        if (!campus.isEmpty() && !status.isEmpty())
-            retrieveFoodServicesNames(campus, status);
-        toolbar.setTitle("Técnico " + sharedPreferences.getString("campus", ""));
+        campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
+        status = sharedPreferences.getString("status", getString(R.string.default_status));
+        toolbar.setTitle("Técnico " + campus);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = LocationRequest.create();
@@ -147,15 +146,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus") || key.equals("status")) {
-            campus = sharedPreferences.getString("campus", "");
-            retrieveFoodServicesNames(campus, sharedPreferences.getString("status", ""));
+        if (key.equals("campus")) {
+            campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
             toolbar.setTitle("Técnico " + campus);
+            retrieveFoodServicesNames();
+        } else if (key.equals("status")) {
+            status = sharedPreferences.getString("status", getString(R.string.default_status));
+            retrieveFoodServicesNames();
         }
     }
 
     private void checkCampus() {
-        if (sharedPreferences.getString("campus", "").isEmpty()) {
+        if (campus.isEmpty()) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
             Toast.makeText(this, "Please choose your campus", Toast.LENGTH_LONG).show();
@@ -289,11 +291,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         connectedFoodService = null;
     }
 
-    private void retrieveFoodServicesNames(String campus, String status) {
-        viewModel.getFoodServices(campus, status).observe(this, foodServices -> {
-            for (FoodService fs : foodServices)
-                foodServicesNames.add(fs.getName());
-        });
+    private void retrieveFoodServicesNames() {
+        if (!campus.isEmpty() && !status.isEmpty())
+            viewModel.getFoodServices(campus, status).observe(this, foodServices -> {
+                for (FoodService fs : foodServices)
+                    foodServicesNames.add(fs.getName());
+            });
     }
 
     @Override
