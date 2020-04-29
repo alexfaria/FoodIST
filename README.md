@@ -2,15 +2,15 @@
 
 ## Settings
 
-[ ] enable location
-[ ] nao usar geocoder
-[] api location -> passar centro do campus e ver distancia < 1km ou assim
-[] adicionar campo 'auto'
+- [ ] enable location
+- [ ] nao usar geocoder
+- [ ] api location -> passar centro do campus e ver distancia < 1km ou assim
+- [ ] adicionar campo 'auto'
 
 ## Main Activity
 
-[] erro de codificacao grpc
-[] mostrar tempo a pe para cada no menu principal
+- [ ] erro de codificacao grpc
+- [ ] mostrar tempo a pe para cada no menu principal
 
 ## Food Service Fragment
  
