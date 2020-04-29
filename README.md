@@ -2,8 +2,8 @@
 
 ## Settings
 
-[] enable location
-[] nao usar geocoder
+[ ] enable location
+[ ] nao usar geocoder
 [] api location -> passar centro do campus e ver distancia < 1km ou assim
 [] adicionar campo 'auto'
 
