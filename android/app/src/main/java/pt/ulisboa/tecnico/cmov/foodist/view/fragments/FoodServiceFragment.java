@@ -134,8 +134,10 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String foodServiceName = getArguments().getString("foodServiceName");
-        if (foodServiceName != null)
-            viewModel.getFoodService(sharedPreferences.getString("campus", ""), foodServiceName).observe(this, fs -> {
+        if (foodServiceName != null) {
+            String campus = sharedPreferences.getString("campus", "");
+            String status = sharedPreferences.getString("status", "");
+            viewModel.getFoodService(campus, status, foodServiceName).observe(this, fs -> {
                 foodService = fs;
                 name.setText(fs.getName());
                 openingHours.setText(fs.getOpeningHours());
@@ -143,7 +145,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     LatLng foodServiceCoord = new LatLng(fs.getLatitude(), fs.getLongitude());
                     googleMap.addMarker(new MarkerOptions().position(foodServiceCoord).title(fs.getName()));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(foodServiceCoord, MAP_ZOOM_LEVEL));
-                    
+
                     if (mUserPosition != null) {
                         LatLng userPosition = new LatLng(mUserPosition.getLatitude(), mUserPosition.getLongitude());
                         googleMap.addMarker(new MarkerOptions().position(userPosition).title("You"));
@@ -152,6 +154,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     }
                 }
             });
+        }
     }
 
     @Override

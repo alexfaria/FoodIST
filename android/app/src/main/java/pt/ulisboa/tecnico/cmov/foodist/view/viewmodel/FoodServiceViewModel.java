@@ -21,8 +21,8 @@ public class FoodServiceViewModel extends ViewModel {
         return repository.getFoodServices(campus, status);
     }
 
-    public LiveData<FoodService> getFoodService(String campus, String name) {
-        return repository.getFoodService(campus, name);
+    public LiveData<FoodService> getFoodService(String campus, String status, String name) {
+        return repository.getFoodService(campus, status, name);
     }
 
     public void addToFoodServiceQueue(String campus, String name) {

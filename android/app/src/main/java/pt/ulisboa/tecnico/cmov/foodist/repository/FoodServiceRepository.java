@@ -26,42 +26,28 @@ public class FoodServiceRepository {
 
     public LiveData<List<FoodService>> getFoodServices(String campus, String status) {
         MutableLiveData<List<FoodService>> ld = new MutableLiveData<>();
-        foodServiceDao.getAll(campus).observeForever(fsDB -> {
+        foodServiceDao.getAll(campus, status).observeForever(fsDB -> {
             List<FoodService> foodServices = new ArrayList<>();
-            if (fsDB != null) {
-                for(FoodServiceDBEntity fs : fsDB) {
-                    foodServices.add(
+            if (fsDB != null)
+                for(FoodServiceDBEntity fs : fsDB)
+                    if (fs.isOpen())
+                        foodServices.add(
                             new FoodService(fs.getName(), fs.getOpeningHours(), fs.getQueueTime(),fs.getLatitude(), fs.getLongitude())
-                    );
-                }
-            }
+                        );
             ld.postValue(foodServices);
         });
-        /*
-        FoodServer.serverExecutor.execute(() -> {
-            ld.postValue(foodServer.getFoodServices(campus, status));
-        });*/
         refreshFoodServices(campus, status);
         return ld;
     }
 
-    public LiveData<FoodService> getFoodService(String campus, String name) {
+    public LiveData<FoodService> getFoodService(String campus, String status, String foodServiceName) {
         MutableLiveData<FoodService> ld = new MutableLiveData<>();
-        foodServiceDao.get(campus, name).observeForever(fsDB -> {
+        foodServiceDao.get(campus, status, foodServiceName).observeForever(fsDB -> {
             if (fsDB != null)
                 ld.postValue(new FoodService(fsDB.getName(), fsDB.getOpeningHours(), fsDB.getQueueTime(),fsDB.getLatitude(), fsDB.getLongitude()));
         });
+        refreshFoodService(campus, status,foodServiceName);
         return ld;
-    }
-
-    private void refreshFoodServices(String campus, String status) {
-        FoodServer.serverExecutor.execute(() -> {
-            ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
-            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
-                for (FoodService fs : foodServices)
-                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus,fs.getOpeningHours(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
-            });
-        });
     }
 
     public void addToFoodServiceQueue(String campus, String name) {
@@ -73,6 +59,25 @@ public class FoodServiceRepository {
     public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
         FoodServer.serverExecutor.execute(() -> {
             foodServer.removeFromFoodServiceQueue(campus, name, uuid);
+        });
+    }
+
+    private void refreshFoodServices(String campus, String status) {
+        FoodServer.serverExecutor.execute(() -> {
+            ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
+            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                for (FoodService fs : foodServices)
+                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+            });
+        });
+    }
+
+    private void refreshFoodService(String campus, String status, String foodServiceName) {
+        FoodServer.serverExecutor.execute(() -> {
+            FoodService fs = foodServer.getFoodService(campus, status, foodServiceName);
+            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+            });
         });
     }
 }

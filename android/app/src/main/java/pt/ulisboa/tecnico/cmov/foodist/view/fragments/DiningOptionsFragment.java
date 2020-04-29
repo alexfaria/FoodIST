@@ -2,10 +2,12 @@ package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.time.Duration;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
@@ -82,7 +86,13 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
 
     private void retrieveFoodServices(String campus, String status) {
         viewModel.getFoodServices(campus, status).observe(this, data -> {
-            adapter.setData(data);
+            if (data.size() > 0)
+                adapter.setData(data);
+            else {
+                Toast toast = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0,0);
+                toast.show();
+            }
         });
     }
 

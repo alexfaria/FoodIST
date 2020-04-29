@@ -22,6 +22,7 @@ import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServiceRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoResponse;
@@ -51,6 +52,13 @@ public class FoodServer {
             diningOptions.add(dOption);
         }
         return diningOptions;
+    }
+
+    public FoodService getFoodService(String campus, String status, String foodServiceName) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        FoodServiceDto dto = stub.getFoodService(
+                GetFoodServiceRequest.newBuilder().setCampus(campus).setStatus(status).setFoodServiceName(foodServiceName).build());
+       return new FoodService(dto.getName(), dto.getOpeningHours(), dto.getQueueTime(), dto.getLatitude(), dto.getLongitude());
     }
 
     public ArrayList<Dish> getDishes(String foodServiceName) {
