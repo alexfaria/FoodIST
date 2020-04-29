@@ -8,8 +8,14 @@ option java_package = "pt.ulisboa.tecnico.cmov.foodservice";
 message Empty { }
 
 message GetFoodServicesRequest {
-    string campus = 2;
-    string status = 3;
+    string campus = 1;
+    string status = 2;
+}
+
+message GetFoodServiceRequest {
+    string campus = 1;
+    string status = 2;
+    string foodServiceName = 3;
 }
 
 message FoodServiceDto {
@@ -80,6 +86,7 @@ message RemoveFromFoodServiceQueueRequest {
 
 service FoodServer {
     rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodServiceDto);
+    rpc getFoodService(GetFoodServiceRequest) returns (FoodServiceDto);
     rpc getDishes(GetDishesRequest) returns (stream DishDto);
     rpc getDish(GetDishRequest) returns (DishWithPhotosDto);
     rpc putDish(PutDishRequest) returns (PutDishResponse);

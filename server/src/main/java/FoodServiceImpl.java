@@ -47,7 +47,6 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
-        System.out.println("$ GetFoodServices");
         LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
         foodServices.values().forEach(fs -> {
             OpeningHours openingHours = fs.getOpeningHours(request.getStatus());
@@ -61,6 +60,21 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                         .setLongitude(fs.getLongitude())
                         .build());
         });
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getFoodService(GetFoodServiceRequest request, StreamObserver<FoodServiceDto> responseObserver) {
+        FoodService fs = foodServices.get(request.getFoodServiceName());
+        if (fs != null) {
+            responseObserver.onNext(FoodServiceDto
+                    .newBuilder()
+                    .setName(fs.getName())
+                    .setOpeningHours(fs.getOpeningHours(request.getStatus()).toString())
+                    .setLatitude(fs.getLatitude())
+                    .setLongitude(fs.getLongitude())
+                    .build());
+        }
         responseObserver.onCompleted();
     }
 
