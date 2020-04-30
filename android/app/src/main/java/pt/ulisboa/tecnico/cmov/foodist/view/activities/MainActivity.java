@@ -72,11 +72,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private String status;
     private List<String> foodServicesNames = new ArrayList<>();
 
-    public Location getmUserLocation() {
-        return mUserLocation;
-    }
-
-    private Location mUserLocation;
     private Toolbar toolbar;
 
     @Override
@@ -215,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
-            mUserLocation = location;
             Log.d("MainActivity", "Location latitude: " + location.getLatitude());
             Log.d("MainActivity", "Location longitude: " + location.getLongitude());
             try {
