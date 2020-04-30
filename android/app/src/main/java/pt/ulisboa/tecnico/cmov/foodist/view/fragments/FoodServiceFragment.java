@@ -135,8 +135,8 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         super.onViewCreated(view, savedInstanceState);
         String foodServiceName = getArguments().getString("foodServiceName");
         if (foodServiceName != null) {
-            String campus = sharedPreferences.getString("campus", "");
-            String status = sharedPreferences.getString("status", "");
+            String campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
+            String status = sharedPreferences.getString("status", getString(R.string.default_status));
             viewModel.getFoodService(campus, status, foodServiceName).observe(this, fs -> {
                 foodService = fs;
                 name.setText(fs.getName());
