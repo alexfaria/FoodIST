@@ -36,19 +36,19 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
             put("Staff", new OpeningHours("12:00-20:00"));
             put("General Public", new OpeningHours("14:00-18:00"));
         }};
-        foodServices.put("Cantina Social", new FoodService("Cantina Social", "Alameda", restaurants, 38.736382, -9.136967));
-        foodServices.put("Cantina de Civil", new FoodService("Cantina de Civil", "Alameda", restaurants, 38.737732, -9.140482));
-        foodServices.put("Bar de Civil", new FoodService("Bar de Civil", "Alameda", bars, 38.737066, -9.140007));
-        foodServices.put("Bar de Matemática", new FoodService("Bar de Matemática", "Alameda", bars, 38.735610, -9.139690));
-        foodServices.put("Bar de Química", new FoodService("Bar de Química", "Alameda", bars, 38.736012, -9.138324));
-        foodServices.put("Bar do Pavilhão Central", new FoodService("Bar do Pavilhão Central", "Alameda", bars, 38.736610, -9.139605));
-        foodServices.put("Bar de Mecânica", new FoodService("Bar de Mecânica", "Alameda", bars, 38.737422, -9.137403));
-        foodServices.put("Bar da AEIST", new FoodService("Bar da AEIST", "Alameda", lateBars, 38.736382, -9.136967));
-        foodServices.put("Bar da Bola AEIST", new FoodService("Bar da Bola AEIST", "Alameda", lateBars, 38.736131, -9.137807));
-        foodServices.put("Restaurante/Bar Sena", new FoodService("Restaurante/Bar Sena", "Alameda", restaurants, 38.737715, -9.138638));
-        foodServices.put("Cantina", new FoodService("Cantina", "Taguspark", restaurants, 38.736902, -9.302608));
+        foodServices.put("Social Canteen", new FoodService("Social Canteen", "Alameda", restaurants, 38.736382, -9.136967));
+        foodServices.put("Civil Canteen", new FoodService("Civil Canteen", "Alameda", restaurants, 38.737732, -9.140482));
+        foodServices.put("Civil Cafeteria", new FoodService("Civil Cafeteria", "Alameda", bars, 38.737066, -9.140007));
+        foodServices.put("Math Cafeteria", new FoodService("Math Cafeteria", "Alameda", bars, 38.735610, -9.139690));
+        foodServices.put("Chemistry Cafeteria", new FoodService("Chemistry Cafeteria", "Alameda", bars, 38.736012, -9.138324));
+        foodServices.put("Central Bar", new FoodService("Central Bar", "Alameda", bars, 38.736610, -9.139605));
+        foodServices.put("Mechanic Cafeteria", new FoodService("Mechanic Cafeteria", "Alameda", bars, 38.737422, -9.137403));
+        foodServices.put("AEIST Bar", new FoodService("AEIST Bar", "Alameda", lateBars, 38.736382, -9.136967));
+        foodServices.put("Complex Bar", new FoodService("Complex Bar", "Alameda", lateBars, 38.736131, -9.137807));
+        foodServices.put("Sena Restaurant", new FoodService("Sena Restaurant", "Alameda", restaurants, 38.737715, -9.138638));
+        foodServices.put("Canteen", new FoodService("Canteen", "Taguspark", restaurants, 38.736902, -9.302608));
         foodServices.put("Snack/Bar Praxe Bar", new FoodService("Snack/Bar Praxe Bar", "Taguspark", lateBars, 38.736902, -9.302608));
-        foodServices.put("Restaurante/Bar Campus do Taguspark", new FoodService("Restaurante/Bar Campus do Taguspark", "Taguspark", restaurants, 38.736563, -9.302200));
+        foodServices.put("Taguspark Restaurant/Bar", new FoodService("Taguspark Restaurant/Bar", "Taguspark", restaurants, 38.736563, -9.302200));
     }
 
     @Override
