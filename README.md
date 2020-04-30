@@ -23,12 +23,11 @@
 - [ ] nao adicionar foto
 - [ ] adicionar foto à parte
 
-## Menu
+## Dish Fragment
 
 - [ ] thumbnails de fotos maiss pequenas
 - [ ] carregar para mostrar fullscreen
 - [ ] botao para adicionar foto
-- [ ] se der mais jeito pode se meter da galeria
 
 ## Queue Time
 ```
