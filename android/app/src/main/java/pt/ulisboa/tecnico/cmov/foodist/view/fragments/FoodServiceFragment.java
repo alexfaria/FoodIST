@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -66,7 +69,6 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     private RecyclerView.LayoutManager layoutManager;
 
     private DishViewModel dishViewModel;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,8 +137,21 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         super.onViewCreated(view, savedInstanceState);
         String foodServiceName = getArguments().getString("foodServiceName");
         if (foodServiceName != null) {
+
             String campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
             String status = sharedPreferences.getString("status", getString(R.string.default_status));
+
+
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+
+            Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setTitle(foodServiceName);
+            toolbar.setNavigationOnClickListener(_view -> NavHostFragment
+                    .findNavController(FoodServiceFragment.this)
+                    .popBackStack());
 
             foodServiceViewModel.getFoodService(campus, status, foodServiceName).observe(this, fs -> {
                 if (googleMap != null) {
