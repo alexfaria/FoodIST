@@ -8,64 +8,11 @@
     android:weightSum="100"
     tools:context=".view.fragments.FoodServiceFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/foodServiceContainer"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="50"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/foodServiceName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginLeft="24dp"
-            android:text="@string/food_service_name"
-            android:textSize="32sp"
-            app:layout_constraintBottom_toTopOf="@id/foodServiceOpening"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/foodServiceOpening"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginLeft="48dp"
-            android:text="@string/food_service_opening"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@id/foodServiceQueue"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/foodServiceName" />
-
-        <TextView
-            android:id="@+id/foodServiceQueue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="48dp"
-            android:layout_marginLeft="48dp"
-            android:text="@string/food_service_queue"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@id/menuBtn"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/foodServiceOpening" />
-
-        <Button
-            android:id="@+id/menuBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_viewer"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <RelativeLayout
+        android:id="@+id/mapContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="50"
-        android:id="@+id/mapContainer">
+        android:layout_weight="30">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/foodServiceMap"
@@ -86,5 +33,36 @@
             android:src="@drawable/ic_full_screen_black_24dp" />
 
     </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/foodServiceContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="70"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/menu_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/addMenuBtn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.496">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/addMenuBtn"
+            android:layout_width="0dp"
+            android:layout_height="67dp"
+            android:layout_above="@id/menu_recycler_view"
+            android:text="@string/add_menu"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
