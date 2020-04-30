@@ -47,8 +47,8 @@
 ## Status
 - [X] student
 - [X] staff
-- [ ] professor
-- [ ] researcher
+- [X] professor
+- [X] researcher
 - [X] general public
 
 ## Dieatery Constraints
@@ -60,4 +60,4 @@
 ## Ratings
 - [ ] review conta para o prato e para o restaurante
 - [ ] review do restaurante -> media de todas
-- [ ] guardar o GUID de forma presistente (shared preferences)
+- [X] guardar o GUID de forma presistente (shared preferences)
