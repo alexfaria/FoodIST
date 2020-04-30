@@ -53,6 +53,11 @@ import pt.ulisboa.tecnico.cmov.foodist.service.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_LOCATION_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_UUID_KEY;
+
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location>, SimWifiP2pManager.PeerListListener, OnPeersChangedListener {
 
     private final int PERMISSION_ID = 44;
@@ -90,8 +95,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
-        status = sharedPreferences.getString("status", getString(R.string.default_status));
+        campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
+        status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
         toolbar.setTitle("Técnico " + campus);
 
         ALAMEDA.setLatitude(Double.parseDouble(getString(R.string.alameda_latitude)));
@@ -150,12 +155,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus")) {
-            campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
+        if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
+            campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
             toolbar.setTitle("Técnico " + campus);
             retrieveFoodServicesNames();
-        } else if (key.equals("status")) {
-            status = sharedPreferences.getString("status", getString(R.string.default_status));
+        } else if (key.equals(SHARED_PREFERENCES_STATUS_KEY)) {
+            status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
             retrieveFoodServicesNames();
         }
     }
@@ -194,10 +199,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_ID)
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                sharedPreferences.edit().putBoolean("localization", true).apply();
+                sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_LOCATION_KEY, true).apply();
                 getLastLocation();
             } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                sharedPreferences.edit().putBoolean("localization", false).apply();
+                sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_LOCATION_KEY, false).apply();
                 checkCampus();
             }
     }
@@ -223,10 +228,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             Log.d("MainActivity", "Location longitude: " + location.getLongitude());
             if (location.distanceTo(ALAMEDA) <= LOCATION_RADIUS) {
                 Log.d("MainActivity", "Located in Técnico Alameda");
-                sharedPreferences.edit().putString("campus", "Alameda").apply();
+                sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "Alameda").apply();
             } else if (location.distanceTo(TAGUSPARK) <= LOCATION_RADIUS) {
                 Log.d("MainActivity", "Located in Técnico Taguspark");
-                sharedPreferences.edit().putString("campus", "Taguspark").apply();
+                sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "Taguspark").apply();
             } else {
                 Log.d("MainActivity", "Not close to any campus");
                 checkCampus();
@@ -238,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onResume() {
         super.onResume();
-        if (sharedPreferences.getBoolean("localization", true))
+        if (sharedPreferences.getBoolean(SHARED_PREFERENCES_LOCATION_KEY, true))
             getLastLocation();
         else
             checkCampus();
@@ -278,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 } else if (connectedFoodService.equals(device.deviceName))
                     return;
         }
-        String uuid = sharedPreferences.getString("uuid", "");
+        String uuid = sharedPreferences.getString(SHARED_PREFERENCES_UUID_KEY, "");
         viewModel.removeFromFoodServiceQueue(campus, connectedFoodService, uuid);
         connectedFoodService = null;
     }

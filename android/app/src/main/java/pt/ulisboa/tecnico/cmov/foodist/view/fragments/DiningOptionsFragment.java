@@ -26,6 +26,10 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
+
 public class DiningOptionsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private FoodServiceViewModel viewModel;
@@ -58,7 +62,7 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
         adapter = new FoodServicesAdapter(v -> {
             Bundle args = new Bundle();
             TextView serviceName = v.findViewById(R.id.serviceName);
-            args.putString("foodServiceName", serviceName.getText().toString());
+            args.putString(NAVHOST_ARGS_FOODSERVICENAME, serviceName.getText().toString());
             NavHostFragment
                     .findNavController(DiningOptionsFragment.this)
                     .navigate(R.id.action_DiningOptions_to_FoodService, args);
@@ -71,7 +75,7 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
+        String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Técnico " + campus);
 
@@ -84,13 +88,13 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("campus") || key.equals("status"))
+        if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY) || key.equals(SHARED_PREFERENCES_STATUS_KEY))
             retrieveFoodServices();
     }
 
     private void retrieveFoodServices() {
-        String campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
-        String status = sharedPreferences.getString("status", getString(R.string.default_status));
+        String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
+        String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
         if (!campus.isEmpty() && !status.isEmpty())
             viewModel.getFoodServices(campus, status).observe(this, data -> {
                 if (data.size() > 0)

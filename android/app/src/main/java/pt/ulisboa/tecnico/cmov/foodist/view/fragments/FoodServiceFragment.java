@@ -45,6 +45,11 @@ import pt.ulisboa.tecnico.cmov.foodist.view.animation.ViewWeightAnimation;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISHNAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
+
 public class FoodServiceFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     private static final int MAP_LAYOUT_STATE_CONTRACTED = 0;
     private static final int MAP_LAYOUT_STATE_EXPANDED = 1;
@@ -111,7 +116,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         adapter = new FoodMenuAdapter(v -> {
             Bundle args = getArguments();
             TextView dishName = v.findViewById(R.id.dishName);
-            args.putString("dishName", dishName.getText().toString());
+            args.putString(NAVHOST_ARGS_DISHNAME, dishName.getText().toString());
             NavHostFragment
                     .findNavController(FoodServiceFragment.this)
                     .navigate(R.id.action_FoodMenu_to_Dish, args);
@@ -135,11 +140,11 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String foodServiceName = getArguments().getString("foodServiceName");
+        String foodServiceName = getArguments().getString(NAVHOST_ARGS_FOODSERVICENAME);
         if (foodServiceName != null) {
 
-            String campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
-            String status = sharedPreferences.getString("status", getString(R.string.default_status));
+            String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
+            String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
 
 
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();

@@ -3,17 +3,13 @@ package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 import static android.app.Activity.RESULT_OK;
-
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
 
 
 public class AddMenuFragment extends Fragment {
@@ -44,7 +40,7 @@ public class AddMenuFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        foodServiceNameArg = getArguments().getString("foodServiceName");
+        foodServiceNameArg = getArguments().getString(NAVHOST_ARGS_FOODSERVICENAME);
         if (isAdded()) {
             viewModel = ViewModelProviders.of(this).get(DishViewModel.class);
             viewModel.init((App) getContext().getApplicationContext());
@@ -76,7 +72,7 @@ public class AddMenuFragment extends Fragment {
             try {
                 float cost = Float.parseFloat(costStr);
                 Dish dish = new Dish(name, cost, 0);
-                if(dishPhoto != null) {
+                if (dishPhoto != null) {
                     dish.addPhoto(dishPhoto);
                 }
                 viewModel.putDish(foodServiceNameArg, dish).observe(this, success -> {
@@ -92,13 +88,14 @@ public class AddMenuFragment extends Fragment {
             }
         });
         view.findViewById(R.id.uploadBtn).setOnClickListener(new View.OnClickListener() {
-            public void onClick (View v){
+            public void onClick(View v) {
                 Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                 startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
             }
         });
         return view;
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {

@@ -26,6 +26,8 @@ import pt.ulisboa.tecnico.cmov.foodist.view.animation.ViewWeightAnimation;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 import static android.app.Activity.RESULT_OK;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISHNAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
 
 public class DishFragment extends Fragment {
 
@@ -51,8 +53,8 @@ public class DishFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        foodServiceNameArg = getArguments().getString("foodServiceName");
-        dishNameArg = getArguments().getString("dishName");
+        foodServiceNameArg = getArguments().getString(NAVHOST_ARGS_FOODSERVICENAME);
+        dishNameArg = getArguments().getString(NAVHOST_ARGS_DISHNAME);
         if (isAdded()) {
             viewModel = ViewModelProviders.of(this).get(DishViewModel.class);
             viewModel.init((App) getContext().getApplicationContext());

@@ -7,7 +7,7 @@
         app:title="Location">
 
         <SwitchPreferenceCompat
-            app:key="localization"
+            app:key="location"
             app:title="Enable automatic location"
             app:defaultValue="true"/>
 
