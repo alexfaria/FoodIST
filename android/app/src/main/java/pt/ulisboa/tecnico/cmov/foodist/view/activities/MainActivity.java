@@ -57,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private final int PERMISSION_ID = 44;
 
+    private final int LOCATION_RADIUS = 1000; // 1km radius
+    private final Location ALAMEDA = new Location("");
+    private final Location TAGUSPARK = new Location("");
+
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -94,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         campus = sharedPreferences.getString("campus", getString(R.string.default_campus));
         status = sharedPreferences.getString("status", getString(R.string.default_status));
         toolbar.setTitle("Técnico " + campus);
+
+        ALAMEDA.setLatitude(Double.parseDouble(getString(R.string.alameda_latitude)));
+        ALAMEDA.setLongitude(Double.parseDouble(getString(R.string.alameda_longitude)));
+        TAGUSPARK.setLatitude(Double.parseDouble(getString(R.string.taguspark_latitude)));
+        TAGUSPARK.setLongitude(Double.parseDouble(getString(R.string.alameda_longitude)));
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = LocationRequest.create();
@@ -218,26 +227,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             mUserLocation = location;
             Log.d("MainActivity", "Location latitude: " + location.getLatitude());
             Log.d("MainActivity", "Location longitude: " + location.getLongitude());
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> address = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                Address addr = address.get(0);
-                Log.d("MainActivity", "Location: " + addr.getPostalCode());
-                switch (addr.getPostalCode()) {
-                    case "1049-001":
-                        Log.d("MainActivity", "Located in Técnico Alameda");
-                        sharedPreferences.edit().putString("campus", "Alameda").apply();
-                        break;
-                    case "2744-016":
-                        Log.d("MainActivity", "Located in Técnico Taguspark");
-                        sharedPreferences.edit().putString("campus", "Taguspark").apply();
-                        break;
-                    default:
-                        Log.d("MainActivity", "Located in " + addr.getFeatureName());
-                        checkCampus();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (location.distanceTo(ALAMEDA) <= LOCATION_RADIUS) {
+                Log.d("MainActivity", "Located in Técnico Alameda");
+                sharedPreferences.edit().putString("campus", "Alameda").apply();
+            } else if (location.distanceTo(TAGUSPARK) <= LOCATION_RADIUS) {
+                Log.d("MainActivity", "Located in Técnico Taguspark");
+                sharedPreferences.edit().putString("campus", "Taguspark").apply();
+            } else {
+                Log.d("MainActivity", "Not close to any campus");
+                checkCampus();
             }
         } else
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);

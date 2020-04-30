@@ -31,4 +31,9 @@
     <!--Default Settings-->
     <string name="default_campus">Alameda</string>
     <string name="default_status">Student</string>
+    <!--Campus Coordinates-->
+    <string name="alameda_latitude">38.7368192</string>
+    <string name="alameda_longitude">-9.138705</string>
+    <string name="taguspark_latitude">38.7370274</string>
+    <string name="taguspark_longitude">-9.3026572</string>
 </resources>
