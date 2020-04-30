@@ -14,9 +14,9 @@
 
 ## Food Service Fragment
  
-- [ ] ementa por baixo do mapa (scrollable)
+- [x] ementa por baixo do mapa (scrollable)
 - [ ] tempo para chegar a pe
-- [ ] abrir google maps com caminho a pe
+- [x] abrir google maps com caminho a pe
 
 ## Add Item
 
@@ -31,14 +31,14 @@
 - [ ] se der mais jeito pode se meter da galeria
 
 ## Queue Time
-
+```
 - x -> diferenca ou seja tempo na fila
 - y -> clientes na fila
-- [ ] guid entrou na fila e agora saiu da fila
-
-- [ ] a = mx+b
 - a - quantas pessoas saem da fila por min
 - b - tabuleiro ate sentar para comer 
+```
+- [x] guid entrou na fila e agora saiu da fila
+- [x] a = mx+b
 
 ## Cache
 - [ ] network state broadcast receiver (contexto da application) para fazer preload
