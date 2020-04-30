@@ -55,7 +55,7 @@ public class FoodMenuAdapter extends RecyclerView.Adapter<FoodMenuAdapter.FoodMe
     public void onBindViewHolder(@NonNull FoodMenuAdapter.FoodMenuViewHolder holder, int position) {
         Dish dish = dishes.get(position);
         holder.name.setText(dish.getName());
-        holder.cost.setText(String.format(Locale.getDefault(),"%f€", dish.getCost()));
+        holder.cost.setText(String.format(Locale.getDefault(),"%.2f€", dish.getCost()));
     }
 
     @Override

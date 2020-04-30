@@ -1,11 +1,13 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -76,10 +78,12 @@ public class AddMenuFragment extends Fragment {
                     dish.addPhoto(dishPhoto);
                 }
                 viewModel.putDish(foodServiceNameArg, dish).observe(this, success -> {
-                    if (success)
+                    if (success) {
+                        view.clearFocus();
                         NavHostFragment
                                 .findNavController(AddMenuFragment.this)
                                 .popBackStack();
+                    }
                     else
                         dishName.setError("Already exists a dish with the given name!");
                 });

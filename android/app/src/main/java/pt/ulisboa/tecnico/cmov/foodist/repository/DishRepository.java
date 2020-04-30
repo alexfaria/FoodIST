@@ -34,11 +34,12 @@ public class DishRepository {
     public LiveData<List<Dish>> getDishes(String foodServiceName) {
         MutableLiveData<List<Dish>> ld = new MutableLiveData<>();
         dishDao.getAll(foodServiceName).observeForever(dishDB -> {
-            List<Dish> foodServices = new ArrayList<>();
-            if (dishDB != null)
+            List<Dish> dishes = new ArrayList<>();
+            if (dishDB != null) {
                 for (DishDBEntity d : dishDB)
-                    foodServices.add(new Dish(d.getName(), d.getCost(), d.getNumberOfPhotos()));
-            ld.postValue(foodServices);
+                    dishes.add(new Dish(d.getName(), d.getCost(), d.getNumberOfPhotos()));
+                ld.postValue(dishes);
+            }
         });
         refreshDishes(foodServiceName);
         return ld;

@@ -97,7 +97,7 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
         String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
         if (!campus.isEmpty() && !status.isEmpty())
             viewModel.getFoodServices(campus, status).observe(this, data -> {
-                if (data.size() > 0)
+                if (data != null)
                     adapter.setData(data);
                 else {
                     Toast toast = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);

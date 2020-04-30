@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,6 @@ import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodMenuAdapter;
-import pt.ulisboa.tecnico.cmov.foodist.view.animation.ViewWeightAnimation;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
@@ -51,16 +51,11 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
 
 public class FoodServiceFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
-    private static final int MAP_LAYOUT_STATE_CONTRACTED = 0;
-    private static final int MAP_LAYOUT_STATE_EXPANDED = 1;
-    private static final int MAP_ZOOM_LEVEL = 17;
 
-    // FoodServiceInfo
-    private ConstraintLayout foodServiceContainer;
+    private static final int MAP_ZOOM_LEVEL = 17;
 
     // Maps
     private int mapLayoutState = 0;
-    private RelativeLayout mapContainer;
     private MapView mapView;
     private GoogleMap googleMap;
     private GeoApiContext mGeoApiContext = null;
@@ -97,21 +92,10 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_food_service, container, false);
 
-        foodServiceContainer = view.findViewById(R.id.foodServiceContainer);
-        mapContainer = view.findViewById(R.id.mapContainer);
         mapView = view.findViewById(R.id.foodServiceMap);
 
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-        view.findViewById(R.id.fullScreenBtn).setOnClickListener(v -> {
-            if (mapLayoutState == MAP_LAYOUT_STATE_CONTRACTED) {
-                mapLayoutState = MAP_LAYOUT_STATE_EXPANDED;
-                expandMapAnimation();
-            } else if (mapLayoutState == MAP_LAYOUT_STATE_EXPANDED) {
-                mapLayoutState = MAP_LAYOUT_STATE_CONTRACTED;
-                contractMapAnimation();
-            }
-        });
 
         adapter = new FoodMenuAdapter(v -> {
             Bundle args = getArguments();
@@ -170,11 +154,14 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                 }
             });
 
-            dishViewModel.getDishes(foodServiceName).observe(this, dishes -> {
-                for(Dish dish : dishes) {
-                    Log.d("dishes", String.valueOf(dish));
+            dishViewModel.getDishes(foodServiceName).observe(this, data -> {
+                if (data != null)
+                    adapter.setData(data);
+                else {
+                    Toast toast = Toast.makeText(getContext(), "There are currently no dishes available!", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
                 }
-                adapter.setData(dishes);
             });
         }
     }
@@ -222,44 +209,6 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     public void onLowMemory() {
         super.onLowMemory();
         mapView.onLowMemory();
-    }
-
-    private void expandMapAnimation() {
-        ViewWeightAnimation mapAnimationWrapper = new ViewWeightAnimation(mapContainer);
-        ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
-                "weight",
-                50,
-                100);
-        mapAnimation.setDuration(800);
-
-        ViewWeightAnimation recyclerAnimationWrapper = new ViewWeightAnimation(foodServiceContainer);
-        ObjectAnimator recyclerAnimation = ObjectAnimator.ofFloat(recyclerAnimationWrapper,
-                "weight",
-                50,
-                0);
-        recyclerAnimation.setDuration(800);
-
-        recyclerAnimation.start();
-        mapAnimation.start();
-    }
-
-    private void contractMapAnimation() {
-        ViewWeightAnimation mapAnimationWrapper = new ViewWeightAnimation(mapContainer);
-        ObjectAnimator mapAnimation = ObjectAnimator.ofFloat(mapAnimationWrapper,
-                "weight",
-                100,
-                50);
-        mapAnimation.setDuration(800);
-
-        ViewWeightAnimation recyclerAnimationWrapper = new ViewWeightAnimation(foodServiceContainer);
-        ObjectAnimator recyclerAnimation = ObjectAnimator.ofFloat(recyclerAnimationWrapper,
-                "weight",
-                0,
-                50);
-        recyclerAnimation.setDuration(800);
-
-        recyclerAnimation.start();
-        mapAnimation.start();
     }
 
     @Override

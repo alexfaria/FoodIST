@@ -28,13 +28,14 @@ public class FoodServiceRepository {
         MutableLiveData<List<FoodService>> ld = new MutableLiveData<>();
         foodServiceDao.getAll(campus, status).observeForever(fsDB -> {
             List<FoodService> foodServices = new ArrayList<>();
-            if (fsDB != null)
-                for(FoodServiceDBEntity fs : fsDB)
+            if (fsDB != null) {
+                for (FoodServiceDBEntity fs : fsDB)
                     if (fs.isOpen())
                         foodServices.add(
-                            new FoodService(fs.getName(), fs.getOpeningHours(), fs.getQueueTime(),fs.getLatitude(), fs.getLongitude())
+                                new FoodService(fs.getName(), fs.getOpeningHours(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude())
                         );
-            ld.postValue(foodServices);
+                ld.postValue(foodServices);
+            }
         });
         refreshFoodServices(campus, status);
         return ld;
