@@ -18,16 +18,11 @@
 - [ ] tempo para chegar a pe
 - [x] abrir google maps com caminho a pe
 
-## Add Item
-
-- [ ] nao adicionar foto
-- [ ] adicionar foto à parte
-
 ## Dish Fragment
 
-- [ ] thumbnails de fotos maiss pequenas
-- [ ] carregar para mostrar fullscreen
-- [ ] botao para adicionar foto
+- [X] thumbnails de fotos maiss pequenas
+- [X] carregar para mostrar fullscreen
+- [X] botao para adicionar foto
 
 ## Queue Time
 ```
