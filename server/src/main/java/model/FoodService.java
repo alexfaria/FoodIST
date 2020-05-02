@@ -73,6 +73,18 @@ public class FoodService {
         return false;
     }
 
+    public float getRating() {
+        float totalOfRatings = 0;
+        int numOfRatings = 0;
+        for(Dish dish: menu.values()) {
+            for (Float rating : dish.getRatings().values()) {
+                totalOfRatings += rating;
+            }
+            numOfRatings += dish.getRatings().size();
+        }
+        return numOfRatings == 0 ? 0 : totalOfRatings / numOfRatings;
+    }
+
     public void addToQueue(String UUID) {
         queueArrivalTime.put(UUID, LocalTime.now());
         queueClientCount.put(UUID, queueArrivalTime.size() - 1);

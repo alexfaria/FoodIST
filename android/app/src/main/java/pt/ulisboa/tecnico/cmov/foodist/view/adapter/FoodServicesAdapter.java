@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.foodist.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
         // each data item is just a string in this case
         public TextView name;
         public TextView openingHours;
+        public RatingBar rating;
         public TextView queueTime;
         public TextView walkTime;
 
@@ -31,6 +33,7 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
             super(view);
             name = view.findViewById(R.id.serviceName);
             openingHours = view.findViewById(R.id.openingHours);
+            rating = view.findViewById(R.id.rating);
             queueTime = view.findViewById(R.id.queueTime);
             walkTime = view.findViewById(R.id.walkTime);
         }
@@ -60,6 +63,7 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
         FoodService fs = foodServices.get(position);
         holder.name.setText(fs.getName());
         holder.openingHours.setText(fs.getOpeningHours());
+        holder.rating.setRating(fs.getRating());
         holder.queueTime.setText(String.format(Locale.getDefault(), "%d min", fs.getQueueTime()));
         holder.walkTime.setText(String.format(Locale.getDefault(), "%d min", fs.getWalkTime()));
     }

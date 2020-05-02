@@ -6,7 +6,6 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 @Entity(tableName = "food_service_table")
@@ -28,6 +27,9 @@ public class FoodServiceDBEntity {
     @ColumnInfo(name = "opening_hours")
     private String openingHours;
 
+    @ColumnInfo(name = "rating")
+    private float rating;
+
     @ColumnInfo(name = "queue_time")
     private int queueTime;
 
@@ -37,11 +39,12 @@ public class FoodServiceDBEntity {
     @ColumnInfo(name = "longitude")
     private double longitude;
 
-    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, @NonNull String status, String openingHours, int queueTime, double latitude, double longitude) {
+    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, @NonNull String status, String openingHours, float rating, int queueTime, double latitude, double longitude) {
         this.name = name;
         this.campus = campus;
         this.status = status;
         this.openingHours = openingHours;
+        this.rating = rating;
         this.queueTime = queueTime;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -62,6 +65,10 @@ public class FoodServiceDBEntity {
 
     public String getOpeningHours() {
         return openingHours;
+    }
+
+    public float getRating() {
+        return rating;
     }
 
     public int getQueueTime() {

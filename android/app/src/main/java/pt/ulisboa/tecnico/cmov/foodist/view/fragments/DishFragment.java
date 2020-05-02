@@ -80,7 +80,7 @@ public class DishFragment extends Fragment {
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener((parent, view1, position, id) -> {
             Bitmap photo = (Bitmap) adapter.getItem(position);
-            Bundle args = new Bundle();
+            Bundle args = getArguments();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             args.putByteArray(NAVHOST_ARGS_DISH_PHOTO, stream.toByteArray());
