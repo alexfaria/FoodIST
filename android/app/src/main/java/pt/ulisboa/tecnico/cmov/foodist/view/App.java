@@ -38,8 +38,6 @@ public class App extends Application {
             uuid = UUID.randomUUID().toString();
             sharedPreferences.edit().putString("uuid", uuid).apply();
         }
-
-        sharedPreferences.edit().putString("uuid", "AlexUUID").apply();
     }
 
     public FoodServer getServer() {
