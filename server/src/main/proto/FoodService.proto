@@ -21,9 +21,10 @@ message GetFoodServiceRequest {
 message FoodServiceDto {
     string name = 1;
     string openingHours = 2;
-    int32 queueTime = 3;
-    double latitude = 4;
-    double longitude = 5;
+    float rating = 3;
+    int32 queueTime = 4;
+    double latitude = 5;
+    double longitude = 6;
 }
 
 message GetDishesRequest {
@@ -34,6 +35,7 @@ message GetDishesRequest {
 message GetDishRequest {
     string foodServiceName = 1;
     string dishName = 2;
+    string uuid = 3;
 }
 
 message PutDishRequest {
@@ -62,16 +64,25 @@ message PutDishPhotoResponse {
     int32 index = 1;
 }
 
+message PutDishRatingRequest {
+    string foodServiceName = 1;
+    string dishName = 2;
+    float rating = 3;
+    string uuid = 4;
+}
+
 message DishDto {
     string name = 1;
     float cost = 2;
-    int32 numberOfPhotos = 3;
+    float averageRating = 3;
+    int32 numberOfPhotos = 4;
 }
 
 message DishWithPhotosDto {
     string name = 1;
     float cost = 2;
-    repeated bytes photos = 3;
+    map<string, float> ratings = 3;
+    repeated bytes photos = 4;
 }
 
 message AddToFoodServiceQueueRequest {
@@ -93,6 +104,7 @@ service FoodServer {
     rpc getDish(GetDishRequest) returns (DishWithPhotosDto);
     rpc putDish(PutDishRequest) returns (PutDishResponse);
     rpc putDishPhoto(PutDishPhotoRequest) returns (PutDishPhotoResponse);
+    rpc putDishRating(PutDishRatingRequest) returns (Empty);
     rpc addToFoodServiceQueue(AddToFoodServiceQueueRequest) returns (Empty);
     rpc removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest) returns (Empty);
     // rpc getWaitTime(GetWaitTimeRequest) returns (GetWaitTimeResponse);

@@ -3,18 +3,24 @@ package pt.ulisboa.tecnico.cmov.foodist.model;
 import android.graphics.Bitmap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Dish {
 
     private String name;
     private float cost;
+    private float averageRating;
+    private Map<String, Float> ratings;
     private int numberOfPhotos;
     private List<Bitmap> photos;
 
     public Dish(String name, float cost, int numberOfPhotos) {
         this.name = name;
         this.cost = cost;
+        this.averageRating = 0;
+        this.ratings = new HashMap<>();
         this.numberOfPhotos = numberOfPhotos;
         this.photos = new ArrayList<>();
     }
@@ -25,6 +31,21 @@ public class Dish {
 
     public float getCost() {
         return cost;
+    }
+
+    public Map<String, Float> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(Map<String, Float> ratings) {
+        this.ratings = ratings;
+    }
+
+    public void setAverageRating(float averageRating) {
+        this.averageRating = averageRating;
+    }
+    public float getAverageRating() {
+        return averageRating;
     }
 
     public List<Bitmap> getPhotos() {

@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.foodist.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,11 +25,13 @@ public class FoodMenuAdapter extends RecyclerView.Adapter<FoodMenuAdapter.FoodMe
         // each data item is just a string in this case
         public TextView name;
         public TextView cost;
+        public RatingBar rating;
 
         public FoodMenuViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.dishName);
             cost = view.findViewById(R.id.dishCost);
+            rating = view.findViewById(R.id.dishRating);
         }
 
     }
@@ -56,6 +59,7 @@ public class FoodMenuAdapter extends RecyclerView.Adapter<FoodMenuAdapter.FoodMe
         Dish dish = dishes.get(position);
         holder.name.setText(dish.getName());
         holder.cost.setText(String.format(Locale.getDefault(),"%.2f€", dish.getCost()));
+        holder.rating.setRating(dish.getAverageRating());
     }
 
     @Override

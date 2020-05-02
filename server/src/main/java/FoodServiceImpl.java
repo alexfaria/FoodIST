@@ -95,6 +95,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                             .newBuilder()
                             .setName(d.getName())
                             .setCost(d.getCost())
+                            .setAverageRating(d.getAverageRating())
                             .setNumberOfPhotos(d.getNumberOfPhotos())
                             .build()));
         responseObserver.onCompleted();
@@ -108,7 +109,8 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
             DishWithPhotosDto.Builder dtoBuilder = DishWithPhotosDto
                     .newBuilder()
                     .setName(dish.getName())
-                    .setCost(dish.getCost());
+                    .setCost(dish.getCost())
+                    .putAllRatings(dish.getRatings());
             if (dish.hasPhotos())
                 dtoBuilder.addAllPhotos(dish.getPhotos());
             responseObserver.onNext(dtoBuilder.build());
@@ -145,11 +147,24 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
+    public void putDishRating(PutDishRatingRequest request, StreamObserver<Empty> responseObserver) {
+        FoodService foodService = foodServices.get(request.getFoodServiceName());
+        if (foodService != null) {
+            Dish dish = foodService.getMenu().get(request.getDishName());
+            if (dish != null)
+                dish.addRating(request.getUuid(), request.getRating());
+        }
+        responseObserver.onNext(Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void addToFoodServiceQueue(AddToFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             foodService.addToQueue(request.getUUID());
         }
+        responseObserver.onNext(Empty.newBuilder().build());
         responseObserver.onCompleted();
     }
 
@@ -159,6 +174,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
         if (foodService != null) {
             foodService.removeFromQueue(request.getUUID());
         }
+        responseObserver.onNext(Empty.newBuilder().build());
         responseObserver.onCompleted();
     }
 }

@@ -6,49 +6,44 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "dish_table")
-public class DishDBEntity {
+@Entity(tableName = "dish_rating_table")
+public class DishRatingDBEntity {
 
     @PrimaryKey
     @NonNull
-    @ColumnInfo(name = "name")
-    private String name;
-
-    @ColumnInfo(name = "cost")
-    private float cost;
+    @ColumnInfo(name = "uuid")
+    private String uuid;
 
     @ColumnInfo(name = "rating")
     private float rating;
 
-    @ColumnInfo(name = "number_of_photos")
-    private int numberOfPhotos;
-
     @ForeignKey(entity = FoodServiceDBEntity.class, parentColumns = "name", childColumns = "foodServiceName")
     private String foodServiceName;
 
-    public DishDBEntity(@NonNull String name, float cost, float rating, int numberOfPhotos, String foodServiceName) {
-        this.name = name;
-        this.cost = cost;
+    @ForeignKey(entity = DishDBEntity.class, parentColumns = "name", childColumns = "dishName")
+    private String dishName;
+
+    public DishRatingDBEntity(@NonNull String uuid, float rating, String foodServiceName, String dishName) {
+        this.uuid = uuid;
         this.rating = rating;
-        this.numberOfPhotos = numberOfPhotos;
         this.foodServiceName = foodServiceName;
+        this.dishName = dishName;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public float getCost() {
-        return cost;
+    @NonNull
+    public String getUuid() {
+        return uuid;
     }
 
     public float getRating() {
         return rating;
     }
 
-    public int getNumberOfPhotos() { return numberOfPhotos; }
-
     public String getFoodServiceName() {
         return foodServiceName;
+    }
+
+    public String getDishName() {
+        return dishName;
     }
 }

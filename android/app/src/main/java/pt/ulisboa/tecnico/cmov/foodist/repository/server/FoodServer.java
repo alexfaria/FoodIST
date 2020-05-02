@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.cmov.foodist.repository.server;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -9,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,6 +28,7 @@ import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServiceRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoResponse;
+import pt.ulisboa.tecnico.cmov.foodservice.PutDishRatingRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.RemoveFromFoodServiceQueueRequest;
 
@@ -67,20 +70,24 @@ public class FoodServer {
         ArrayList<Dish> dishes = new ArrayList<>();
         while (dishesDto.hasNext()) {
             DishDto dto = dishesDto.next();
-            dishes.add(new Dish(dto.getName(), dto.getCost(), dto.getNumberOfPhotos()));
+            Dish dish = new Dish(dto.getName(), dto.getCost(), dto.getNumberOfPhotos());
+            dish.setAverageRating(dto.getAverageRating());
+            dishes.add(dish);
         }
         return dishes;
     }
 
-    public Dish getDish(String foodServiceName, String dishName) {
+    public Dish getDish(String foodServiceName, String dishName, String uuid) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         DishWithPhotosDto dishDto = stub.getDish(GetDishRequest
                 .newBuilder()
                 .setFoodServiceName(foodServiceName)
                 .setDishName(dishName)
+                .setUuid(uuid)
                 .build());
         List<ByteString> photosList = dishDto.getPhotosList();
         Dish dish = new Dish(dishDto.getName(), dishDto.getCost(), photosList.size());
+        dish.setRatings(dishDto.getRatingsMap());
         for(ByteString photo : photosList)
             dish.addPhoto(BitmapFactory.decodeByteArray(photo.toByteArray(), 0, photo.size()));
         return dish;
@@ -113,6 +120,17 @@ public class FoodServer {
                 .setPhoto(ByteString.copyFrom(stream.toByteArray()))
                 .build());
         return putDishPhotoResponse.getIndex();
+    }
+
+    public void putUserDishRating(String foodServiceName, String dishName, float rating, String uuid) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        stub.putDishRating(PutDishRatingRequest
+                .newBuilder()
+                .setFoodServiceName(foodServiceName)
+                .setDishName(dishName)
+                .setRating(rating)
+                .setUuid(uuid)
+                .build());
     }
 
     public void addToFoodServiceQueue(String campus, String foodServiceName) {

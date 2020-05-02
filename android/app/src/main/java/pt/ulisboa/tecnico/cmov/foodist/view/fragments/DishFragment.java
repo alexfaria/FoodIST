@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Locale;
@@ -44,7 +46,7 @@ public class DishFragment extends Fragment {
 
     private String foodServiceNameArg;
     private String dishNameArg;
-
+    private String uuid;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class DishFragment extends Fragment {
         if (isAdded()) {
             viewModel = ViewModelProviders.of(this).get(DishViewModel.class);
             viewModel.init((App) getContext().getApplicationContext());
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+            uuid = sharedPreferences.getString("uuid", "");
         }
     }
 
@@ -67,6 +71,10 @@ public class DishFragment extends Fragment {
         name = view.findViewById(R.id.dish_name);
         cost = view.findViewById(R.id.dish_cost);
         rating = view.findViewById(R.id.dish_rating);
+        rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            if (fromUser)
+                viewModel.putUserDishRating(foodServiceNameArg, dishNameArg, rating,uuid);
+        });
         GridView gridView = view.findViewById(R.id.photos_grid_view);
         adapter = new DishPhotoAdapter(getContext());
         gridView.setAdapter(adapter);
@@ -89,13 +97,15 @@ public class DishFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.getDish(foodServiceNameArg, dishNameArg).observe(this, dish -> {
+        viewModel.getDish(foodServiceNameArg, dishNameArg, uuid).observe(this, dish -> {
             name.setText(dish.getName());
             cost.setText(String.format(Locale.getDefault(), "%.2f€", dish.getCost()));
-            rating.setRating(3.5f);
             if (dish.getNumberOfPhotos() > 0)
                 adapter.setData(dish.getPhotos());
         });
+        viewModel.getUserDishRating(foodServiceNameArg, dishNameArg, uuid).observe(this, userRating ->
+                rating.setRating(userRating)
+        );
     }
 
     @Override

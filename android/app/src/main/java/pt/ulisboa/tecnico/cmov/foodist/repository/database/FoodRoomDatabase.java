@@ -12,15 +12,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.DishDao;
+import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.DishRatingDao;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.FoodServiceDao;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.DishDBEntity;
+import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.DishRatingDBEntity;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.FoodServiceDBEntity;
 
-@Database(entities = {FoodServiceDBEntity.class, DishDBEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {FoodServiceDBEntity.class, DishDBEntity.class, DishRatingDBEntity.class}, version = 2, exportSchema = false)
 public abstract class FoodRoomDatabase extends RoomDatabase {
 
     public abstract FoodServiceDao foodServiceDao();
     public abstract DishDao dishDao();
+    public abstract DishRatingDao dishRatingDao();
 
     private static volatile FoodRoomDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
@@ -34,6 +37,7 @@ public abstract class FoodRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             FoodRoomDatabase.class, "food_database")
                             .addCallback(roomDatabaseCallback)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

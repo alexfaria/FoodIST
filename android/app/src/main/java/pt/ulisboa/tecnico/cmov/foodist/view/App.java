@@ -36,8 +36,10 @@ public class App extends Application {
 
         if (uuid.isEmpty()) {
             uuid = UUID.randomUUID().toString();
-            sharedPreferences.edit().putString("uuid", uuid.toString()).apply();
+            sharedPreferences.edit().putString("uuid", uuid).apply();
         }
+
+        sharedPreferences.edit().putString("uuid", "AlexUUID").apply();
     }
 
     public FoodServer getServer() {

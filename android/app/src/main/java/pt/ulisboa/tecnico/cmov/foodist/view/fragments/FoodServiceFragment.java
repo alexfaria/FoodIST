@@ -149,7 +149,6 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(foodServiceCoord, MAP_ZOOM_LEVEL));
                 }
             });
-
             dishViewModel.getDishes(foodServiceName).observe(this, data -> {
                 if (data != null)
                     adapter.setData(data);

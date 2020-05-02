@@ -23,8 +23,8 @@ public class DishViewModel extends ViewModel {
         return repository.getDishes(foodServiceName);
     }
 
-    public LiveData<Dish> getDish(String foodServiceName, String name) {
-        return repository.getDish(foodServiceName, name);
+    public LiveData<Dish> getDish(String foodServiceName, String name, String uuid) {
+        return repository.getDish(foodServiceName, name, uuid);
     }
 
     public LiveData<Boolean> putDish(String foodServiceName, Dish dish) {
@@ -33,5 +33,13 @@ public class DishViewModel extends ViewModel {
 
     public void putDishPhoto(String foodServiceName, String dishName, Bitmap photo) {
         repository.putDishPhoto(foodServiceName, dishName, photo);
+    }
+
+    public LiveData<Float> getUserDishRating(String foodServiceName, String dishName, String uuid) {
+        return repository.getUserDishRating(foodServiceName, dishName, uuid);
+    }
+
+    public void putUserDishRating(String foodServiceName, String dishName, float rating, String uuid) {
+        repository.putUserDishRating(foodServiceName, dishName, rating, uuid);
     }
 }
