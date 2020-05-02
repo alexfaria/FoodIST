@@ -5,7 +5,6 @@
 - [X] enable location
 - [X] nao usar geocoder
 - [X] api location -> passar centro do campus e ver distancia < 1km ou assim
-- [ ] adicionar campo 'auto'
 
 ## Main Activity
 
