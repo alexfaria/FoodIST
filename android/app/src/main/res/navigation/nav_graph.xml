@@ -46,5 +46,16 @@
         android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.DishFragment"
         android:label="Dish Fragment"
         tools:layout="@layout/fragment_dish">
+
+        <action
+            android:id="@+id/action_Dish_to_FullscreenPhoto"
+            app:destination="@id/FullscreenPhotoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/FullscreenPhotoFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.FullscreenPhotoFragment"
+        android:label="Fullscreen Photo Fragment"
+        tools:layout="@layout/fragment_dish_photo_fullscreen">
     </fragment>
 </navigation>

@@ -26,7 +26,7 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
 
@@ -62,7 +62,7 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
         adapter = new FoodServicesAdapter(v -> {
             Bundle args = new Bundle();
             TextView serviceName = v.findViewById(R.id.serviceName);
-            args.putString(NAVHOST_ARGS_FOODSERVICENAME, serviceName.getText().toString());
+            args.putString(NAVHOST_ARGS_FOODSERVICE_NAME, serviceName.getText().toString());
             NavHostFragment
                     .findNavController(DiningOptionsFragment.this)
                     .navigate(R.id.action_DiningOptions_to_FoodService, args);

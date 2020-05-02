@@ -1,13 +1,11 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,7 +21,7 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 import static android.app.Activity.RESULT_OK;
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 
 
 public class AddMenuFragment extends Fragment {
@@ -42,7 +40,7 @@ public class AddMenuFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        foodServiceNameArg = getArguments().getString(NAVHOST_ARGS_FOODSERVICENAME);
+        foodServiceNameArg = getArguments().getString(NAVHOST_ARGS_FOODSERVICE_NAME);
         if (isAdded()) {
             viewModel = ViewModelProviders.of(this).get(DishViewModel.class);
             viewModel.init((App) getContext().getApplicationContext());

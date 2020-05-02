@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
-import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
@@ -39,14 +36,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.GeoApiContext;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
-import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodMenuAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISHNAME;
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICENAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_NAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
 
@@ -100,7 +96,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         adapter = new FoodMenuAdapter(v -> {
             Bundle args = getArguments();
             TextView dishName = v.findViewById(R.id.dishName);
-            args.putString(NAVHOST_ARGS_DISHNAME, dishName.getText().toString());
+            args.putString(NAVHOST_ARGS_DISH_NAME, dishName.getText().toString());
             NavHostFragment
                     .findNavController(FoodServiceFragment.this)
                     .navigate(R.id.action_FoodMenu_to_Dish, args);
@@ -124,7 +120,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String foodServiceName = getArguments().getString(NAVHOST_ARGS_FOODSERVICENAME);
+        String foodServiceName = getArguments().getString(NAVHOST_ARGS_FOODSERVICE_NAME);
         if (foodServiceName != null) {
 
             String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
