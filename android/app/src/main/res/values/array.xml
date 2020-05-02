@@ -12,4 +12,18 @@
         <item>Staff</item>
         <item>General Public</item>
     </string-array>
+
+    <string-array name="dietary_preferences">
+        <item>Meat</item>
+        <item>Fish</item>
+        <item>Vegetarian</item>
+        <item>Vegan</item>
+    </string-array>
+
+    <string-array name="dietary_preferences_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>

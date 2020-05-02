@@ -17,7 +17,6 @@
             app:defaultValue="@string/default_campus"
             app:entries="@array/locations"
             app:entryValues="@array/locations"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -30,8 +29,20 @@
             app:defaultValue="@string/default_status"
             app:entries="@array/status"
             app:entryValues="@array/status">
-
         </ListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="dietary_category"
+        app:title="Dietary Preferences">
+
+        <MultiSelectListPreference
+            app:key="dietaryPreferenceList"
+            app:title="Select your dietary preferences"
+            app:defaultValue="@array/dietary_preferences_values"
+            app:entries="@array/dietary_preferences"
+            app:entryValues="@array/dietary_preferences_values">
+        </MultiSelectListPreference>
     </PreferenceCategory>
 
     <PreferenceCategory
