@@ -51,6 +51,6 @@
 - [ ] aplicar filtro no cliente
 
 ## Ratings
-- [ ] review conta para o prato e para o restaurante
-- [ ] review do restaurante -> media de todas
+- [X] review conta para o prato e para o restaurante
+- [X] review do restaurante -> media de todas
 - [X] guardar o GUID de forma presistente (shared preferences)
