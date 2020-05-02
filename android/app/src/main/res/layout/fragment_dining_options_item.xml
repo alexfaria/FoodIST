@@ -60,6 +60,7 @@
             style="@android:style/Widget.DeviceDefault.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:isIndicator="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/queueTime"
             app:layout_constraintStart_toEndOf="@id/openingHours"

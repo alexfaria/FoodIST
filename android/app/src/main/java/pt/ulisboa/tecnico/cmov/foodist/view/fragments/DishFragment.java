@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 
@@ -35,6 +36,7 @@ public class DishFragment extends Fragment {
 
     private TextView name;
     private TextView cost;
+    private RatingBar rating;
 
     private DishPhotoAdapter adapter;
 
@@ -64,6 +66,7 @@ public class DishFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
         name = view.findViewById(R.id.dish_name);
         cost = view.findViewById(R.id.dish_cost);
+        rating = view.findViewById(R.id.dish_rating);
         GridView gridView = view.findViewById(R.id.photos_grid_view);
         adapter = new DishPhotoAdapter(getContext());
         gridView.setAdapter(adapter);
@@ -89,6 +92,7 @@ public class DishFragment extends Fragment {
         viewModel.getDish(foodServiceNameArg, dishNameArg).observe(this, dish -> {
             name.setText(dish.getName());
             cost.setText(String.format(Locale.getDefault(), "%.2f€", dish.getCost()));
+            rating.setRating(3.5f);
             if (dish.getNumberOfPhotos() > 0)
                 adapter.setData(dish.getPhotos());
         });
