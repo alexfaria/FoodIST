@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import java.util.Locale;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
+import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DishPhotoAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 import static android.app.Activity.RESULT_OK;
@@ -34,8 +36,8 @@ public class DishFragment extends Fragment {
     private TextView name;
     private TextView cost;
 
-    private ImageView imgView;
-    private int imgIndex = 0;
+    private GridView gridView;
+    private DishPhotoAdapter adapter;
 
     private DishViewModel viewModel;
 
@@ -62,15 +64,14 @@ public class DishFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
         name = view.findViewById(R.id.dish_name);
-        cost = view.findViewById(R.id.dish_price);
-        imgView = view.findViewById(R.id.DishPhoto);
-        //imgView.onCreate(savedInstanceState);
-        imgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
-            }
+        cost = view.findViewById(R.id.dish_cost);
+        gridView = view.findViewById(R.id.photos_grid_view);
+        adapter = new DishPhotoAdapter(getContext());
+        gridView.setAdapter(adapter);
+
+        view.findViewById(R.id.uploadDishPhoto).setOnClickListener(v -> {
+            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
         });
         return view;
     }
@@ -80,19 +81,8 @@ public class DishFragment extends Fragment {
         viewModel.getDish(foodServiceNameArg, dishNameArg).observe(this, dish -> {
             name.setText(dish.getName());
             cost.setText(String.format(Locale.getDefault(), "%.2f€", dish.getCost()));
-            Bitmap img = dish.getPhoto(imgIndex);
-            if (img != null)
-                imgView.setImageBitmap(img);
-            view.findViewById(R.id.nextPhotoBtn).setOnClickListener(v -> {
-                Log.d("DishFragment", "Next image button clicked!");
-                if (imgIndex < dish.getNumberOfPhotos()-1)
-                    imgView.setImageBitmap(dish.getPhoto(++imgIndex));
-            });
-            view.findViewById(R.id.prevPhotoBtn).setOnClickListener(v -> {
-                Log.d("DishFragment", "Previous image button clicked!");
-                if (imgIndex > 0)
-                    imgView.setImageBitmap(dish.getPhoto(--imgIndex));
-            });
+            if (dish.getNumberOfPhotos() > 0)
+                adapter.setData(dish.getPhotos());
         });
     }
 
@@ -102,8 +92,8 @@ public class DishFragment extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             if (imageBitmap != null) {
-                imgView.setImageBitmap(imageBitmap);
                 viewModel.putDishPhoto(foodServiceNameArg, dishNameArg, imageBitmap);
+                adapter.addItem(imageBitmap);
             }
         }
     }

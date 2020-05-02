@@ -36,4 +36,6 @@
     <string name="alameda_longitude">-9.138705</string>
     <string name="taguspark_latitude">38.7370274</string>
     <string name="taguspark_longitude">-9.3026572</string>
+    <string name="upload_photo">Upload Photo</string>
+    <string name="dish_content">dish</string>
 </resources>
