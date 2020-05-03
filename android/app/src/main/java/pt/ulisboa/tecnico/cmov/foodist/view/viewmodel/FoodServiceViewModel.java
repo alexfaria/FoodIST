@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.viewmodel;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,10 +13,11 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 
 public class FoodServiceViewModel extends ViewModel {
 
+    private Context context;
     private FoodServiceRepository repository;
 
-    public void init(App application) {
-        repository = new FoodServiceRepository(application);
+    public void init(Context context) {
+        repository = new FoodServiceRepository(context);
     }
 
     public LiveData<List<FoodService>> getFoodServices(String campus, String status) {

@@ -1,8 +1,18 @@
 package pt.ulisboa.tecnico.cmov.foodist.view;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.os.Build;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 import java.util.UUID;
@@ -23,11 +33,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(HOST, PORT)
-                .usePlaintext()
-                .build();
-        foodServer = new FoodServer(channel);
+        foodServer = null;
         bitmapCache = new BitmapCache(this);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -38,7 +44,39 @@ public class App extends Application {
             uuid = UUID.randomUUID().toString();
             sharedPreferences.edit().putString("uuid", uuid).apply();
         }
+
+        final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+        connectivityManager.registerNetworkCallback(networkRequest, new ConnectivityManager.NetworkCallback() {
+            private int numOfAvailableNetworks = 0;
+
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                Log.d("App", "Network onAvailable Callback");
+                if (numOfAvailableNetworks++ == 0) {
+                    ManagedChannel channel = ManagedChannelBuilder
+                            .forAddress(HOST, PORT)
+                            .usePlaintext()
+                            .build();
+                    foodServer = new FoodServer(channel);
+                }
+                if (!connectivityManager.isActiveNetworkMetered()) {
+                    // Fetch first photos for all dishes
+                }
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                Log.d("App", "Network lost: " + network);
+                if (--numOfAvailableNetworks == 0)
+                    foodServer = null;
+            }
+        });
     }
+
 
     public FoodServer getServer() {
         return foodServer;

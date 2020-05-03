@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.repository;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -15,13 +17,14 @@ import pt.ulisboa.tecnico.cmov.foodist.view.App;
 
 public class FoodServiceRepository {
 
-    private FoodServiceDao foodServiceDao;
-    private FoodServer foodServer;
+    private App context;
 
-    public FoodServiceRepository(App application) {
-        FoodRoomDatabase db = FoodRoomDatabase.getDatabase(application);
+    private FoodServiceDao foodServiceDao;
+
+    public FoodServiceRepository(Context c) {
+        this.context = (App) c;
+        FoodRoomDatabase db = FoodRoomDatabase.getDatabase(context);
         foodServiceDao = db.foodServiceDao();
-        foodServer = application.getServer();
     }
 
     public LiveData<List<FoodService>> getFoodServices(String campus, String status) {
@@ -52,33 +55,45 @@ public class FoodServiceRepository {
     }
 
     public void addToFoodServiceQueue(String campus, String name) {
-        FoodServer.serverExecutor.execute(() -> {
-            foodServer.addToFoodServiceQueue(campus, name);
-        });
+        if (context.getServer() != null) {
+            FoodServer foodServer = context.getServer();
+            FoodServer.serverExecutor.execute(() -> {
+                foodServer.addToFoodServiceQueue(campus, name);
+            });
+        }
     }
 
     public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
-        FoodServer.serverExecutor.execute(() -> {
-            foodServer.removeFromFoodServiceQueue(campus, name, uuid);
-        });
+        if (context.getServer() != null) {
+            FoodServer foodServer = context.getServer();
+            FoodServer.serverExecutor.execute(() -> {
+                foodServer.removeFromFoodServiceQueue(campus, name, uuid);
+            });
+        }
     }
 
     private void refreshFoodServices(String campus, String status) {
-        FoodServer.serverExecutor.execute(() -> {
-            ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
-            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
-                for (FoodService fs : foodServices)
-                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+        if (context.getServer() != null) {
+            FoodServer foodServer = context.getServer();
+            FoodServer.serverExecutor.execute(() -> {
+                ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
+                FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+                    for (FoodService fs : foodServices)
+                        foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+                });
             });
-        });
+        }
     }
 
     private void refreshFoodService(String campus, String status, String foodServiceName) {
-        FoodServer.serverExecutor.execute(() -> {
-            FoodService fs = foodServer.getFoodService(campus, status, foodServiceName);
-            FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
+        if (context.getServer() != null) {
+            FoodServer foodServer = context.getServer();
+            FoodServer.serverExecutor.execute(() -> {
+                FoodService fs = foodServer.getFoodService(campus, status, foodServiceName);
+                FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
                     foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+                });
             });
-        });
+        }
     }
 }

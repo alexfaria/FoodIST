@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -72,8 +73,10 @@ public class DishFragment extends Fragment {
         cost = view.findViewById(R.id.dish_cost);
         rating = view.findViewById(R.id.dish_rating);
         rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-            if (fromUser)
-                viewModel.putUserDishRating(foodServiceNameArg, dishNameArg, rating,uuid);
+            if (fromUser) {
+                viewModel.putUserDishRating(foodServiceNameArg, dishNameArg, rating, uuid);
+                Toast.makeText(getContext(), "Your feedback was saved!", Toast.LENGTH_SHORT).show();
+            }
         });
         GridView gridView = view.findViewById(R.id.photos_grid_view);
         adapter = new DishPhotoAdapter(getContext());
@@ -116,6 +119,7 @@ public class DishFragment extends Fragment {
             if (imageBitmap != null) {
                 viewModel.putDishPhoto(foodServiceNameArg, dishNameArg, imageBitmap);
                 adapter.addItem(imageBitmap);
+                Toast.makeText(getContext(), "Your photo was uploaded!", Toast.LENGTH_SHORT).show();
             }
         }
     }

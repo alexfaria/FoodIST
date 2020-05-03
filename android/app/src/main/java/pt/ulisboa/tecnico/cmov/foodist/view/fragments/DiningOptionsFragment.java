@@ -20,9 +20,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
-import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
@@ -30,11 +30,14 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSE
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
 
-public class DiningOptionsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class DiningOptionsFragment extends Fragment implements
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private FoodServiceViewModel viewModel;
     private SharedPreferences sharedPreferences;
 
+    private SwipeRefreshLayout refresh;
     private RecyclerView recyclerView;
     private FoodServicesAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -44,7 +47,7 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
         super.onCreate(savedInstanceState);
         if (isAdded()) {
             viewModel = new ViewModelProvider(requireActivity()).get(FoodServiceViewModel.class);
-            viewModel.init((App) getContext().getApplicationContext());
+            viewModel.init(getContext().getApplicationContext());
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         }
@@ -57,6 +60,8 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
     ) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_dining_options, container, false);
+        refresh = view.findViewById(R.id.dining_options_refresh);
+        refresh.setOnRefreshListener(this);
         recyclerView = view.findViewById(R.id.dining_recycler_view);
         recyclerView.setHasFixedSize(true);
         adapter = new FoodServicesAdapter(v -> {
@@ -84,6 +89,13 @@ public class DiningOptionsFragment extends Fragment implements SharedPreferences
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
         retrieveFoodServices();
+    }
+
+    @Override
+    public void onRefresh() {
+        retrieveFoodServices();
+        if (refresh.isRefreshing())
+            refresh.setRefreshing(false);
     }
 
     @Override
