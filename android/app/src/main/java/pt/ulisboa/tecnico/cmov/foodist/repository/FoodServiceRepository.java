@@ -55,8 +55,8 @@ public class FoodServiceRepository {
     }
 
     public void addToFoodServiceQueue(String campus, String name) {
-        if (context.getServer() != null) {
-            FoodServer foodServer = context.getServer();
+        if (context.isConnected()) {
+            final FoodServer foodServer = context.getServer();
             FoodServer.serverExecutor.execute(() -> {
                 foodServer.addToFoodServiceQueue(campus, name);
             });
@@ -64,8 +64,8 @@ public class FoodServiceRepository {
     }
 
     public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
-        if (context.getServer() != null) {
-            FoodServer foodServer = context.getServer();
+        if (context.isConnected()) {
+            final FoodServer foodServer = context.getServer();
             FoodServer.serverExecutor.execute(() -> {
                 foodServer.removeFromFoodServiceQueue(campus, name, uuid);
             });
@@ -73,8 +73,8 @@ public class FoodServiceRepository {
     }
 
     private void refreshFoodServices(String campus, String status) {
-        if (context.getServer() != null) {
-            FoodServer foodServer = context.getServer();
+        if (context.isConnected()) {
+            final FoodServer foodServer = context.getServer();
             FoodServer.serverExecutor.execute(() -> {
                 ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
@@ -86,8 +86,8 @@ public class FoodServiceRepository {
     }
 
     private void refreshFoodService(String campus, String status, String foodServiceName) {
-        if (context.getServer() != null) {
-            FoodServer foodServer = context.getServer();
+        if (context.isConnected()) {
+            final FoodServer foodServer = context.getServer();
             FoodServer.serverExecutor.execute(() -> {
                 FoodService fs = foodServer.getFoodService(campus, status, foodServiceName);
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {

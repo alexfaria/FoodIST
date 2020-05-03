@@ -27,6 +27,8 @@ public class App extends Application {
     private final String HOST = "10.0.2.2";
     private final int PORT = 8080;
 
+    private boolean isConnected = false;
+
     private FoodServer foodServer;
     private BitmapCache bitmapCache;
 
@@ -57,6 +59,7 @@ public class App extends Application {
             public void onAvailable(@NonNull Network network) {
                 Log.d("App", "Network onAvailable Callback");
                 if (numOfAvailableNetworks++ == 0) {
+                    isConnected = true;
                     ManagedChannel channel = ManagedChannelBuilder
                             .forAddress(HOST, PORT)
                             .usePlaintext()
@@ -71,10 +74,16 @@ public class App extends Application {
             @Override
             public void onLost(@NonNull Network network) {
                 Log.d("App", "Network lost: " + network);
-                if (--numOfAvailableNetworks == 0)
+                if (--numOfAvailableNetworks == 0) {
+                    isConnected = false;
                     foodServer = null;
+                }
             }
         });
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 
 
