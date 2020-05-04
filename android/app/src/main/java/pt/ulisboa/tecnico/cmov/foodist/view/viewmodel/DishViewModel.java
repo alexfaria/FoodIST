@@ -35,6 +35,10 @@ public class DishViewModel extends ViewModel {
         repository.putDishPhoto(foodServiceName, dishName, photo);
     }
 
+    public LiveData<List<Float>> getAllRatings(String foodServiceName, String dishName) {
+        return repository.getAllRatings(foodServiceName, dishName);
+    }
+
     public LiveData<Float> getUserDishRating(String foodServiceName, String dishName, String uuid) {
         return repository.getUserDishRating(foodServiceName, dishName, uuid);
     }

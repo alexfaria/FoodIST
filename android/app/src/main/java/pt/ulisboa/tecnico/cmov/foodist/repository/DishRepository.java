@@ -107,6 +107,19 @@ public class DishRepository {
         }
     }
 
+    public LiveData<List<Float>> getAllRatings(String foodServiceName, String dishName) {
+        MutableLiveData<List<Float>> ld = new MutableLiveData<>();
+        dishRatingDao.getAll(foodServiceName, dishName).observeForever(ratingDB -> {
+            if (ratingDB != null) {
+                List<Float> ratings = new ArrayList<>();
+                for (DishRatingDBEntity ratingDBEntity : ratingDB)
+                    ratings.add(ratingDBEntity.getRating());
+                ld.postValue(ratings);
+            }
+        });
+        return ld;
+    }
+
     public LiveData<Float> getUserDishRating(String foodServiceName, String dishName, String uuid) {
         MutableLiveData<Float> ld = new MutableLiveData<>();
         dishRatingDao.get(uuid, foodServiceName, dishName).observeForever(ratingDB -> {

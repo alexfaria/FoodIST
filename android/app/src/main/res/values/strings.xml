@@ -38,4 +38,5 @@
     <string name="taguspark_longitude">-9.3026572</string>
     <string name="upload_photo">Upload Photo</string>
     <string name="dish_content">dish</string>
+    <string name="ratings_and_reviews"><![CDATA[Ratings & Reviews]]></string>
 </resources>

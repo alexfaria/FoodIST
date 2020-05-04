@@ -15,10 +15,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
+
+import com.taufiqrahman.reviewratings.BarLabels;
+import com.taufiqrahman.reviewratings.RatingReviews;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Locale;
@@ -40,6 +44,11 @@ public class DishFragment extends Fragment {
     private TextView name;
     private TextView cost;
     private RatingBar rating;
+
+    private RatingReviews ratingReviews;
+    private TextView averageRating;
+    private RatingBar averageRatingBar;
+    private TextView ratingsCount;
 
     private DishPhotoAdapter adapter;
 
@@ -78,6 +87,10 @@ public class DishFragment extends Fragment {
                 Toast.makeText(getContext(), "Your feedback was saved!", Toast.LENGTH_SHORT).show();
             }
         });
+        ratingReviews = view.findViewById(R.id.rating_reviews);
+        averageRating = view.findViewById(R.id.average_rating);
+        averageRatingBar = view.findViewById(R.id.average_rating_bar);
+        ratingsCount = view.findViewById(R.id.average_rating_count);
         GridView gridView = view.findViewById(R.id.photos_grid_view);
         adapter = new DishPhotoAdapter(getContext());
         gridView.setAdapter(adapter);
@@ -109,6 +122,19 @@ public class DishFragment extends Fragment {
         viewModel.getUserDishRating(foodServiceNameArg, dishNameArg, uuid).observe(this, userRating ->
                 rating.setRating(userRating)
         );
+        viewModel.getAllRatings(foodServiceNameArg, dishNameArg).observe(this, ratings -> {
+            int[] raters = new int[] {0, 0, 0, 0, 0};
+            float sum = 0;
+            for(float f : ratings) {
+                raters[-((int)f - 5)]++;
+                sum += f;
+            }
+            float average = ratings.size() > 0 ? sum / ratings.size() : 0f;
+            averageRating.setText(String.format(Locale.getDefault(), "%.1f", average));
+            averageRatingBar.setRating(average);
+            ratingsCount.setText(""+ratings.size());
+            ratingReviews.createRatingBars(100, BarLabels.STYPE3, ResourcesCompat.getColor(getResources(), R.color.colorPrimaryDark, null), raters);
+        });
     }
 
     @Override
