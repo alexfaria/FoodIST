@@ -45,4 +45,5 @@
     <string name="vegan">Vegan</string>
     <string name="dietary_preference_prompt">Select the dietary category:</string>
     <string name="ratings_and_reviews"><![CDATA[Ratings & Reviews]]></string>
+    <string name="show_all">Show all</string>
 </resources>
