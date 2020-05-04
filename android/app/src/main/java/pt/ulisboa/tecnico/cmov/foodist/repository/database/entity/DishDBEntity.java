@@ -17,6 +17,9 @@ public class DishDBEntity {
     @ColumnInfo(name = "cost")
     private float cost;
 
+    @ColumnInfo(name = "category")
+    private int category;
+
     @ColumnInfo(name = "rating")
     private float rating;
 
@@ -26,9 +29,10 @@ public class DishDBEntity {
     @ForeignKey(entity = FoodServiceDBEntity.class, parentColumns = "name", childColumns = "foodServiceName")
     private String foodServiceName;
 
-    public DishDBEntity(@NonNull String name, float cost, float rating, int numberOfPhotos, String foodServiceName) {
+    public DishDBEntity(@NonNull String name, float cost, int category, float rating, int numberOfPhotos, String foodServiceName) {
         this.name = name;
         this.cost = cost;
+        this.category = category;
         this.rating = rating;
         this.numberOfPhotos = numberOfPhotos;
         this.foodServiceName = foodServiceName;
@@ -42,11 +46,17 @@ public class DishDBEntity {
         return cost;
     }
 
+    public int getCategory() {
+        return category;
+    }
+
     public float getRating() {
         return rating;
     }
 
-    public int getNumberOfPhotos() { return numberOfPhotos; }
+    public int getNumberOfPhotos() {
+        return numberOfPhotos;
+    }
 
     public String getFoodServiceName() {
         return foodServiceName;

@@ -96,6 +96,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                             .newBuilder()
                             .setName(d.getName())
                             .setCost(d.getCost())
+                            .setCategory(d.getCategory())
                             .setAverageRating(d.getAverageRating())
                             .setNumberOfPhotos(d.getNumberOfPhotos())
                             .build()));
@@ -111,6 +112,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                     .newBuilder()
                     .setName(dish.getName())
                     .setCost(dish.getCost())
+                    .setCategory(dish.getCategory())
                     .putAllRatings(dish.getRatings());
             if (dish.hasPhotos())
                 dtoBuilder.addAllPhotos(dish.getPhotos());
@@ -124,7 +126,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         boolean success = false;
         if (foodService != null) {
-            Dish dish = new Dish(request.getDishName(), request.getDishCost());
+            Dish dish = new Dish(request.getDishName(), request.getDishCost(), request.getDishCategory());
             ByteString dishPhoto = request.getDishPhoto();
             if (!dishPhoto.isEmpty())
                 dish.addPhoto(dishPhoto);

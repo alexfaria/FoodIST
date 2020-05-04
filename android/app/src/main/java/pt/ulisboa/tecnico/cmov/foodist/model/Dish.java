@@ -11,14 +11,16 @@ public class Dish {
 
     private String name;
     private float cost;
+    private int category;
     private float averageRating;
     private Map<String, Float> ratings;
     private int numberOfPhotos;
     private List<Bitmap> photos;
 
-    public Dish(String name, float cost, int numberOfPhotos) {
+    public Dish(String name, float cost, int category, int numberOfPhotos) {
         this.name = name;
         this.cost = cost;
+        this.category = category;
         this.averageRating = 0;
         this.ratings = new HashMap<>();
         this.numberOfPhotos = numberOfPhotos;
@@ -27,6 +29,10 @@ public class Dish {
 
     public String getName() {
         return name;
+    }
+
+    public int getCategory() {
+        return category;
     }
 
     public float getCost() {
@@ -62,5 +68,7 @@ public class Dish {
         return null;
     }
 
-    public void addPhoto(Bitmap photo) { photos.add(photo); }
+    public void addPhoto(Bitmap photo) {
+        photos.add(photo);
+    }
 }

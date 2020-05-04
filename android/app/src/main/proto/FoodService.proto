@@ -41,8 +41,9 @@ message GetDishRequest {
 message PutDishRequest {
     string foodServiceName = 1;
     string dishName = 2;
-    float dishCost = 3;
-    bytes dishPhoto = 4;
+    int32 dishCategory = 3;
+    float dishCost = 4;
+    bytes dishPhoto = 5;
 }
 
 message PutDishResponse {
@@ -74,15 +75,17 @@ message PutDishRatingRequest {
 message DishDto {
     string name = 1;
     float cost = 2;
-    float averageRating = 3;
-    int32 numberOfPhotos = 4;
+    int32 category = 3;
+    float averageRating = 4;
+    int32 numberOfPhotos = 5;
 }
 
 message DishWithPhotosDto {
     string name = 1;
     float cost = 2;
-    map<string, float> ratings = 3;
-    repeated bytes photos = 4;
+    int32 category = 3;
+    map<string, float> ratings = 4;
+    repeated bytes photos = 5;
 }
 
 message AddToFoodServiceQueueRequest {

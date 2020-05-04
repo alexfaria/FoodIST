@@ -12,7 +12,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
@@ -34,8 +33,8 @@ import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 import static android.app.Activity.RESULT_OK;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_NAME;
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_PHOTO;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 
 public class DishFragment extends Fragment {
 
@@ -43,6 +42,7 @@ public class DishFragment extends Fragment {
 
     private TextView name;
     private TextView cost;
+    private TextView category;
     private RatingBar rating;
 
     private RatingReviews ratingReviews;
@@ -80,6 +80,7 @@ public class DishFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dish, container, false);
         name = view.findViewById(R.id.dish_name);
         cost = view.findViewById(R.id.dish_cost);
+        category = view.findViewById(R.id.category);
         rating = view.findViewById(R.id.dish_rating);
         rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             if (fromUser) {
@@ -115,6 +116,20 @@ public class DishFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel.getDish(foodServiceNameArg, dishNameArg, uuid).observe(this, dish -> {
             name.setText(dish.getName());
+            switch (dish.getCategory()) {
+                case 0:
+                    category.setText(R.string.meat);
+                    break;
+                case 1:
+                    category.setText(R.string.fish);
+                    break;
+                case 2:
+                    category.setText(R.string.vegetarian);
+                    break;
+                case 3:
+                    category.setText(R.string.vegan);
+                    break;
+            }
             cost.setText(String.format(Locale.getDefault(), "%.2f€", dish.getCost()));
             if (dish.getNumberOfPhotos() > 0)
                 adapter.setData(dish.getPhotos());

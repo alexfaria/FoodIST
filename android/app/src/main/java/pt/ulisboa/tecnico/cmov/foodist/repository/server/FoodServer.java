@@ -70,7 +70,7 @@ public class FoodServer {
         ArrayList<Dish> dishes = new ArrayList<>();
         while (dishesDto.hasNext()) {
             DishDto dto = dishesDto.next();
-            Dish dish = new Dish(dto.getName(), dto.getCost(), dto.getNumberOfPhotos());
+            Dish dish = new Dish(dto.getName(), dto.getCost(), dto.getCategory(), dto.getNumberOfPhotos());
             dish.setAverageRating(dto.getAverageRating());
             dishes.add(dish);
         }
@@ -86,7 +86,7 @@ public class FoodServer {
                 .setUuid(uuid)
                 .build());
         List<ByteString> photosList = dishDto.getPhotosList();
-        Dish dish = new Dish(dishDto.getName(), dishDto.getCost(), photosList.size());
+        Dish dish = new Dish(dishDto.getName(), dishDto.getCost(), dishDto.getCategory(), photosList.size());
         dish.setRatings(dishDto.getRatingsMap());
         for(ByteString photo : photosList)
             dish.addPhoto(BitmapFactory.decodeByteArray(photo.toByteArray(), 0, photo.size()));
@@ -99,6 +99,7 @@ public class FoodServer {
                 .newBuilder()
                 .setFoodServiceName(foodServiceName)
                 .setDishName(dish.getName())
+                .setDishCategory(dish.getCategory())
                 .setDishCost(dish.getCost());
         Bitmap photo = dish.getPhoto(0);
         if (photo != null) {

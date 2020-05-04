@@ -3,11 +3,13 @@ package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -35,6 +37,7 @@ public class AddMenuFragment extends Fragment {
 
     private DishViewModel viewModel;
     private String foodServiceNameArg;
+    private int category;
 
 
     @Override
@@ -58,6 +61,26 @@ public class AddMenuFragment extends Fragment {
         dishCost = view.findViewById(R.id.newDishCost);
         dishPhotoCheckbox = view.findViewById(R.id.photoCheckBox);
         dishPhotoCheckbox.setEnabled(false);
+
+        RadioGroup rg = view.findViewById(R.id.radioGroup);
+
+        rg.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.radioMeat:
+                    category = 0;
+                    break;
+                case R.id.radioFish:
+                    category = 1;
+                    break;
+                case R.id.radioVegetarian:
+                    category = 2;
+                    break;
+                case R.id.radioVegan:
+                    category = 3;
+                    break;
+            }
+        });
+
         view.findViewById(R.id.submitBtn).setOnClickListener(v -> {
             String name = dishName.getText().toString();
             if (name.isEmpty()) {
@@ -69,9 +92,10 @@ public class AddMenuFragment extends Fragment {
                 dishCost.setError("Cost missing!");
                 return;
             }
+
             try {
                 float cost = Float.parseFloat(costStr);
-                Dish dish = new Dish(name, cost, 0);
+                Dish dish = new Dish(name, cost, category, 0);
                 if (dishPhoto != null) {
                     dish.addPhoto(dishPhoto);
                 }
@@ -81,9 +105,9 @@ public class AddMenuFragment extends Fragment {
                         NavHostFragment
                                 .findNavController(AddMenuFragment.this)
                                 .popBackStack();
-                    }
-                    else
+                    } else {
                         dishName.setError("Already exists a dish with the given name!");
+                    }
                 });
             } catch (NumberFormatException e) {
                 dishCost.setError("Not a valid number!");
@@ -110,5 +134,4 @@ public class AddMenuFragment extends Fragment {
             }
         }
     }
-
 }

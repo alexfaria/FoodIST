@@ -38,5 +38,11 @@
     <string name="taguspark_longitude">-9.3026572</string>
     <string name="upload_photo">Upload Photo</string>
     <string name="dish_content">dish</string>
+    <!--Dietary Preferences-->
+    <string name="meat">Meat</string>
+    <string name="fish">Fish</string>
+    <string name="vegetarian">Vegetarian</string>
+    <string name="vegan">Vegan</string>
+    <string name="dietary_preference_prompt">Select the dietary category:</string>
     <string name="ratings_and_reviews"><![CDATA[Ratings & Reviews]]></string>
 </resources>

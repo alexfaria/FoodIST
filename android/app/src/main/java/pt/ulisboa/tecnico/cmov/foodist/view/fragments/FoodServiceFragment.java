@@ -35,7 +35,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.GeoApiContext;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
 import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodMenuAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
@@ -44,6 +49,7 @@ import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_DIETARY_PREFERENCES;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
 
 public class FoodServiceFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
@@ -125,7 +131,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
 
             String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
             String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
-
+            Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>()));
 
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) {
@@ -150,9 +156,25 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                 }
             });
             dishViewModel.getDishes(foodServiceName).observe(this, data -> {
-                if (data != null)
-                    adapter.setData(data);
-                else {
+                if (data != null && data.size() > 0) {
+                    ArrayList<Dish> filteredData = new ArrayList<>();
+                    for (Dish d : data) {
+                        for (String preference : dietaryPreferences) {
+                            if (Integer.parseInt(preference) == d.getCategory()) {
+                                filteredData.add(d);
+                                break;
+                            }
+                        }
+                    }
+
+                    adapter.setData(filteredData);
+
+                    if (filteredData.size() != data.size()) {
+                        Toast toast = Toast.makeText(getContext(), "Some dishes were filtered!", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+                } else {
                     Toast toast = Toast.makeText(getContext(), "There are currently no dishes available!", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();

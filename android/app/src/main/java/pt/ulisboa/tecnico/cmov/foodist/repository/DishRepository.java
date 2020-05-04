@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.cmov.foodist.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Pair;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -45,7 +44,7 @@ public class DishRepository {
             List<Dish> dishes = new ArrayList<>();
             if (dishDB != null) {
                 for (DishDBEntity d : dishDB) {
-                    Dish dish = new Dish(d.getName(), d.getCost(), d.getNumberOfPhotos());
+                    Dish dish = new Dish(d.getName(), d.getCost(), d.getCategory(), d.getNumberOfPhotos());
                     dish.setAverageRating(d.getRating());
                     dishes.add(dish);
                 }
@@ -60,7 +59,7 @@ public class DishRepository {
         MutableLiveData<Dish> ld = new MutableLiveData<>();
         dishDao.get(foodServiceName, name).observeForever(dishDB -> {
             if (dishDB != null) {
-                Dish dish = new Dish(dishDB.getName(), dishDB.getCost(), dishDB.getNumberOfPhotos());
+                Dish dish = new Dish(dishDB.getName(), dishDB.getCost(), dishDB.getCategory(), dishDB.getNumberOfPhotos());
                 String key = generateKeyFrom(foodServiceName, name);
                 for (int i = 0; i < dishDB.getNumberOfPhotos(); i++) {
                     bitmapCache.get(key + i, bitmap -> {
@@ -85,7 +84,7 @@ public class DishRepository {
                 boolean success = foodServer.putDish(foodServiceName, dish);
                 if (success)
                     FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
-                        dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), dish.getAverageRating(), dish.getNumberOfPhotos(), foodServiceName));
+                        dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), dish.getCategory(), dish.getAverageRating(), dish.getNumberOfPhotos(), foodServiceName));
                     });
                 ld.postValue(success);
             });
@@ -148,7 +147,7 @@ public class DishRepository {
                 ArrayList<Dish> dishes = foodServer.getDishes(foodServiceName);
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
                     for (Dish d : dishes)
-                        dishDao.insert(new DishDBEntity(d.getName(), d.getCost(), d.getAverageRating(), d.getNumberOfPhotos(), foodServiceName));
+                        dishDao.insert(new DishDBEntity(d.getName(), d.getCost(), d.getCategory(), d.getAverageRating(), d.getNumberOfPhotos(), foodServiceName));
                 });
             });
         }
@@ -170,7 +169,7 @@ public class DishRepository {
                         sum += rating.getValue();
                     }
                     float average = sum == 0 ? 0 : sum / dish.getRatings().size();
-                    dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), average, dish.getNumberOfPhotos(), foodServiceName));
+                    dishDao.insert(new DishDBEntity(dish.getName(), dish.getCost(), dish.getCategory(), average, dish.getNumberOfPhotos(), foodServiceName));
                 });
             });
         }

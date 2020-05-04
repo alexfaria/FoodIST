@@ -14,10 +14,10 @@
     </string-array>
 
     <string-array name="dietary_preferences">
-        <item>Meat</item>
-        <item>Fish</item>
-        <item>Vegetarian</item>
-        <item>Vegan</item>
+        <item>@string/meat</item>
+        <item>@string/fish</item>
+        <item>@string/vegetarian</item>
+        <item>@string/vegan</item>
     </string-array>
 
     <string-array name="dietary_preferences_values">
