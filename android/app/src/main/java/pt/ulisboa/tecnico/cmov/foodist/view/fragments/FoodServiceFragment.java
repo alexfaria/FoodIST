@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,11 +67,12 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     private SharedPreferences sharedPreferences;
 
     // Dish
-    private RecyclerView recyclerView;
     private FoodMenuAdapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-
+    private RecyclerView recyclerView;
     private DishViewModel dishViewModel;
+    private RecyclerView.LayoutManager layoutManager;
+    private boolean showAll = false;
+    private Switch showAllSwitch;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,6 +122,11 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     .navigate(R.id.action_FoodMenu_to_AddToMenu, getArguments());
         });
 
+        showAllSwitch = view.findViewById(R.id.showAllSwitch);
+        showAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getDishes();
+        });
+
         return view;
     }
 
@@ -155,24 +162,42 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(foodServiceCoord, MAP_ZOOM_LEVEL));
                 }
             });
+
+            getDishes();
+        }
+    }
+
+
+    private void getDishes() {
+        String foodServiceName = getArguments().getString(NAVHOST_ARGS_FOODSERVICE_NAME);
+        Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>()));
+
+        if (foodServiceName != null) {
             dishViewModel.getDishes(foodServiceName).observe(this, data -> {
                 if (data != null && data.size() > 0) {
-                    ArrayList<Dish> filteredData = new ArrayList<>();
-                    for (Dish d : data) {
-                        for (String preference : dietaryPreferences) {
-                            if (Integer.parseInt(preference) == d.getCategory()) {
-                                filteredData.add(d);
-                                break;
+
+                    if (showAllSwitch.getVisibility() == View.VISIBLE && showAllSwitch.isChecked()) {
+                        adapter.setData(data);
+                    } else {
+                        ArrayList<Dish> filteredData = new ArrayList<>();
+                        for (Dish d : data) {
+                            for (String preference : dietaryPreferences) {
+                                if (Integer.parseInt(preference) == d.getCategory()) {
+                                    filteredData.add(d);
+                                    break;
+                                }
                             }
                         }
-                    }
 
-                    adapter.setData(filteredData);
+                        if (filteredData.size() != data.size()) {
+                            Toast toast = Toast.makeText(getContext(), "Some dishes were filtered!", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                            showAllSwitch.setVisibility(View.VISIBLE);
+                            // show button for showall
+                        }
 
-                    if (filteredData.size() != data.size()) {
-                        Toast toast = Toast.makeText(getContext(), "Some dishes were filtered!", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.CENTER, 0, 0);
-                        toast.show();
+                        adapter.setData(filteredData);
                     }
                 } else {
                     Toast toast = Toast.makeText(getContext(), "There are currently no dishes available!", Toast.LENGTH_LONG);
@@ -196,6 +221,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        getDishes();
     }
 
     @Override
