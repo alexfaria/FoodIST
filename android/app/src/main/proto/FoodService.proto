@@ -22,9 +22,10 @@ message FoodServiceDto {
     string name = 1;
     string openingHours = 2;
     float rating = 3;
-    int32 queueTime = 4;
-    double latitude = 5;
-    double longitude = 6;
+    repeated int32 categories = 4;
+    int32 queueTime = 5;
+    double latitude = 6;
+    double longitude = 7;
 }
 
 message GetDishesRequest {

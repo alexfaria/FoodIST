@@ -107,16 +107,18 @@ public class DiningOptionsFragment extends Fragment implements
     private void retrieveFoodServices() {
         String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
         String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
-        if (!campus.isEmpty() && !status.isEmpty())
+        if (!campus.isEmpty() && !status.isEmpty()) {
+            Toast toast = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);
             viewModel.getFoodServices(campus, status).observe(this, data -> {
-                if (data != null)
+                if (data != null && data.size() > 0) {
+                    toast.cancel();
                     adapter.setData(data);
-                else {
-                    Toast toast = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);
+                } else {
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                 }
             });
+        }
     }
 
     @Override

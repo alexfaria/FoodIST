@@ -6,11 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import pt.ulisboa.tecnico.cmov.foodist.repository.database.converter.Converters;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.DishDao;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.DishRatingDao;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.dao.FoodServiceDao;
@@ -19,6 +21,7 @@ import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.DishRatingDBEn
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.FoodServiceDBEntity;
 
 @Database(entities = {FoodServiceDBEntity.class, DishDBEntity.class, DishRatingDBEntity.class}, version = 1, exportSchema = false)
+@TypeConverters(Converters.class)
 public abstract class FoodRoomDatabase extends RoomDatabase {
 
     public abstract FoodServiceDao foodServiceDao();

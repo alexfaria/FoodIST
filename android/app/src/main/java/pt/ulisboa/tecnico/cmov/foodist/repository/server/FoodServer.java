@@ -51,7 +51,7 @@ public class FoodServer {
         ArrayList<FoodService> diningOptions = new ArrayList<>();
         while (foodServicesDtos.hasNext()) {
             FoodServiceDto dto = foodServicesDtos.next();
-            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getRating(), dto.getQueueTime(),dto.getLatitude(), dto.getLongitude());
+            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getRating(), dto.getCategoriesList(), dto.getQueueTime(),dto.getLatitude(), dto.getLongitude());
             diningOptions.add(dOption);
         }
         return diningOptions;
@@ -61,7 +61,7 @@ public class FoodServer {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         FoodServiceDto dto = stub.getFoodService(
                 GetFoodServiceRequest.newBuilder().setCampus(campus).setStatus(status).setFoodServiceName(foodServiceName).build());
-       return new FoodService(dto.getName(), dto.getOpeningHours(), dto.getRating(), dto.getQueueTime(), dto.getLatitude(), dto.getLongitude());
+       return new FoodService(dto.getName(), dto.getOpeningHours(), dto.getRating(), dto.getCategoriesList(), dto.getQueueTime(), dto.getLatitude(), dto.getLongitude());
     }
 
     public ArrayList<Dish> getDishes(String foodServiceName) {

@@ -64,6 +64,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                         .setName(fs.getName())
                         .setOpeningHours(openingHours.toString())
                         .setRating(fs.getRating())
+                        .addAllCategories(fs.getCategories())
                         .setQueueTime(fs.getQueueWaitTime())
                         .setLatitude(fs.getLatitude())
                         .setLongitude(fs.getLongitude())
@@ -80,6 +81,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                     .newBuilder()
                     .setName(fs.getName())
                     .setOpeningHours(fs.getOpeningHours(request.getStatus()).toString())
+                    .addAllCategories(fs.getCategories())
                     .setLatitude(fs.getLatitude())
                     .setLongitude(fs.getLongitude())
                     .build());

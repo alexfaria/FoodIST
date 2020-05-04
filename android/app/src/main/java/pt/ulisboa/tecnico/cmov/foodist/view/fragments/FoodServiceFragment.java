@@ -74,6 +74,10 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     private boolean showAll = false;
     private Switch showAllSwitch;
 
+    // Toasts
+    private Toast notAvailable;
+    private Toast filtered;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,8 +126,14 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     .navigate(R.id.action_FoodMenu_to_AddToMenu, getArguments());
         });
 
+        notAvailable = Toast.makeText(getContext(), "There are currently no dishes available!", Toast.LENGTH_LONG);
+        filtered = Toast.makeText(getContext(), "Some dishes were filtered!", Toast.LENGTH_SHORT);
         showAllSwitch = view.findViewById(R.id.showAllSwitch);
         showAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked)
+                filtered.show();
+            else
+                filtered.cancel();
             getDishes();
         });
 
@@ -171,11 +181,10 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     private void getDishes() {
         String foodServiceName = getArguments().getString(NAVHOST_ARGS_FOODSERVICE_NAME);
         Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>()));
-
         if (foodServiceName != null) {
             dishViewModel.getDishes(foodServiceName).observe(this, data -> {
                 if (data != null && data.size() > 0) {
-
+                    notAvailable.cancel();
                     if (showAllSwitch.getVisibility() == View.VISIBLE && showAllSwitch.isChecked()) {
                         adapter.setData(data);
                     } else {
@@ -190,19 +199,15 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                         }
 
                         if (filteredData.size() != data.size()) {
-                            Toast toast = Toast.makeText(getContext(), "Some dishes were filtered!", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
+                            filtered.setGravity(Gravity.CENTER, 0, 0);
+                            filtered.show();
                             showAllSwitch.setVisibility(View.VISIBLE);
-                            // show button for showall
                         }
-
                         adapter.setData(filteredData);
                     }
                 } else {
-                    Toast toast = Toast.makeText(getContext(), "There are currently no dishes available!", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
+                    notAvailable.setGravity(Gravity.CENTER, 0, 0);
+                    notAvailable.show();
                 }
             });
         }

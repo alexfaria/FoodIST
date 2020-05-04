@@ -35,7 +35,7 @@ public class FoodServiceRepository {
                 for (FoodServiceDBEntity fs : fsDB)
                     if (fs.isOpen())
                         foodServices.add(
-                                new FoodService(fs.getName(), fs.getOpeningHours(), fs.getRating(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude())
+                                new FoodService(fs.getName(), fs.getOpeningHours(), fs.getRating(), fs.getCategories(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude())
                         );
                 ld.postValue(foodServices);
             }
@@ -48,7 +48,7 @@ public class FoodServiceRepository {
         MutableLiveData<FoodService> ld = new MutableLiveData<>();
         foodServiceDao.get(campus, status, foodServiceName).observeForever(fsDB -> {
             if (fsDB != null)
-                ld.postValue(new FoodService(fsDB.getName(), fsDB.getOpeningHours(), fsDB.getRating(), fsDB.getQueueTime(),fsDB.getLatitude(), fsDB.getLongitude()));
+                ld.postValue(new FoodService(fsDB.getName(), fsDB.getOpeningHours(), fsDB.getRating(), fsDB.getCategories(), fsDB.getQueueTime(),fsDB.getLatitude(), fsDB.getLongitude()));
         });
         refreshFoodService(campus, status,foodServiceName);
         return ld;
@@ -79,7 +79,7 @@ public class FoodServiceRepository {
                 ArrayList<FoodService> foodServices = foodServer.getFoodServices(campus, status);
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
                     for (FoodService fs : foodServices)
-                        foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+                        foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getCategories(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
                 });
             });
         }
@@ -91,7 +91,7 @@ public class FoodServiceRepository {
             FoodServer.serverExecutor.execute(() -> {
                 FoodService fs = foodServer.getFoodService(campus, status, foodServiceName);
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
-                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
+                    foodServiceDao.insert(new FoodServiceDBEntity(fs.getName(), campus, status, fs.getOpeningHours(), fs.getRating(), fs.getCategories(), fs.getQueueTime(), fs.getLatitude(), fs.getLongitude()));
                 });
             });
         }

@@ -4,10 +4,7 @@ import edu.princeton.cs.algs4.LinearRegression;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class FoodService {
 
@@ -83,6 +80,16 @@ public class FoodService {
             numOfRatings += dish.getRatings().size();
         }
         return numOfRatings == 0 ? 0 : totalOfRatings / numOfRatings;
+    }
+
+    public List<Integer> getCategories() {
+        List<Integer> categories = new ArrayList<>();
+        menu.values().forEach(dish -> {
+            int category = dish.getCategory();
+            if (!categories.contains(category))
+                categories.add(category);
+        });
+        return categories;
     }
 
     public void addToQueue(String UUID) {
