@@ -47,8 +47,8 @@
 ## Dieatery Constraints
 
 - [ ] filtar food services pelas constraints
-- [ ] 'some have been filtered due to constraints' -> botao para 'show all'
-- [ ] aplicar filtro no cliente
+- [X] 'some have been filtered due to constraints' -> botao para 'show all'
+- [X] aplicar filtro no cliente
 
 ## Ratings
 - [X] review conta para o prato e para o restaurante
