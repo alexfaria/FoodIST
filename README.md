@@ -46,7 +46,7 @@
 
 ## Dieatery Constraints
 
-- [ ] filtar food services pelas constraints
+- [X] filtar food services pelas constraints
 - [X] 'some have been filtered due to constraints' -> botao para 'show all'
 - [X] aplicar filtro no cliente
 
