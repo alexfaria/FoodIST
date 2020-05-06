@@ -15,40 +15,96 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     private final HashMap<String, FoodService> foodServices = new HashMap<>();
 
     public FoodServiceImpl() {
-        Map<String, OpeningHours> restaurants = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("09:00-21:00"));
-            put("Professor", new OpeningHours("08:00-22:00"));
-            put("Researcher", new OpeningHours("08:00-22:00"));
-            put("Staff", new OpeningHours("08:00-22:00"));
+
+        Map<String, OpeningHours> bars = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("9:00-17:00"));
+            put("Professor", new OpeningHours("9:00-17:00"));
+            put("Researcher", new OpeningHours("9:00-17:00"));
+            put("Staff", new OpeningHours("9:00-17:00"));
+            put("General Public", new OpeningHours("9:00-17:00"));
+        }};
+        Map<String, OpeningHours> mathCafe = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("13:30-15:00"));
+            put("Professor", new OpeningHours("12:00-15:00"));
+            put("Researcher", new OpeningHours("12:00-15:00"));
+            put("Staff", new OpeningHours("12:00-15:00"));
+            put("General Public", new OpeningHours("13:30-15:00"));
+        }};
+        Map<String, OpeningHours> complexBar = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("9:00-12:00"));
+            //put("Student", new OpeningHours("14:00-17:00"));
+            put("Professor", new OpeningHours("9:00-17:00"));
+            put("Researcher", new OpeningHours("9:00-17:000"));
+            put("Staff", new OpeningHours("9:00-17:00"));
+            put("General Public", new OpeningHours("9:00-12:00"));
+            //put("General Public", new OpeningHours("14:00-17:00"));
+        }};
+        Map<String, OpeningHours> cafeCivTag = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("12:00-15:00"));
+            put("Professor", new OpeningHours("12:00-15:00"));
+            put("Researcher", new OpeningHours("12:00-15:00"));
+            put("Staff", new OpeningHours("12:00-15:00"));
+            put("General Public", new OpeningHours("12:00-15:00"));
+        }};
+        Map<String, OpeningHours> sena = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("8:00-19:00"));
+            put("Professor", new OpeningHours("8:00-19:00"));
+            put("Researcher", new OpeningHours("8:00-19:00"));
+            put("Staff", new OpeningHours("8:00-19:00"));
+            put("General Public", new OpeningHours("8:00-19:00"));
+        }};
+        Map<String, OpeningHours> sas = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("9:00-21:00"));
+            put("Professor", new OpeningHours("9:00-21:00"));
+            put("Researcher", new OpeningHours("9:00-21:00"));
+            put("Staff", new OpeningHours("9:00-21:00"));
+            put("General Public", new OpeningHours("9:00-21:00"));
+        }};
+        Map<String, OpeningHours> redBar = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("8:00-22:00"));
+            put("Professor", new OpeningHours("8:00-22:00"));
+            put("Researcher", new OpeningHours("8:00-22:00"));
+            put("Staff", new OpeningHours("8:00-22:00"));
+            put("General Public", new OpeningHours("8:00-22:00"));
+        }};
+        Map<String, OpeningHours> greenBar = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("7:00-19:00"));
+            put("Professor", new OpeningHours("7:00-19:00"));
+            put("Researcher", new OpeningHours("7:00-19:00"));
+            put("Staff", new OpeningHours("7:00-19:00"));
+            put("General Public", new OpeningHours("7:00-19:00"));
+        }};
+        /*Map<String, OpeningHours> ctnCafe = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("12:00-14:00"));
+            put("Professor", new OpeningHours("12:00-14:00"));
+            put("Researcher", new OpeningHours("12:00-14:00"));
+            put("Staff", new OpeningHours("12:00-14:00"));
             put("General Public", new OpeningHours("12:00-14:00"));
         }};
-        Map<String, OpeningHours> bars = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("10:00-20:00"));
-            put("Professor", new OpeningHours("08:00-22:00"));
-            put("Researcher", new OpeningHours("08:00-22:00"));
-            put("Staff", new OpeningHours("08:00-22:00"));
-            put("General Public", new OpeningHours("11:00-18:00"));
-        }};
-        Map<String, OpeningHours> lateBars = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("12:00-23:00"));
-            put("Professor", new OpeningHours("12:00-20:00"));
-            put("Researcher", new OpeningHours("12:00-20:00"));
-            put("Staff", new OpeningHours("12:00-20:00"));
-            put("General Public", new OpeningHours("14:00-18:00"));
-        }};
-        foodServices.put("Social Canteen", new FoodService("Social Canteen", "Alameda", restaurants, 38.736382, -9.136967));
-        foodServices.put("Civil Canteen", new FoodService("Civil Canteen", "Alameda", restaurants, 38.737732, -9.140482));
-        foodServices.put("Civil Cafeteria", new FoodService("Civil Cafeteria", "Alameda", bars, 38.737066, -9.140007));
-        foodServices.put("Math Cafeteria", new FoodService("Math Cafeteria", "Alameda", bars, 38.735610, -9.139690));
-        foodServices.put("Chemistry Cafeteria", new FoodService("Chemistry Cafeteria", "Alameda", bars, 38.736012, -9.138324));
-        foodServices.put("Central Bar", new FoodService("Central Bar", "Alameda", bars, 38.736610, -9.139605));
-        foodServices.put("Mechanic Cafeteria", new FoodService("Mechanic Cafeteria", "Alameda", bars, 38.737422, -9.137403));
-        foodServices.put("AEIST Bar", new FoodService("AEIST Bar", "Alameda", lateBars, 38.736382, -9.136967));
-        foodServices.put("Complex Bar", new FoodService("Complex Bar", "Alameda", lateBars, 38.736131, -9.137807));
-        foodServices.put("Sena Restaurant", new FoodService("Sena Restaurant", "Alameda", restaurants, 38.737715, -9.138638));
-        foodServices.put("Canteen", new FoodService("Canteen", "Taguspark", restaurants, 38.736902, -9.302608));
-        foodServices.put("Snack/Bar Praxe Bar", new FoodService("Snack/Bar Praxe Bar", "Taguspark", lateBars, 38.736902, -9.302608));
-        foodServices.put("Taguspark Restaurant/Bar", new FoodService("Taguspark Restaurant/Bar", "Taguspark", restaurants, 38.736563, -9.302200));
+        Map<String, OpeningHours> ctnBar = new HashMap<String, OpeningHours>() {{
+            put("Student", new OpeningHours("8:30-12:00"));
+            put("Professor", new OpeningHours("8:30-12:00"));
+            put("Researcher", new OpeningHours("8:30-12:00"));
+            put("Staff", new OpeningHours("8:30-12:00"));
+            put("General Public", new OpeningHours("8:30-12:00"));
+
+        }};*/
+        foodServices.put("SAS Cafeteria", new FoodService("SAS Cafeteria", "Alameda", sas, 38.736571, -9.137036));
+        foodServices.put("Civil Bar", new FoodService("Civil Bar", "Alameda", bars, 38.736988, -9.139955));
+        foodServices.put("Civil Cafeteria", new FoodService("Civil Cafeteria", "Alameda", cafeCivTag, 38.737650, -9.140384));
+        foodServices.put("Math Cafeteria", new FoodService("Math Cafeteria", "Alameda", mathCafe, 38.735508, -9.139645));
+        foodServices.put("Chemy Bar", new FoodService("Chemy Bar", "Alameda", bars, 38.736240, -9.138302));
+        foodServices.put("Central Bar", new FoodService("Central Bar", "Alameda", bars, 38.736606, -9.139532));
+        foodServices.put("Mechy Bar", new FoodService("Mechy Bar", "Alameda", bars,38.737247, -9.137434));
+        foodServices.put("AEIST Bar", new FoodService("AEIST Bar", "Alameda", bars, 38.736542, -9.137226));
+        //foodServices.put("AEIST Esplanade", new FoodService("AEIST Esplanade", "Alameda", bars, 	38.736318, -9.137820));
+        foodServices.put("Complex Bar", new FoodService("Complex Bar", "Alameda", complexBar, 38.736050, -9.140156));
+        foodServices.put("Sena Pastry Shop", new FoodService("Sena Pastry Shop", "Alameda", sena, 38.737677, -9.138672));
+        foodServices.put("Tagus Cafeteria", new FoodService("Tagus Cafeteria", "Taguspark", cafeCivTag, 38.737802, -9.303223));
+        foodServices.put("Green Bar", new FoodService("Green Bar", "Taguspark", greenBar, 38.738004, -9.303058));
+        foodServices.put("Red Bar", new FoodService("Red Bar", "Taguspark", redBar, 38.736546, -9.302207));
+        //foodServices.put("CTN Cafeteria", new FoodService("CTN Cafeteria", "CTN", ctnCafe, 38.812522, -9.093773));
+        //foodServices.put("CTN Bar", new FoodService("CTN Bar", "CTN", ctnBar, 38.812522, -9.093773));
     }
 
     @Override
