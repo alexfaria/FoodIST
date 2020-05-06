@@ -15,7 +15,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     private final HashMap<String, FoodService> foodServices = new HashMap<>();
 
     public FoodServiceImpl() {
-
+        LocalTime time = LocalTime.now();
         Map<String, OpeningHours> bars = new HashMap<String, OpeningHours>() {{
             put("Student", new OpeningHours("9:00-17:00"));
             put("Professor", new OpeningHours("9:00-17:00"));
@@ -31,13 +31,17 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
             put("General Public", new OpeningHours("13:30-15:00"));
         }};
         Map<String, OpeningHours> complexBar = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("9:00-12:00"));
-            //put("Student", new OpeningHours("14:00-17:00"));
             put("Professor", new OpeningHours("9:00-17:00"));
             put("Researcher", new OpeningHours("9:00-17:000"));
             put("Staff", new OpeningHours("9:00-17:00"));
-            put("General Public", new OpeningHours("9:00-12:00"));
-            //put("General Public", new OpeningHours("14:00-17:00"));
+            if (LocalTime.NOON.isAfter(time)) {
+                put("Student", new OpeningHours("9:00-12:00"));
+                put("General Public", new OpeningHours("9:00-12:00"));
+            }
+            else {
+                put("Student", new OpeningHours("14:00-17:00"));
+                put("General Public", new OpeningHours("14:00-17:00"));
+            }
         }};
         Map<String, OpeningHours> cafeCivTag = new HashMap<String, OpeningHours>() {{
             put("Student", new OpeningHours("12:00-15:00"));
@@ -82,11 +86,20 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
             put("General Public", new OpeningHours("12:00-14:00"));
         }};
         Map<String, OpeningHours> ctnBar = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("8:30-12:00"));
-            put("Professor", new OpeningHours("8:30-12:00"));
-            put("Researcher", new OpeningHours("8:30-12:00"));
-            put("Staff", new OpeningHours("8:30-12:00"));
-            put("General Public", new OpeningHours("8:30-12:00"));
+            if (LocalTime.NOON.isAfter(time)) {
+                put("Student", new OpeningHours("8:30-12:00"));
+                put("Professor", new OpeningHours("8:30-12:00"));
+                put("Researcher", new OpeningHours("8:30-12:00"));
+                put("Staff", new OpeningHours("8:30-12:00"));
+                put("General Public", new OpeningHours("8:30-12:00"));
+            }
+            else {
+                put("Student", new OpeningHours("15:30-16:30"));
+                put("Professor", new OpeningHours("15:30-16:30"));
+                put("Researcher", new OpeningHours("15:30-16:30"));
+                put("Staff", new OpeningHours("15:30-16:30"));
+                put("General Public", new OpeningHours("15:30-16:30"));
+            }
 
         }};*/
         foodServices.put("SAS Cafeteria", new FoodService("SAS Cafeteria", "Alameda", sas, 38.736571, -9.137036));
