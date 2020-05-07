@@ -3,6 +3,7 @@
     <string-array name="locations">
         <item>Alameda</item>
         <item>Taguspark</item>
+        <item>CTN</item>
     </string-array>
 
     <string-array name="status">

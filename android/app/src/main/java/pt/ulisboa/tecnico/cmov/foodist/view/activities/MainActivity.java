@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private final int LOCATION_RADIUS = 1000; // 1km radius
     private final Location ALAMEDA = new Location("");
     private final Location TAGUSPARK = new Location("");
+    private final Location CTN = new Location("");
+
 
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
@@ -102,7 +104,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         ALAMEDA.setLatitude(Double.parseDouble(getString(R.string.alameda_latitude)));
         ALAMEDA.setLongitude(Double.parseDouble(getString(R.string.alameda_longitude)));
         TAGUSPARK.setLatitude(Double.parseDouble(getString(R.string.taguspark_latitude)));
-        TAGUSPARK.setLongitude(Double.parseDouble(getString(R.string.alameda_longitude)));
+        TAGUSPARK.setLongitude(Double.parseDouble(getString(R.string.taguspark_longitude)));
+        CTN.setLatitude(Double.parseDouble(getString(R.string.ctn_latitude)));
+        CTN.setLongitude(Double.parseDouble(getString(R.string.ctn_longitude)));
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = LocationRequest.create();
@@ -232,12 +236,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             } else if (location.distanceTo(TAGUSPARK) <= LOCATION_RADIUS) {
                 Log.d("MainActivity", "Located in Técnico Taguspark");
                 sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "Taguspark").apply();
+            } else if (location.distanceTo(CTN) <= LOCATION_RADIUS) {
+                    Log.d("MainActivity", "Located in Técnico CTN");
+                    sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "CTN").apply();
             } else {
                 Log.d("MainActivity", "Not close to any campus");
                 checkCampus();
             }
-        } else
+        } else {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
+        }
     }
 
     @Override
