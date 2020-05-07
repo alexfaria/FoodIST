@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.cmov.foodist.repository.database.converter;
 
+import androidx.room.TypeConverter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.room.TypeConverter;
 
 public class Converters {
 

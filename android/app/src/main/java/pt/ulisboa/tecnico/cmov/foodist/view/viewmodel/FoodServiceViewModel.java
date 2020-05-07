@@ -9,7 +9,6 @@ import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodist.repository.FoodServiceRepository;
-import pt.ulisboa.tecnico.cmov.foodist.view.App;
 
 public class FoodServiceViewModel extends ViewModel {
 

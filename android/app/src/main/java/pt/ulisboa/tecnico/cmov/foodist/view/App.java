@@ -2,17 +2,14 @@ package pt.ulisboa.tecnico.cmov.foodist.view;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 import java.util.UUID;

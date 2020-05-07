@@ -3,10 +3,8 @@ package pt.ulisboa.tecnico.cmov.foodist.service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
-import pt.ulisboa.tecnico.cmov.foodist.view.activities.MainActivity;
 
 public class SimWifiP2pBroadcastReceiver extends BroadcastReceiver {
 
