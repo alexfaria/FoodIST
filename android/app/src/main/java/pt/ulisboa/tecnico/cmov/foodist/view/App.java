@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.NetworkSpecifier;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -54,7 +55,7 @@ public class App extends Application {
 
             @Override
             public void onAvailable(@NonNull Network network) {
-                Log.d("App", "Network onAvailable Callback");
+                Log.d("App", "Network onAvailable");
                 if (numOfAvailableNetworks++ == 0) {
                     isConnected = true;
                     ManagedChannel channel = ManagedChannelBuilder

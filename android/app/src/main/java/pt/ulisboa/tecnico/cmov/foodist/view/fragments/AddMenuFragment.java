@@ -81,6 +81,10 @@ public class AddMenuFragment extends Fragment {
         });
 
         view.findViewById(R.id.submitBtn).setOnClickListener(v -> {
+            if (!((App)getContext().getApplicationContext()).isConnected()) {
+                Toast.makeText(getContext(), "No connection available!", Toast.LENGTH_LONG).show();
+                return;
+            }
             String name = dishName.getText().toString();
             if (name.isEmpty()) {
                 dishName.setError("Name missing!");

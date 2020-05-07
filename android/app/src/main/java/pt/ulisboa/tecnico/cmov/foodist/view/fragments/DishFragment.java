@@ -84,6 +84,10 @@ public class DishFragment extends Fragment {
         rating = view.findViewById(R.id.dish_rating);
         rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             if (fromUser) {
+                if (!((App)getContext().getApplicationContext()).isConnected()) {
+                    Toast.makeText(getContext(), "No connection available!", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 viewModel.putUserDishRating(foodServiceNameArg, dishNameArg, rating, uuid);
                 Toast.makeText(getContext(), "Your feedback was saved!", Toast.LENGTH_SHORT).show();
             }
@@ -158,6 +162,10 @@ public class DishFragment extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             if (imageBitmap != null) {
+                if (!((App)getContext().getApplicationContext()).isConnected()) {
+                    Toast.makeText(getContext(), "No connection available!", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 viewModel.putDishPhoto(foodServiceNameArg, dishNameArg, imageBitmap);
                 adapter.addItem(imageBitmap);
                 Toast.makeText(getContext(), "Your photo was uploaded!", Toast.LENGTH_SHORT).show();
