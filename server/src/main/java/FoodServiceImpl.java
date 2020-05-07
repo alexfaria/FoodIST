@@ -7,98 +7,82 @@ import pt.ulisboa.tecnico.cmov.foodservice.*;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     private final HashMap<String, FoodService> foodServices = new HashMap<>();
 
     public FoodServiceImpl() {
-        LocalTime time = LocalTime.now();
-        Map<String, OpeningHours> bars = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("09:00-17:00"));
-            put("Professor", new OpeningHours("09:00-17:00"));
-            put("Researcher", new OpeningHours("09:00-17:00"));
-            put("Staff", new OpeningHours("09:00-17:00"));
-            put("General Public", new OpeningHours("09:00-17:00"));
+        Map<String, List<OpeningHours>> bars = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("09:00-17:00")));
         }};
-        Map<String, OpeningHours> mathCafe = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("13:30-15:00"));
-            put("Professor", new OpeningHours("12:00-15:00"));
-            put("Researcher", new OpeningHours("12:00-15:00"));
-            put("Staff", new OpeningHours("12:00-15:00"));
-            put("General Public", new OpeningHours("13:30-15:00"));
+        Map<String, List<OpeningHours>> mathCafe = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("13:30-15:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("13:30-15:00")));
         }};
-        Map<String, OpeningHours> complexBar = new HashMap<String, OpeningHours>() {{
-            put("Professor", new OpeningHours("09:00-17:00"));
-            put("Researcher", new OpeningHours("09:00-17:00"));
-            put("Staff", new OpeningHours("09:00-17:00"));
-            if (LocalTime.NOON.isAfter(time)) {
-                put("Student", new OpeningHours("09:00-12:00"));
-                put("General Public", new OpeningHours("09:00-12:00"));
-            } else {
-                put("Student", new OpeningHours("14:00-17:00"));
-                put("General Public", new OpeningHours("14:00-17:00"));
-            }
+        Map<String, List<OpeningHours>> complexBar = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Arrays.asList(new OpeningHours("09:00-12:00"), new OpeningHours("14:00-17:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("09:00-17:00")));
+            put("General Public", Arrays.asList(new OpeningHours("09:00-12:00"), new OpeningHours("14:00-17:00")));
         }};
-        Map<String, OpeningHours> cafeCivTag = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("12:00-15:00"));
-            put("Professor", new OpeningHours("12:00-15:00"));
-            put("Researcher", new OpeningHours("12:00-15:00"));
-            put("Staff", new OpeningHours("12:00-15:00"));
-            put("General Public", new OpeningHours("12:00-15:00"));
+        Map<String, List<OpeningHours>> cafeCivTag = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("12:00-15:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("12:00-15:00")));
         }};
-        Map<String, OpeningHours> sena = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("08:00-19:00"));
-            put("Professor", new OpeningHours("08:00-19:00"));
-            put("Researcher", new OpeningHours("08:00-19:00"));
-            put("Staff", new OpeningHours("08:00-19:00"));
-            put("General Public", new OpeningHours("08:00-19:00"));
+        Map<String, List<OpeningHours>> sena = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("08:00-19:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("08:00-19:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("08:00-19:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("08:00-19:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("08:00-19:00")));
         }};
-        Map<String, OpeningHours> sas = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("09:00-21:00"));
-            put("Professor", new OpeningHours("09:00-21:00"));
-            put("Researcher", new OpeningHours("09:00-21:00"));
-            put("Staff", new OpeningHours("09:00-21:00"));
-            put("General Public", new OpeningHours("09:00-21:00"));
+        Map<String, List<OpeningHours>> sas = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("09:00-21:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("09:00-21:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("09:00-21:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("09:00-21:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("09:00-21:00")));
         }};
-        Map<String, OpeningHours> redBar = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("08:00-22:00"));
-            put("Professor", new OpeningHours("08:00-22:00"));
-            put("Researcher", new OpeningHours("08:00-22:00"));
-            put("Staff", new OpeningHours("08:00-22:00"));
-            put("General Public", new OpeningHours("08:00-22:00"));
+        Map<String, List<OpeningHours>> redBar = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("08:00-22:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("08:00-22:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("08:00-22:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("08:00-22:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("08:00-22:00")));
         }};
-        Map<String, OpeningHours> greenBar = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("07:00-19:00"));
-            put("Professor", new OpeningHours("07:00-19:00"));
-            put("Researcher", new OpeningHours("07:00-19:00"));
-            put("Staff", new OpeningHours("07:00-19:00"));
-            put("General Public", new OpeningHours("07:00-19:00"));
+        Map<String, List<OpeningHours>> greenBar = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("07:00-19:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("07:00-19:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("07:00-19:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("07:00-19:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("07:00-19:00")));
         }};
-        Map<String, OpeningHours> ctnCafe = new HashMap<String, OpeningHours>() {{
-            put("Student", new OpeningHours("12:00-14:00"));
-            put("Professor", new OpeningHours("12:00-14:00"));
-            put("Researcher", new OpeningHours("12:00-14:00"));
-            put("Staff", new OpeningHours("12:00-14:00"));
-            put("General Public", new OpeningHours("12:00-14:00"));
+        Map<String, List<OpeningHours>> ctnCafe = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Collections.singletonList(new OpeningHours("12:00-14:00")));
+            put("Professor", Collections.singletonList(new OpeningHours("12:00-14:00")));
+            put("Researcher", Collections.singletonList(new OpeningHours("12:00-14:00")));
+            put("Staff", Collections.singletonList(new OpeningHours("12:00-14:00")));
+            put("General Public", Collections.singletonList(new OpeningHours("12:00-14:00")));
         }};
-        Map<String, OpeningHours> ctnBar = new HashMap<String, OpeningHours>() {{
-            if (LocalTime.NOON.isAfter(time)) {
-                put("Student", new OpeningHours("08:30-12:00"));
-                put("Professor", new OpeningHours("08:30-12:00"));
-                put("Researcher", new OpeningHours("08:30-12:00"));
-                put("Staff", new OpeningHours("08:30-12:00"));
-                put("General Public", new OpeningHours("08:30-12:00"));
-            } else {
-                put("Student", new OpeningHours("15:30-16:30"));
-                put("Professor", new OpeningHours("15:30-16:30"));
-                put("Researcher", new OpeningHours("15:30-16:30"));
-                put("Staff", new OpeningHours("15:30-16:30"));
-                put("General Public", new OpeningHours("15:30-16:30"));
-            }
-
+        Map<String, List<OpeningHours>> ctnBar = new HashMap<String, List<OpeningHours>>() {{
+            put("Student", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
+            put("Professor", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
+            put("Researcher", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
+            put("Staff", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
+            put("General Public", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
         }};
         foodServices.put("SAS Cafeteria", new FoodService("SAS Cafeteria", "Alameda", sas, 38.736571, -9.137036));
         foodServices.put("Civil Bar", new FoodService("Civil Bar", "Alameda", bars, 38.736988, -9.139955));
@@ -108,7 +92,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
         foodServices.put("Central Bar", new FoodService("Central Bar", "Alameda", bars, 38.736606, -9.139532));
         foodServices.put("Mechy Bar", new FoodService("Mechy Bar", "Alameda", bars, 38.737247, -9.137434));
         foodServices.put("AEIST Bar", new FoodService("AEIST Bar", "Alameda", bars, 38.736542, -9.137226));
-        //foodServices.put("AEIST Esplanade", new FoodService("AEIST Esplanade", "Alameda", bars, 	38.736318, -9.137820));
+        foodServices.put("AEIST Esplanade", new FoodService("AEIST Esplanade", "Alameda", bars, 	38.736318, -9.137820));
         foodServices.put("Complex Bar", new FoodService("Complex Bar", "Alameda", complexBar, 38.736050, -9.140156));
         foodServices.put("Sena Pastry Shop", new FoodService("Sena Pastry Shop", "Alameda", sena, 38.737677, -9.138672));
         foodServices.put("Tagus Cafeteria", new FoodService("Tagus Cafeteria", "Taguspark", cafeCivTag, 38.737802, -9.303223));
@@ -121,15 +105,14 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
         // LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
-        LocalTime current = LocalTime.of(14, 0);
+        LocalTime current = LocalTime.of(14, 30);
         foodServices.values().forEach(fs -> {
-            OpeningHours openingHours = fs.getOpeningHours(request.getStatus());
             if (fs.getCampus().equals(request.getCampus())
-                    && openingHours.isAvailable(current))
+                    && fs.isAvailable(request.getStatus(), current))
                 responseObserver.onNext(FoodServiceDto
                         .newBuilder()
                         .setName(fs.getName())
-                        .setOpeningHours(openingHours.toString())
+                        .addAllOpeningHours(fs.getOpeningHours(request.getStatus()))
                         .setRating(fs.getRating())
                         .addAllCategories(fs.getCategories())
                         .setQueueTime(fs.getQueueWaitTime())
@@ -147,7 +130,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
             responseObserver.onNext(FoodServiceDto
                     .newBuilder()
                     .setName(fs.getName())
-                    .setOpeningHours(fs.getOpeningHours(request.getStatus()).toString())
+                    .addAllOpeningHours(fs.getOpeningHours(request.getStatus()))
                     .addAllCategories(fs.getCategories())
                     .setLatitude(fs.getLatitude())
                     .setLongitude(fs.getLongitude())

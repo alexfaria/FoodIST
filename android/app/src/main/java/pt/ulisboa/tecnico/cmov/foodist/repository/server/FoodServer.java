@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.cmov.foodist.repository.server;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -10,7 +9,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,7 +49,7 @@ public class FoodServer {
         ArrayList<FoodService> diningOptions = new ArrayList<>();
         while (foodServicesDtos.hasNext()) {
             FoodServiceDto dto = foodServicesDtos.next();
-            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHours(), dto.getRating(), dto.getCategoriesList(), dto.getQueueTime(),dto.getLatitude(), dto.getLongitude());
+            FoodService dOption = new FoodService(dto.getName(), dto.getOpeningHoursList(), dto.getRating(), dto.getCategoriesList(), dto.getQueueTime(),dto.getLatitude(), dto.getLongitude());
             diningOptions.add(dOption);
         }
         return diningOptions;
@@ -61,7 +59,7 @@ public class FoodServer {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         FoodServiceDto dto = stub.getFoodService(
                 GetFoodServiceRequest.newBuilder().setCampus(campus).setStatus(status).setFoodServiceName(foodServiceName).build());
-       return new FoodService(dto.getName(), dto.getOpeningHours(), dto.getRating(), dto.getCategoriesList(), dto.getQueueTime(), dto.getLatitude(), dto.getLongitude());
+       return new FoodService(dto.getName(), dto.getOpeningHoursList(), dto.getRating(), dto.getCategoriesList(), dto.getQueueTime(), dto.getLatitude(), dto.getLongitude());
     }
 
     public ArrayList<Dish> getDishes(String foodServiceName) {

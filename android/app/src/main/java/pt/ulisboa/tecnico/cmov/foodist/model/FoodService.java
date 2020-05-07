@@ -5,7 +5,7 @@ import java.util.List;
 public class FoodService {
 
     private String name;
-    private String openingHours;
+    private List<String> openingHours;
     private float rating;
     private List<Integer> categories;
     private int queueTime;
@@ -13,7 +13,7 @@ public class FoodService {
     private double longitude;
     private int walkTime;
 
-    public FoodService(String name, String openingHours, float rating, List<Integer> categories, int queueTime,double latitude, double longitude) {
+    public FoodService(String name, List<String> openingHours, float rating, List<Integer> categories, int queueTime,double latitude, double longitude) {
         this.name = name;
         this.openingHours = openingHours;
         this.rating = rating;
@@ -28,8 +28,15 @@ public class FoodService {
         return name;
     }
 
-    public String getOpeningHours() {
+    public List<String> getOpeningHours() {
         return openingHours;
+    }
+
+    public String getOpeningHoursString() {
+        StringBuilder str = new StringBuilder();
+        for(String hours : openingHours)
+            str.append(hours).append(", ");
+        return str.length() > 0 ? str.substring(0, str.length()-2) : str.toString();
     }
 
     public float getRating() {

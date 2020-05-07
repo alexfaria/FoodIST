@@ -26,7 +26,7 @@ public class FoodServiceDBEntity {
     private String status;
 
     @ColumnInfo(name = "opening_hours")
-    private String openingHours;
+    private List<String> openingHours;
 
     @ColumnInfo(name = "rating")
     private float rating;
@@ -43,7 +43,7 @@ public class FoodServiceDBEntity {
     @ColumnInfo(name = "longitude")
     private double longitude;
 
-    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, @NonNull String status, String openingHours, float rating, List<Integer> categories, int queueTime, double latitude, double longitude) {
+    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, @NonNull String status, List<String> openingHours, float rating, List<Integer> categories, int queueTime, double latitude, double longitude) {
         this.name = name;
         this.campus = campus;
         this.status = status;
@@ -68,7 +68,7 @@ public class FoodServiceDBEntity {
     @NonNull
     public String getStatus() { return status; }
 
-    public String getOpeningHours() {
+    public List<String> getOpeningHours() {
         return openingHours;
     }
 
@@ -94,13 +94,17 @@ public class FoodServiceDBEntity {
 
     public boolean isOpen() {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        String[] range = openingHours.split("-");
-        if (range[0].charAt(0) == '0')
-            range[0] = range[0].substring(1);
-        int open = Integer.parseInt(range[0].replace(":", ""));
-        int close = Integer.parseInt(range[1].replace(":", ""));
-        // int current = Integer.parseInt(formatter.format(new Date()).replace(":", "")); // Comment this line to ignore current time
-        int current = 1400; // Uncomment this line if you want to ignore current time
-        return open <= current && current < close;
+        for(String openingHour : openingHours) {
+            String[] range = openingHour.split("-");
+            if (range[0].charAt(0) == '0')
+                range[0] = range[0].substring(1);
+            int open = Integer.parseInt(range[0].replace(":", ""));
+            int close = Integer.parseInt(range[1].replace(":", ""));
+            // int current = Integer.parseInt(formatter.format(new Date()).replace(":", "")); // Comment this line to ignore current time
+            int current = 1430; // Uncomment this line if you want to ignore current time
+            if (open <= current && current < close)
+                return true;
+        }
+        return false;
     }
 }

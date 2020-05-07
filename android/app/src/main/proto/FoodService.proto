@@ -20,7 +20,7 @@ message GetFoodServiceRequest {
 
 message FoodServiceDto {
     string name = 1;
-    string openingHours = 2;
+    repeated string openingHours = 2;
     float rating = 3;
     repeated int32 categories = 4;
     int32 queueTime = 5;

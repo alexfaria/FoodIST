@@ -166,7 +166,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     LatLng foodServiceCoord = new LatLng(fs.getLatitude(), fs.getLongitude());
                     MarkerOptions marker = new MarkerOptions().position(foodServiceCoord);
                     marker.title(fs.getName());
-                    marker.snippet(fs.getOpeningHours());
+                    marker.snippet(fs.getOpeningHoursString());
                     marker.visible(true);
                     googleMap.addMarker(marker).showInfoWindow();
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(foodServiceCoord, MAP_ZOOM_LEVEL));

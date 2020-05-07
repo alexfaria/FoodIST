@@ -9,7 +9,7 @@ import androidx.room.TypeConverter;
 public class Converters {
 
     @TypeConverter
-    public static List<Integer> restoreList(String listOfCategories) {
+    public static List<Integer> restoreCategoriesList(String listOfCategories) {
         List<Integer> categories = new ArrayList<>();
         listOfCategories = listOfCategories.substring(1, listOfCategories.length() - 1);
         if (!listOfCategories.isEmpty()) {
@@ -21,7 +21,23 @@ public class Converters {
     }
 
     @TypeConverter
-    public static String saveList(List<Integer> listOfCategories) {
+    public static String saveCategoriesList(List<Integer> listOfCategories) {
         return listOfCategories.toString();
+    }
+
+    @TypeConverter
+    public static List<String> restoreOpeningHoursList(String listOfOpeningHours) {
+        List<String> openingHours = new ArrayList<>();
+        listOfOpeningHours = listOfOpeningHours.substring(1, listOfOpeningHours.length() - 1);
+        if (!listOfOpeningHours.isEmpty()) {
+            String[] values = listOfOpeningHours.split(",\\s*");
+            openingHours.addAll(Arrays.asList(values));
+        }
+        return openingHours;
+    }
+
+    @TypeConverter
+    public static String saveOpeningHoursList(List<String> listOfOpeningHours) {
+        return listOfOpeningHours.toString();
     }
 }

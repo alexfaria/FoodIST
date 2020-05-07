@@ -5,12 +5,13 @@ import edu.princeton.cs.algs4.LinearRegression;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FoodService {
 
     private String name;
     private String campus;
-    private Map<String, OpeningHours> openingHours;
+    private Map<String, List<OpeningHours>> openingHours;
     private double latitude;
     private double longitude;
 
@@ -22,7 +23,7 @@ public class FoodService {
     private ArrayList<Double> LRx; // time difference between arrival time and departure
     private ArrayList<Double> LRy; // how many other clients were present upon arrival
 
-    public FoodService(String name, String campus, Map<String, OpeningHours> openingHours, double latitude, double longitude) {
+    public FoodService(String name, String campus, Map<String, List<OpeningHours>> openingHours, double latitude, double longitude) {
         this.name = name;
         this.campus = campus;
         this.openingHours = openingHours;
@@ -46,8 +47,15 @@ public class FoodService {
         return campus;
     }
 
-    public OpeningHours getOpeningHours(String status) {
-        return openingHours.get(status);
+    public List<String> getOpeningHours(String status) {
+        return openingHours.get(status).stream().map(OpeningHours::toString).collect(Collectors.toList());
+    }
+
+    public boolean isAvailable(String status, LocalTime current) {
+        for (OpeningHours hours : openingHours.get(status))
+            if (hours.isAvailable(current))
+                return true;
+        return false;
     }
 
     public double getLatitude() {
@@ -73,7 +81,7 @@ public class FoodService {
     public float getRating() {
         float totalOfRatings = 0;
         int numOfRatings = 0;
-        for(Dish dish: menu.values()) {
+        for (Dish dish : menu.values()) {
             for (Float rating : dish.getRatings().values()) {
                 totalOfRatings += rating;
             }
@@ -122,8 +130,8 @@ public class FoodService {
         }
 
         LinearRegression lr = new LinearRegression(lrx, lry);
-		
-		// minutes
+
+        // minutes
         return (int) lr.predict(queueClientCount.size()) / 60;
     }
 }

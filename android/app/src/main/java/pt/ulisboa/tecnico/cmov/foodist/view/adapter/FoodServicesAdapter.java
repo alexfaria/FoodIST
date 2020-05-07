@@ -62,7 +62,7 @@ public class FoodServicesAdapter extends RecyclerView.Adapter<FoodServicesAdapte
     public void onBindViewHolder(@NonNull FoodServicesViewHolder holder, int position) {
         FoodService fs = foodServices.get(position);
         holder.name.setText(fs.getName());
-        holder.openingHours.setText(fs.getOpeningHours());
+        holder.openingHours.setText(fs.getOpeningHoursString());
         holder.rating.setRating(fs.getRating());
         holder.queueTime.setText(String.format(Locale.getDefault(), "%d min", fs.getQueueTime()));
         holder.walkTime.setText(String.format(Locale.getDefault(), "%d min", fs.getWalkTime()));
