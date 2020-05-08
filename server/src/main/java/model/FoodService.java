@@ -17,13 +17,14 @@ public class FoodService {
 
     private HashMap<String, Dish> menu;
 
+    private String beaconName;
     // TODO: use Tuple<LocalTime, Integer> as a value
     private HashMap<String, LocalTime> queueArrivalTime; // UUID -> ArrivalTime
     private HashMap<String, Integer> queueClientCount; // UUID -> other clients in queue on arrival
     private ArrayList<Double> LRx; // time difference between arrival time and departure
     private ArrayList<Double> LRy; // how many other clients were present upon arrival
 
-    public FoodService(String name, String campus, Map<String, List<OpeningHours>> openingHours, double latitude, double longitude) {
+    public FoodService(String name, String campus, Map<String, List<OpeningHours>> openingHours, double latitude, double longitude, String beaconName) {
         this.name = name;
         this.campus = campus;
         this.openingHours = openingHours;
@@ -32,6 +33,7 @@ public class FoodService {
 
         this.menu = new HashMap<>();
 
+        this.beaconName = beaconName;
         this.queueArrivalTime = new HashMap<>();
         this.queueClientCount = new HashMap<>();
 
@@ -49,6 +51,10 @@ public class FoodService {
 
     public List<String> getOpeningHours(String status) {
         return openingHours.get(status).stream().map(OpeningHours::toString).collect(Collectors.toList());
+    }
+
+    public String getBeaconName() {
+        return beaconName;
     }
 
     public boolean isAvailable(String status, LocalTime current) {

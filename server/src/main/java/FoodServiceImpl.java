@@ -84,22 +84,22 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
             put("Staff", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
             put("General Public", Arrays.asList(new OpeningHours("08:30-12:00"), new OpeningHours("15:30-16:30")));
         }};
-        foodServices.put("SAS Cafeteria", new FoodService("SAS Cafeteria", "Alameda", sas, 38.736571, -9.137036));
-        foodServices.put("Civil Bar", new FoodService("Civil Bar", "Alameda", bars, 38.736988, -9.139955));
-        foodServices.put("Civil Cafeteria", new FoodService("Civil Cafeteria", "Alameda", cafeCivTag, 38.737650, -9.140384));
-        foodServices.put("Math Cafeteria", new FoodService("Math Cafeteria", "Alameda", mathCafe, 38.735508, -9.139645));
-        foodServices.put("Chemy Bar", new FoodService("Chemy Bar", "Alameda", bars, 38.736240, -9.138302));
-        foodServices.put("Central Bar", new FoodService("Central Bar", "Alameda", bars, 38.736606, -9.139532));
-        foodServices.put("Mechy Bar", new FoodService("Mechy Bar", "Alameda", bars, 38.737247, -9.137434));
-        foodServices.put("AEIST Bar", new FoodService("AEIST Bar", "Alameda", bars, 38.736542, -9.137226));
-        foodServices.put("AEIST Esplanade", new FoodService("AEIST Esplanade", "Alameda", bars, 	38.736318, -9.137820));
-        foodServices.put("Complex Bar", new FoodService("Complex Bar", "Alameda", complexBar, 38.736050, -9.140156));
-        foodServices.put("Sena Pastry Shop", new FoodService("Sena Pastry Shop", "Alameda", sena, 38.737677, -9.138672));
-        foodServices.put("Tagus Cafeteria", new FoodService("Tagus Cafeteria", "Taguspark", cafeCivTag, 38.737802, -9.303223));
-        foodServices.put("Green Bar", new FoodService("Green Bar", "Taguspark", greenBar, 38.738004, -9.303058));
-        foodServices.put("Red Bar", new FoodService("Red Bar", "Taguspark", redBar, 38.736546, -9.302207));
-        foodServices.put("CTN Cafeteria", new FoodService("CTN Cafeteria", "CTN", ctnCafe, 38.812522, -9.093773));
-        foodServices.put("CTN Bar", new FoodService("CTN Bar", "CTN", ctnBar, 38.812522, -9.093773));
+        foodServices.put("Central Bar", new FoodService("Central Bar", "Alameda", bars, 38.736606, -9.139532, "CentralBar"));
+        foodServices.put("Civil Bar", new FoodService("Civil Bar", "Alameda", bars, 38.736988, -9.139955, "CivilBar"));
+        foodServices.put("Civil Cafeteria", new FoodService("Civil Cafeteria", "Alameda", cafeCivTag, 38.737650, -9.140384, "CivilCafeteria"));
+        foodServices.put("Sena Pastry Shop", new FoodService("Sena Pastry Shop", "Alameda", sena, 38.737677, -9.138672, "Sena"));
+        foodServices.put("Mechy Bar", new FoodService("Mechy Bar", "Alameda", bars, 38.737247, -9.137434, "MechyBar"));
+        foodServices.put("AEIST Bar", new FoodService("AEIST Bar", "Alameda", bars, 38.736542, -9.137226, "AEISTBar"));
+        foodServices.put("AEIST Esplanade", new FoodService("AEIST Esplanade", "Alameda", bars, 	38.736318, -9.137820, "AEISTEsplanade"));
+        foodServices.put("Chemy Bar", new FoodService("Chemy Bar", "Alameda", bars, 38.736240, -9.138302, "ChemyBar"));
+        foodServices.put("SAS Cafeteria", new FoodService("SAS Cafeteria", "Alameda", sas, 38.736571, -9.137036, "SASCafeteria"));
+        foodServices.put("Math Cafeteria", new FoodService("Math Cafeteria", "Alameda", mathCafe, 38.735508, -9.139645, "MathCafeteria"));
+        foodServices.put("Complex Bar", new FoodService("Complex Bar", "Alameda", complexBar, 38.736050, -9.140156, "ComplexBar"));
+        foodServices.put("Tagus Cafeteria", new FoodService("Tagus Cafeteria", "Taguspark", cafeCivTag, 38.737802, -9.303223, "TagusCafeteria"));
+        foodServices.put("Red Bar", new FoodService("Red Bar", "Taguspark", redBar, 38.736546, -9.302207, "RedBar"));
+        foodServices.put("Green Bar", new FoodService("Green Bar", "Taguspark", greenBar, 38.738004, -9.303058, "GreenBar"));
+        foodServices.put("CTN Cafeteria", new FoodService("CTN Cafeteria", "CTN", ctnCafe, 38.812522, -9.093773, "CTNCafeteria"));
+        foodServices.put("CTN Bar", new FoodService("CTN Bar", "CTN", ctnBar, 38.812522, -9.093773, "CTNBar"));
     }
 
     @Override
