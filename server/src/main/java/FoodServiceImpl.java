@@ -118,6 +118,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                         .setQueueTime(fs.getQueueWaitTime())
                         .setLatitude(fs.getLatitude())
                         .setLongitude(fs.getLongitude())
+                        .setBeaconName(fs.getBeaconName())
                         .build());
         });
         responseObserver.onCompleted();
@@ -131,9 +132,12 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
                     .newBuilder()
                     .setName(fs.getName())
                     .addAllOpeningHours(fs.getOpeningHours(request.getStatus()))
+                    .setRating(fs.getRating())
                     .addAllCategories(fs.getCategories())
+                    .setQueueTime(fs.getQueueWaitTime())
                     .setLatitude(fs.getLatitude())
                     .setLongitude(fs.getLongitude())
+                    .setBeaconName(fs.getBeaconName())
                     .build());
         }
         responseObserver.onCompleted();
