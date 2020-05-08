@@ -41,7 +41,10 @@ public class FoodServiceDBEntity {
     @ColumnInfo(name = "longitude")
     private double longitude;
 
-    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, @NonNull String status, List<String> openingHours, float rating, List<Integer> categories, int queueTime, double latitude, double longitude) {
+    @ColumnInfo(name = "beaconName")
+    private String beaconName;
+
+    public FoodServiceDBEntity(@NonNull String name, @NonNull String campus, @NonNull String status, List<String> openingHours, float rating, List<Integer> categories, int queueTime, double latitude, double longitude, String beaconName) {
         this.name = name;
         this.campus = campus;
         this.status = status;
@@ -51,6 +54,7 @@ public class FoodServiceDBEntity {
         this.queueTime = queueTime;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.beaconName = beaconName;
     }
 
     @NonNull
@@ -88,6 +92,10 @@ public class FoodServiceDBEntity {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public String getBeaconName() {
+        return beaconName;
     }
 
     public boolean isOpen() {

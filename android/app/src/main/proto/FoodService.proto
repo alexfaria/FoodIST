@@ -26,6 +26,7 @@ message FoodServiceDto {
     int32 queueTime = 5;
     double latitude = 6;
     double longitude = 7;
+    string beaconName = 8;
 }
 
 message GetDishesRequest {

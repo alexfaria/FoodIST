@@ -20,7 +20,7 @@ import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.DishDBEntity;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.DishRatingDBEntity;
 import pt.ulisboa.tecnico.cmov.foodist.repository.database.entity.FoodServiceDBEntity;
 
-@Database(entities = {FoodServiceDBEntity.class, DishDBEntity.class, DishRatingDBEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {FoodServiceDBEntity.class, DishDBEntity.class, DishRatingDBEntity.class}, version = 2, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class FoodRoomDatabase extends RoomDatabase {
 

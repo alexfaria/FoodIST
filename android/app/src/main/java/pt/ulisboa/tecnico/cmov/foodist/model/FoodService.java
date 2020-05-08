@@ -8,16 +8,18 @@ public class FoodService {
     private List<String> openingHours;
     private float rating;
     private List<Integer> categories;
+    private String beaconName;
     private int queueTime;
     private double latitude;
     private double longitude;
     private int walkTime;
 
-    public FoodService(String name, List<String> openingHours, float rating, List<Integer> categories, int queueTime,double latitude, double longitude) {
+    public FoodService(String name, List<String> openingHours, float rating, List<Integer> categories, int queueTime,double latitude, double longitude, String beaconName) {
         this.name = name;
         this.openingHours = openingHours;
         this.rating = rating;
         this.categories = categories;
+        this.beaconName = beaconName;
         this.queueTime = queueTime;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -45,6 +47,10 @@ public class FoodService {
 
     public List<Integer> getCategories() {
         return categories;
+    }
+
+    public String getBeaconName() {
+        return beaconName;
     }
 
     public int getQueueTime() {
