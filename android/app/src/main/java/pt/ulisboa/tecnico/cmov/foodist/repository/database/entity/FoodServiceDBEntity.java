@@ -3,16 +3,14 @@ package pt.ulisboa.tecnico.cmov.foodist.repository.database.entity;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-@Entity(tableName = "food_service_table")
+@Entity(tableName = "food_service_table", primaryKeys = {"name", "campus"})
 public class FoodServiceDBEntity {
 
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "name")
     private String name;

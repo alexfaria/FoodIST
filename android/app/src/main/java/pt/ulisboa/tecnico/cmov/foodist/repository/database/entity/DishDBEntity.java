@@ -4,12 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
-import androidx.room.PrimaryKey;
 
-@Entity(tableName = "dish_table")
+@Entity(tableName = "dish_table", primaryKeys = {"name", "foodServiceName"})
 public class DishDBEntity {
 
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "name")
     private String name;
@@ -26,10 +24,11 @@ public class DishDBEntity {
     @ColumnInfo(name = "number_of_photos")
     private int numberOfPhotos;
 
+    @NonNull
     @ForeignKey(entity = FoodServiceDBEntity.class, parentColumns = "name", childColumns = "foodServiceName")
     private String foodServiceName;
 
-    public DishDBEntity(@NonNull String name, float cost, int category, float rating, int numberOfPhotos, String foodServiceName) {
+    public DishDBEntity(@NonNull String name, float cost, int category, float rating, int numberOfPhotos, @NonNull String foodServiceName) {
         this.name = name;
         this.cost = cost;
         this.category = category;
@@ -58,6 +57,7 @@ public class DishDBEntity {
         return numberOfPhotos;
     }
 
+    @NonNull
     public String getFoodServiceName() {
         return foodServiceName;
     }
