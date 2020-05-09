@@ -18,10 +18,14 @@ import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodservice.AddToFoodServiceQueueRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.DishDto;
 import pt.ulisboa.tecnico.cmov.foodservice.DishWithPhotosDto;
+import pt.ulisboa.tecnico.cmov.foodservice.Empty;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosResponse;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.GetDishesWithPhotosResponse;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServiceRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoRequest;
@@ -73,6 +77,11 @@ public class FoodServer {
             dishes.add(dish);
         }
         return dishes;
+    }
+
+    public Iterator<GetDishesPhotosResponse> getDishesPhotos(int numberOfPhotos) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        return stub.getDishesPhotos(GetDishesPhotosRequest.newBuilder().setNumberOfPhotos(numberOfPhotos).build());
     }
 
     public Dish getDish(String foodServiceName, String dishName, String uuid) {

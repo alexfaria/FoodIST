@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class Dish {
@@ -70,5 +71,10 @@ public class Dish {
 
     public void addPhoto(Bitmap photo) {
         photos.add(photo);
+    }
+
+    public static String generateKeyFrom(String foodServiceName, String dishName) {
+        String key = String.format(Locale.getDefault(), "%s_%s_", foodServiceName, dishName);
+        return key.replaceAll("[ /]", "").toLowerCase();
     }
 }

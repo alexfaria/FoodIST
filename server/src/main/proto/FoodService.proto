@@ -34,6 +34,16 @@ message GetDishesRequest {
     string foodServiceName = 2;
 }
 
+message GetDishesPhotosRequest {
+    int32 numberOfPhotos = 1;
+}
+
+message GetDishesPhotosResponse {
+    string campus = 1;
+    string foodServiceName = 2;
+    DishWithPhotosDto dish = 3;
+}
+
 message GetDishRequest {
     string foodServiceName = 1;
     string dishName = 2;
@@ -106,6 +116,7 @@ service FoodServer {
     rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodServiceDto);
     rpc getFoodService(GetFoodServiceRequest) returns (FoodServiceDto);
     rpc getDishes(GetDishesRequest) returns (stream DishDto);
+    rpc getDishesPhotos(GetDishesPhotosRequest) returns (stream GetDishesPhotosResponse);
     rpc getDish(GetDishRequest) returns (DishWithPhotosDto);
     rpc putDish(PutDishRequest) returns (PutDishResponse);
     rpc putDishPhoto(PutDishPhotoRequest) returns (PutDishPhotoResponse);

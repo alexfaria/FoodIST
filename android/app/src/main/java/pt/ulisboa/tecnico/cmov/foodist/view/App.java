@@ -3,22 +3,29 @@ package pt.ulisboa.tecnico.cmov.foodist.view;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.net.NetworkSpecifier;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import com.google.protobuf.ByteString;
+
+import java.util.Iterator;
 import java.util.UUID;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.repository.cache.BitmapCache;
 import pt.ulisboa.tecnico.cmov.foodist.repository.server.FoodServer;
+import pt.ulisboa.tecnico.cmov.foodservice.DishWithPhotosDto;
+import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosResponse;
 
 public class App extends Application {
 
@@ -29,6 +36,8 @@ public class App extends Application {
 
     private FoodServer foodServer;
     private BitmapCache bitmapCache;
+
+    private static final int NUMBER_OF_PREFETCH_ITEMS = 4;
 
     @Override
     public void onCreate() {
@@ -64,9 +73,9 @@ public class App extends Application {
                             .build();
                     foodServer = new FoodServer(channel);
                 }
-                if (!connectivityManager.isActiveNetworkMetered()) {
+                if (!connectivityManager.isActiveNetworkMetered())
                     // Fetch first photos for all dishes
-                }
+                    prefetchPhotos();
             }
 
             @Override
@@ -97,5 +106,20 @@ public class App extends Application {
     public void onTerminate() {
         super.onTerminate();
         bitmapCache.close();
+    }
+
+    private void prefetchPhotos() {
+        FoodServer.serverExecutor.execute(() -> {
+            Iterator<GetDishesPhotosResponse> dishesPhotos = foodServer.getDishesPhotos(NUMBER_OF_PREFETCH_ITEMS);
+            while (dishesPhotos.hasNext()) {
+                GetDishesPhotosResponse dto = dishesPhotos.next();
+                DishWithPhotosDto dishDto = dto.getDish();
+                int i = 0;
+                for (ByteString photoBytes : dishDto.getPhotosList()) {
+                    Bitmap photo = BitmapFactory.decodeByteArray(photoBytes.toByteArray(), 0, photoBytes.size());
+                    bitmapCache.put(Dish.generateKeyFrom(dto.getFoodServiceName(), dishDto.getName()) + i++, photo);
+                }
+            }
+        });
     }
 }

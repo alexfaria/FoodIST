@@ -60,7 +60,7 @@ public class DishRepository {
         dishDao.get(foodServiceName, name).observeForever(dishDB -> {
             if (dishDB != null) {
                 Dish dish = new Dish(dishDB.getName(), dishDB.getCost(), dishDB.getCategory(), dishDB.getNumberOfPhotos());
-                String key = generateKeyFrom(foodServiceName, name);
+                String key = Dish.generateKeyFrom(foodServiceName, name);
                 for (int i = 0; i < dishDB.getNumberOfPhotos(); i++) {
                     bitmapCache.get(key + i, bitmap -> {
                         if (bitmap != null) {
@@ -97,7 +97,7 @@ public class DishRepository {
             final FoodServer foodServer = context.getServer();
             FoodServer.serverExecutor.execute(() -> {
                 int index = foodServer.putDishPhoto(foodServiceName, dishName, photo);
-                String key = generateKeyFrom(foodServiceName, dishName);
+                String key = Dish.generateKeyFrom(foodServiceName, dishName);
                 bitmapCache.put(key + index, photo);
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
                     dishDao.updateNumberOfPhotos(foodServiceName, dishName, index + 1);
@@ -159,7 +159,7 @@ public class DishRepository {
             FoodServer.serverExecutor.execute(() -> {
                 Dish dish = foodServer.getDish(foodServiceName, name, uuid);
                 List<Bitmap> photos = dish.getPhotos();
-                String key = generateKeyFrom(foodServiceName, name);
+                String key = Dish.generateKeyFrom(foodServiceName, name);
                 for (int i = 0; i < photos.size(); i++)
                     bitmapCache.put(key + i, photos.get(i));
                 FoodRoomDatabase.databaseWriteExecutor.execute(() -> {
@@ -173,10 +173,5 @@ public class DishRepository {
                 });
             });
         }
-    }
-
-    private String generateKeyFrom(String foodServiceName, String dishName) {
-        String key = String.format(Locale.getDefault(), "%s_%s_", foodServiceName, dishName);
-        return key.replaceAll("[ /]", "").toLowerCase();
     }
 }

@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.taufiqrahman.reviewratings.BarLabels;
 import com.taufiqrahman.reviewratings.RatingReviews;
@@ -96,6 +98,7 @@ public class DishFragment extends Fragment {
         averageRating = view.findViewById(R.id.average_rating);
         averageRatingBar = view.findViewById(R.id.average_rating_bar);
         ratingsCount = view.findViewById(R.id.average_rating_count);
+        new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
         GridView gridView = view.findViewById(R.id.photos_grid_view);
         adapter = new DishPhotoAdapter(getContext());
         gridView.setAdapter(adapter);

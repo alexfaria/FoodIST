@@ -64,6 +64,10 @@ public class Dish {
         return photos;
     }
 
+    public List<ByteString> getFirstPhotos(int n) {
+        return photos.subList(0, Math.min(photos.size(), n));
+    }
+
     public synchronized int addPhoto(ByteString photo) {
         photos.add(photo);
         return photos.size() - 1;

@@ -160,6 +160,28 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
+    public void getDishesPhotos(GetDishesPhotosRequest request, StreamObserver<GetDishesPhotosResponse> responseObserver) {
+        for (FoodService fs : foodServices.values()) {
+            for (Dish d : fs.getMenu().values()) {
+                if (d.hasPhotos()) {
+                    responseObserver.onNext(GetDishesPhotosResponse
+                            .newBuilder()
+                            .setCampus(fs.getCampus())
+                            .setFoodServiceName(fs.getName())
+                            .setDish(DishWithPhotosDto
+                                    .newBuilder()
+                                    .setName(d.getName())
+                                    .addAllPhotos(d.getFirstPhotos(request.getNumberOfPhotos()))
+                                    .build())
+                            .build()
+                    );
+                }
+            }
+        }
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getDish(GetDishRequest request, StreamObserver<DishWithPhotosDto> responseObserver) {
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
