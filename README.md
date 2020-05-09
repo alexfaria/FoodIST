@@ -34,7 +34,7 @@
 - [x] a = mx+b
 
 ## Cache
-- [ ] network state broadcast receiver (contexto da application) para fazer preload
+- [X] network state broadcast receiver (contexto da application) para fazer preload
 - [ ] guardar no contexto da aplicacao e ver se existe
 
 ## Status
