@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -142,7 +145,8 @@ public class DiningOptionsFragment extends Fragment implements
     private void retrieveFoodServices() {
         String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
         String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
-        Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>()));
+        Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>(
+                Arrays.asList(getResources().getStringArray(R.array.dietary_preferences_values)))));
         if (!campus.isEmpty() && !status.isEmpty()) {
             viewModel.getFoodServices(campus, status).observe(this, data -> {
                 if (data != null && data.size() > 0) {
@@ -185,7 +189,7 @@ public class DiningOptionsFragment extends Fragment implements
         if (location == null) return;
         int index = 0;
         for (FoodService fs : foodServices) {
-            final int i = index;
+            final int i = index++;
             DirectionsApiRequest directions = new DirectionsApiRequest(geoApiContext);
             directions.mode(TravelMode.WALKING);
             directions.origin(new LatLng(location.getLatitude(), location.getLongitude()));
@@ -197,7 +201,7 @@ public class DiningOptionsFragment extends Fragment implements
                     Log.d("Directions", "calculateDirections: distance: " + result.routes[0].legs[0].distance);
                     Log.d("Directions", "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
                     fs.setWalkTime((int) result.routes[0].legs[0].duration.inSeconds / 60);
-                    adapter.notifyItemChanged(i);
+                    new Handler(Looper.getMainLooper()).post(() -> adapter.notifyItemChanged(i));
                 }
 
                 @Override
@@ -205,7 +209,6 @@ public class DiningOptionsFragment extends Fragment implements
                     Log.e("Directions", "calculateDirections: Failed to get directions: " + e.getMessage());
                 }
             });
-            index++;
         }
     }
 

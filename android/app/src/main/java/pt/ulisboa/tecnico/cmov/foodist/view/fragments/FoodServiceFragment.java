@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.GeoApiContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -148,8 +149,6 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
 
             String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
             String status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
-            Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>()));
-
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) {
                 actionBar.setDisplayHomeAsUpEnabled(true);
@@ -180,7 +179,8 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
 
     private void getDishes() {
         String foodServiceName = getArguments().getString(NAVHOST_ARGS_FOODSERVICE_NAME);
-        Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>()));
+        Set<String> dietaryPreferences = new HashSet<>(sharedPreferences.getStringSet(SHARED_PREFERENCES_DIETARY_PREFERENCES, new HashSet<>(
+                Arrays.asList(getResources().getStringArray(R.array.dietary_preferences_values)))));
         if (foodServiceName != null) {
             dishViewModel.getDishes(foodServiceName).observe(this, data -> {
                 if (data != null && data.size() > 0) {
