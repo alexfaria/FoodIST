@@ -115,10 +115,10 @@ public class FoodService {
         int queueSizeOnArrival = queueClientCount.remove(UUID);
         LocalTime arrivalTime = queueArrivalTime.remove(UUID);
 
-        Duration duration = Duration.between(LocalTime.now(), arrivalTime);
+        Duration duration = Duration.between(arrivalTime, LocalTime.now());
 
-        LRx.add((double) duration.getSeconds());
-        LRy.add((double) queueSizeOnArrival);
+        LRx.add((double) queueSizeOnArrival);
+        LRy.add((double) duration.getSeconds());
     }
 
     public int getQueueWaitTime() {
@@ -135,9 +135,12 @@ public class FoodService {
             lry[i] = iterator.next();
         }
 
+        if (lrx.length == 1)
+            return (int) (lry[0] / 60);
+
         LinearRegression lr = new LinearRegression(lrx, lry);
 
         // minutes
-        return (int) lr.predict(queueClientCount.size()) / 60;
+        return (int) (lr.predict(queueClientCount.size()) / 60);
     }
 }

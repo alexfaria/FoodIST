@@ -7,6 +7,16 @@ option java_package = "pt.ulisboa.tecnico.cmov.foodservice";
 
 message Empty { }
 
+message GetBeaconsRequest {
+    string campus = 1;
+    string status = 2;
+}
+
+message BeaconDto {
+    string beaconName = 1;
+    string foodServiceName = 2;
+}
+
 message GetFoodServicesRequest {
     string campus = 1;
     string status = 2;
@@ -113,6 +123,7 @@ message RemoveFromFoodServiceQueueRequest {
 }
 
 service FoodServer {
+    rpc getBeacons(GetBeaconsRequest) returns (stream BeaconDto);
     rpc getFoodServices(GetFoodServicesRequest) returns (stream FoodServiceDto);
     rpc getFoodService(GetFoodServiceRequest) returns (FoodServiceDto);
     rpc getDishes(GetDishesRequest) returns (stream DishDto);

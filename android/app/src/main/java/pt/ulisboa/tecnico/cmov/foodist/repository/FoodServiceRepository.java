@@ -54,24 +54,6 @@ public class FoodServiceRepository {
         return ld;
     }
 
-    public void addToFoodServiceQueue(String campus, String name) {
-        if (context.isConnected()) {
-            final FoodServer foodServer = context.getServer();
-            FoodServer.serverExecutor.execute(() -> {
-                foodServer.addToFoodServiceQueue(campus, name);
-            });
-        }
-    }
-
-    public void removeFromFoodServiceQueue(String campus, String name, String uuid) {
-        if (context.isConnected()) {
-            final FoodServer foodServer = context.getServer();
-            FoodServer.serverExecutor.execute(() -> {
-                foodServer.removeFromFoodServiceQueue(campus, name, uuid);
-            });
-        }
-    }
-
     private void refreshFoodServices(String campus, String status) {
         if (context.isConnected()) {
             final FoodServer foodServer = context.getServer();

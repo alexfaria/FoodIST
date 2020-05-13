@@ -53,7 +53,7 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_UUID_KEY;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location>, SimWifiP2pManager.PeerListListener, OnPeersChangedListener {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location> {
 
     private final int PERMISSION_ID = 44;
 
@@ -67,18 +67,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private SharedPreferences sharedPreferences;
-    private FoodServiceViewModel viewModel;
-
-    private SimWifiP2pBroadcastReceiver mReceiver;
-    private SimWifiP2pManager mManager;
-    private SimWifiP2pManager.Channel mChannel = null;
-
-    private String connectedFoodServiceName;
-    private String connectedFoodServiceBeaconName;
 
     private String campus;
-    private String status;
-    private List<FoodService> foodServicesList = new ArrayList<>();
 
     private Toolbar toolbar;
 
@@ -89,13 +79,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        viewModel = new ViewModelProvider(this).get(FoodServiceViewModel.class);
-        viewModel.init((App) getApplicationContext());
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
-        status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
         toolbar.setTitle("Técnico " + campus);
 
         ALAMEDA.setLatitude(Double.parseDouble(getString(R.string.alameda_latitude)));
@@ -119,16 +105,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 onSuccess(locationResult.getLastLocation());
             }
         };
-
-        // register broadcast receiver
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mReceiver = new SimWifiP2pBroadcastReceiver(this);
-        registerReceiver(mReceiver, filter);
-
-        Intent intent = new Intent(getApplicationContext(), SimWifiP2pService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        retrieveFoodServices();
     }
 
     @Override
@@ -160,10 +136,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
             campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
             toolbar.setTitle("Técnico " + campus);
-            retrieveFoodServices();
-        } else if (key.equals(SHARED_PREFERENCES_STATUS_KEY)) {
-            status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
-            retrieveFoodServices();
         }
     }
 
@@ -263,84 +235,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        // callbacks for service binding, passed to bindService()
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mManager = new SimWifiP2pManager(new Messenger(service));
-            mChannel = mManager.initialize(getApplication(), getMainLooper(), null);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mManager = null;
-            mChannel = null;
-        }
-    };
-
-    @Override
-    public void onPeersChanged() {
-        mManager.requestPeers(mChannel, this);
-    }
-
-    @Override
-    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
-        // list of devices in range
-        if (foodServicesList == null) {
-            return;
-        }
-
-        String uuid = sharedPreferences.getString(SHARED_PREFERENCES_UUID_KEY, "");
-
-        for (SimWifiP2pDevice device : peers.getDeviceList()) {
-
-            if (connectedFoodServiceBeaconName == null) {
-
-                for (FoodService fs : foodServicesList) {
-                    if (fs.getBeaconName().equals(device.deviceName)) {
-
-                        // connecting to a new device
-                        viewModel.addToFoodServiceQueue(campus, fs.getName());
-                        Log.d("ConnectingpeerChanged", fs.getName());
-                        Log.d("ConnectingpeerBeacon", fs.getBeaconName());
-                        connectedFoodServiceName = fs.getName();
-                        connectedFoodServiceBeaconName = fs.getBeaconName();
-                        return;
-                    }
-                }
-
-            } else {
-                // already connected to one => see if its in the peer list
-                // => true -> do nothing
-                // => false -> remove from queue
-                for (FoodService fs : foodServicesList) {
-                    if (fs.getBeaconName().equals(device.deviceName)) {
-                        return;
-                    }
-                }
-
-                Log.d("LeavingpeerChanged", connectedFoodServiceName);
-                Log.d("LeavingpeerBeacon", connectedFoodServiceBeaconName);
-                viewModel.removeFromFoodServiceQueue(campus, connectedFoodServiceName, uuid);
-                connectedFoodServiceName = null;
-                connectedFoodServiceBeaconName = null;
-            }
-        }
-    }
-
-    private void retrieveFoodServices() {
-        if (!campus.isEmpty() && !status.isEmpty()) {
-            viewModel.getFoodServices(campus, status).observe(this, foodServices -> {
-                foodServicesList.addAll(foodServices);
-            });
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        unregisterReceiver(mReceiver);
     }
 }

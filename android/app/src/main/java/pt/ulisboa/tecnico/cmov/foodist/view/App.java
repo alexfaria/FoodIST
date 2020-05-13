@@ -1,7 +1,11 @@
 package pt.ulisboa.tecnico.cmov.foodist.view;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +13,8 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,27 +23,52 @@ import androidx.preference.PreferenceManager;
 import com.google.protobuf.ByteString;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
+import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
+import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
+import pt.inesc.termite.wifidirect.SimWifiP2pManager;
+import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
+import pt.ulisboa.tecnico.cmov.foodist.R;
+import pt.ulisboa.tecnico.cmov.foodist.model.Beacon;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.repository.cache.BitmapCache;
 import pt.ulisboa.tecnico.cmov.foodist.repository.server.FoodServer;
+import pt.ulisboa.tecnico.cmov.foodist.service.OnPeersChangedListener;
+import pt.ulisboa.tecnico.cmov.foodist.service.SimWifiP2pBroadcastReceiver;
 import pt.ulisboa.tecnico.cmov.foodservice.DishWithPhotosDto;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosResponse;
 
-public class App extends Application {
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_UUID_KEY;
 
-    private final String HOST = "10.0.2.2";
+public class App extends Application implements SharedPreferences.OnSharedPreferenceChangeListener, SimWifiP2pManager.PeerListListener, OnPeersChangedListener {
+
+    private final String HOST = "192.168.1.41";
     private final int PORT = 8080;
 
     private boolean isConnected = false;
 
     private FoodServer foodServer;
-    private BitmapCache bitmapCache;
 
+    private BitmapCache bitmapCache;
     private static final int NUMBER_OF_PREFETCH_ITEMS = 4;
+
+    SharedPreferences sharedPreferences;
+    private SimWifiP2pBroadcastReceiver mReceiver;
+    private SimWifiP2pManager mManager;
+    private SimWifiP2pManager.Channel mChannel = null;
+
+    private String uuid;
+    private String campus;
+    private String status;
+    private List<Beacon> beacons;
+    private Beacon connectedBeacon;
 
     @Override
     public void onCreate() {
@@ -45,14 +76,15 @@ public class App extends Application {
         foodServer = null;
         bitmapCache = new BitmapCache(this);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        String uuid = sharedPreferences.getString("uuid", "");
-
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        uuid = sharedPreferences.getString(SHARED_PREFERENCES_UUID_KEY, "");
+        campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
+        status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
         if (uuid.isEmpty()) {
             uuid = UUID.randomUUID().toString();
             sharedPreferences.edit().putString("uuid", uuid).apply();
         }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
         final ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest networkRequest = new NetworkRequest.Builder()
@@ -72,6 +104,7 @@ public class App extends Application {
                             .usePlaintext()
                             .build();
                     foodServer = new FoodServer(channel);
+                    retrieveBeacons();
                 }
                 if (!connectivityManager.isActiveNetworkMetered())
                     // Fetch first photos for all dishes
@@ -87,12 +120,20 @@ public class App extends Application {
                 }
             }
         });
+
+        // register broadcast receiver
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION);
+        mReceiver = new SimWifiP2pBroadcastReceiver(this);
+        registerReceiver(mReceiver, filter);
+
+        Intent intent = new Intent(getApplicationContext(), SimWifiP2pService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     public boolean isConnected() {
         return isConnected;
     }
-
 
     public FoodServer getServer() {
         return foodServer;
@@ -100,12 +141,6 @@ public class App extends Application {
 
     public BitmapCache getBitmapCache() {
         return bitmapCache;
-    }
-
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        bitmapCache.close();
     }
 
     private void prefetchPhotos() {
@@ -121,5 +156,90 @@ public class App extends Application {
                 }
             }
         });
+    }
+
+    private void retrieveBeacons() {
+        if (isConnected && !campus.isEmpty() && !status.isEmpty())
+            FoodServer.serverExecutor.execute(() -> {
+                beacons = foodServer.getBeacons(campus, status);
+            });
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
+            campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
+            retrieveBeacons();
+        } else if (key.equals(SHARED_PREFERENCES_STATUS_KEY)) {
+            status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
+            retrieveBeacons();
+        }
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // callbacks for service binding, passed to bindService()
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mManager = new SimWifiP2pManager(new Messenger(service));
+            mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mManager = null;
+            mChannel = null;
+        }
+    };
+
+    @Override
+    public void onPeersChanged() {
+        mManager.requestPeers(mChannel, this);
+    }
+
+    @Override
+    public void onPeersAvailable(SimWifiP2pDeviceList peers) {
+        // list of devices in range
+        if (beacons == null) {
+            return;
+        }
+
+        for (SimWifiP2pDevice device : peers.getDeviceList()) {
+
+            if (connectedBeacon == null) {
+
+                for (Beacon beacon : beacons) {
+                    if (beacon.getBeaconName().equals(device.deviceName)) {
+
+                        // connecting to a new device
+                        connectedBeacon = beacon;
+                        FoodServer.serverExecutor.execute(() -> foodServer.addToFoodServiceQueue(campus, beacon.getFoodServiceName(), uuid));
+                        return;
+                    }
+                }
+
+            } else {
+                // already connected to one => see if its in the peer list
+                // => true -> do nothing
+                // => false -> remove from queue
+                if (connectedBeacon.getBeaconName().equals(device.deviceName))
+                    return;
+            }
+        }
+        if (connectedBeacon != null) {
+            FoodServer.serverExecutor.execute(() ->  {
+                foodServer.removeFromFoodServiceQueue(campus, connectedBeacon.getFoodServiceName(), uuid);
+                connectedBeacon = null;
+            });
+        }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        bitmapCache.close();
+        unregisterReceiver(mReceiver);
+        unbindService(mConnection);
     }
 }

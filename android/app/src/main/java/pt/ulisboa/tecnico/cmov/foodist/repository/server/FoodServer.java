@@ -13,14 +13,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.grpc.ManagedChannel;
+import pt.ulisboa.tecnico.cmov.foodist.model.Beacon;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodservice.AddToFoodServiceQueueRequest;
+import pt.ulisboa.tecnico.cmov.foodservice.BeaconDto;
 import pt.ulisboa.tecnico.cmov.foodservice.DishDto;
 import pt.ulisboa.tecnico.cmov.foodservice.DishWithPhotosDto;
 import pt.ulisboa.tecnico.cmov.foodservice.Empty;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServerGrpc;
 import pt.ulisboa.tecnico.cmov.foodservice.FoodServiceDto;
+import pt.ulisboa.tecnico.cmov.foodservice.GetBeaconsRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosResponse;
@@ -43,6 +46,17 @@ public class FoodServer {
 
     public FoodServer(ManagedChannel channel) {
         this.channel = channel;
+    }
+
+    public ArrayList<Beacon> getBeacons(String campus, String status) {
+        FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
+        Iterator<BeaconDto> beaconsDto = stub.getBeacons(GetBeaconsRequest.newBuilder().setCampus(campus).setStatus(status).build());
+        ArrayList<Beacon> beacons = new ArrayList<>();
+        while (beaconsDto.hasNext()) {
+            BeaconDto dto = beaconsDto.next();
+            beacons.add(new Beacon(dto.getBeaconName(), dto.getFoodServiceName()));
+        }
+        return beacons;
     }
 
     public ArrayList<FoodService> getFoodServices(String campus, String status) {
@@ -140,12 +154,13 @@ public class FoodServer {
                 .build());
     }
 
-    public void addToFoodServiceQueue(String campus, String foodServiceName) {
+    public void addToFoodServiceQueue(String campus, String foodServiceName, String uuid) {
         FoodServerGrpc.FoodServerBlockingStub stub = FoodServerGrpc.newBlockingStub(channel);
         stub.addToFoodServiceQueue(AddToFoodServiceQueueRequest
                 .newBuilder()
                 .setFoodServiceName(foodServiceName)
                 .setCampus(campus)
+                .setUUID(uuid)
                 .build());
     }
 
@@ -155,6 +170,7 @@ public class FoodServer {
                 .newBuilder()
                 .setFoodServiceName(foodServiceName)
                 .setCampus(campus)
+                .setUUID(uuid)
                 .build());
     }
 }

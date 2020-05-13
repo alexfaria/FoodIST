@@ -103,6 +103,19 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     }
 
     @Override
+    public void getBeacons(GetBeaconsRequest request, StreamObserver<BeaconDto> responseObserver) {
+        foodServices.values().forEach(fs -> {
+            if (fs.getCampus().equals(request.getCampus()))
+                responseObserver.onNext(BeaconDto
+                        .newBuilder()
+                        .setBeaconName(fs.getBeaconName())
+                        .setFoodServiceName(fs.getName())
+                        .build());
+        });
+        responseObserver.onCompleted();
+    }
+
+    @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
         // LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
         LocalTime current = LocalTime.of(14, 30);
@@ -241,6 +254,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void addToFoodServiceQueue(AddToFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
+        System.out.println("$ AddToServiceQueue " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             foodService.addToQueue(request.getUUID());
@@ -251,6 +265,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest request, StreamObserver<Empty> responseObserver) {
+        System.out.println("$ RemoveFromServiceQueue " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             foodService.removeFromQueue(request.getUUID());
