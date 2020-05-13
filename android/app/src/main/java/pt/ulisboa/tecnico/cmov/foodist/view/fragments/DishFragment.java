@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.taufiqrahman.reviewratings.BarLabels;
@@ -30,7 +31,7 @@ import java.util.Locale;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.view.App;
-import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DishPhotoAdapter;
+import pt.ulisboa.tecnico.cmov.foodist.view.adapter.DishPhotosAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.DishViewModel;
 
 import static android.app.Activity.RESULT_OK;
@@ -38,7 +39,7 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_N
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_PHOTO;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 
-public class DishFragment extends Fragment {
+public class DishFragment extends Fragment implements DishPhotosAdapter.OnImageClickListener {
 
     private static final int CAMERA_REQUEST_CODE = 100;
 
@@ -52,7 +53,7 @@ public class DishFragment extends Fragment {
     private RatingBar averageRatingBar;
     private TextView ratingsCount;
 
-    private DishPhotoAdapter adapter;
+    private DishPhotosAdapter adapter;
 
     private DishViewModel viewModel;
 
@@ -98,20 +99,10 @@ public class DishFragment extends Fragment {
         averageRating = view.findViewById(R.id.average_rating);
         averageRatingBar = view.findViewById(R.id.average_rating_bar);
         ratingsCount = view.findViewById(R.id.average_rating_count);
-        new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
-        GridView gridView = view.findViewById(R.id.photos_grid_view);
-        adapter = new DishPhotoAdapter(getContext());
-        gridView.setAdapter(adapter);
-        gridView.setOnItemClickListener((parent, view1, position, id) -> {
-            Bitmap photo = (Bitmap) adapter.getItem(position);
-            Bundle args = getArguments();
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            args.putByteArray(NAVHOST_ARGS_DISH_PHOTO, stream.toByteArray());
-            NavHostFragment
-                    .findNavController(DishFragment.this)
-                    .navigate(R.id.action_Dish_to_FullscreenPhoto, args);
-        });
+        RecyclerView recyclerView = view.findViewById(R.id.photos_recycler_view);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
+        adapter = new DishPhotosAdapter(this);
+        recyclerView.setAdapter(adapter);
         view.findViewById(R.id.uploadDishPhoto).setOnClickListener(v -> {
             Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
             startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
@@ -174,6 +165,18 @@ public class DishFragment extends Fragment {
                 Toast.makeText(getContext(), "Your photo was uploaded!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onImageClick(int position) {
+        Bitmap image = adapter.getItem(position);
+        Bundle args = getArguments();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        args.putByteArray(NAVHOST_ARGS_DISH_PHOTO, stream.toByteArray());
+        NavHostFragment
+                .findNavController(DishFragment.this)
+                .navigate(R.id.action_Dish_to_FullscreenPhoto, args);
     }
 }
 
