@@ -1,7 +1,9 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.fragments;
 
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,13 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.TravelMode;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +39,7 @@ import java.util.Set;
 
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
+import pt.ulisboa.tecnico.cmov.foodist.view.activities.MainActivity;
 import pt.ulisboa.tecnico.cmov.foodist.view.adapter.FoodServicesAdapter;
 import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
@@ -51,6 +61,8 @@ public class DiningOptionsFragment extends Fragment implements
     private RecyclerView.LayoutManager layoutManager;
     private Switch showAllSwitch;
 
+    private GeoApiContext geoApiContext;
+
     private Toast notAvailable;
     private Toast filtered;
 
@@ -62,6 +74,7 @@ public class DiningOptionsFragment extends Fragment implements
             viewModel.init(getContext().getApplicationContext());
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
             sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+            geoApiContext = new GeoApiContext.Builder().apiKey(getString(R.string.google_maps_key)).build();
         }
     }
 
@@ -134,8 +147,10 @@ public class DiningOptionsFragment extends Fragment implements
             viewModel.getFoodServices(campus, status).observe(this, data -> {
                 if (data != null && data.size() > 0) {
                     notAvailable.cancel();
+                    calculateDirectionsTo(data);
                     adapter.setData(data);
                     if (showAllSwitch.getVisibility() == View.VISIBLE && showAllSwitch.isChecked()) {
+                        calculateDirectionsTo(data);
                         adapter.setData(data);
                     } else {
                         List<FoodService> filteredData = new ArrayList<>();
@@ -154,6 +169,7 @@ public class DiningOptionsFragment extends Fragment implements
                             filtered.show();
                             showAllSwitch.setVisibility(View.VISIBLE);
                         }
+                        calculateDirectionsTo(filteredData);
                         adapter.setData(filteredData);
                     }
                 } else {
@@ -161,6 +177,35 @@ public class DiningOptionsFragment extends Fragment implements
                     notAvailable.show();
                 }
             });
+        }
+    }
+
+    private void calculateDirectionsTo(List<FoodService> foodServices) {
+        Location location = ((MainActivity) getActivity()).getLocation();
+        if (location == null) return;
+        int index = 0;
+        for (FoodService fs : foodServices) {
+            final int i = index;
+            DirectionsApiRequest directions = new DirectionsApiRequest(geoApiContext);
+            directions.mode(TravelMode.WALKING);
+            directions.origin(new LatLng(location.getLatitude(), location.getLongitude()));
+            directions.destination(new LatLng(fs.getLatitude(), fs.getLongitude())).setCallback(new PendingResult.Callback<DirectionsResult>() {
+                @Override
+                public void onResult(DirectionsResult result) {
+                    Log.d("Directions", "calculateDirections: routes: " + result.routes[0].toString());
+                    Log.d("Directions", "calculateDirections: duration: " + result.routes[0].legs[0].duration);
+                    Log.d("Directions", "calculateDirections: distance: " + result.routes[0].legs[0].distance);
+                    Log.d("Directions", "calculateDirections: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
+                    fs.setWalkTime((int) result.routes[0].legs[0].duration.inSeconds / 60);
+                    adapter.notifyItemChanged(i);
+                }
+
+                @Override
+                public void onFailure(Throwable e) {
+                    Log.e("Directions", "calculateDirections: Failed to get directions: " + e.getMessage());
+                }
+            });
+            index++;
         }
     }
 

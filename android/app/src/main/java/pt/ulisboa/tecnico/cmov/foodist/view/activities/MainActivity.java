@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private final Location TAGUSPARK = new Location("");
     private final Location CTN = new Location("");
 
-
+    private Location location;
     private LocationRequest locationRequest;
     private LocationCallback locationCallback;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onSuccess(Location location) {
         if (location != null) {
+            this.location = location;
             Log.d("MainActivity", "Location latitude: " + location.getLatitude());
             Log.d("MainActivity", "Location longitude: " + location.getLongitude());
             if (location.distanceTo(ALAMEDA) <= LOCATION_RADIUS) {
@@ -238,6 +239,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         } else {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
         }
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     @Override
