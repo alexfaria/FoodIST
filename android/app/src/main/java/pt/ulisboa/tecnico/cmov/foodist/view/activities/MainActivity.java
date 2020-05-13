@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -35,9 +36,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
 import pt.inesc.termite.wifidirect.SimWifiP2pManager;
+import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
 import pt.ulisboa.tecnico.cmov.foodist.service.OnPeersChangedListener;
@@ -69,11 +72,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private SimWifiP2pBroadcastReceiver mReceiver;
     private SimWifiP2pManager mManager;
     private SimWifiP2pManager.Channel mChannel = null;
-    private String connectedFoodService;
+
+    private String connectedFoodServiceName;
+    private String connectedFoodServiceBeaconName;
 
     private String campus;
     private String status;
-    private List<String> foodServicesNames = new ArrayList<>();
+    private List<FoodService> foodServicesList = new ArrayList<>();
 
     private Toolbar toolbar;
 
@@ -108,21 +113,22 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                if (locationResult == null) return;
+                if (locationResult == null) {
+                    return;
+                }
                 onSuccess(locationResult.getLastLocation());
             }
         };
 
         // register broadcast receiver
-        /*
         IntentFilter filter = new IntentFilter();
-        filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_NETWORK_MEMBERSHIP_CHANGED_ACTION);
+        filter.addAction(SimWifiP2pBroadcast.WIFI_P2P_PEERS_CHANGED_ACTION);
         mReceiver = new SimWifiP2pBroadcastReceiver(this);
         registerReceiver(mReceiver, filter);
 
         Intent intent = new Intent(getApplicationContext(), SimWifiP2pService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-         */
+        retrieveFoodServices();
     }
 
     @Override
@@ -154,10 +160,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
             campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
             toolbar.setTitle("Técnico " + campus);
-            retrieveFoodServicesNames();
+            retrieveFoodServices();
         } else if (key.equals(SHARED_PREFERENCES_STATUS_KEY)) {
             status = sharedPreferences.getString(SHARED_PREFERENCES_STATUS_KEY, getString(R.string.default_status));
-            retrieveFoodServicesNames();
+            retrieveFoodServices();
         }
     }
 
@@ -184,16 +190,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager != null)
+        if (locationManager != null) {
             return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                     || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        }
         return false;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_ID)
+        if (requestCode == PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_LOCATION_KEY, true).apply();
                 getLastLocation();
@@ -201,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_LOCATION_KEY, false).apply();
                 checkCampus();
             }
+        }
     }
 
     private void getLastLocation() {
@@ -230,8 +238,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 Log.d("MainActivity", "Located in Técnico Taguspark");
                 sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "Taguspark").apply();
             } else if (location.distanceTo(CTN) <= LOCATION_RADIUS) {
-                    Log.d("MainActivity", "Located in Técnico CTN");
-                    sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "CTN").apply();
+                Log.d("MainActivity", "Located in Técnico CTN");
+                sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "CTN").apply();
             } else {
                 Log.d("MainActivity", "Not close to any campus");
                 checkCampus();
@@ -248,10 +256,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onResume() {
         super.onResume();
-        if (sharedPreferences.getBoolean(SHARED_PREFERENCES_LOCATION_KEY, true))
+        if (sharedPreferences.getBoolean(SHARED_PREFERENCES_LOCATION_KEY, true)) {
             getLastLocation();
-        else
+        } else {
             checkCampus();
+        }
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -278,33 +287,60 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onPeersAvailable(SimWifiP2pDeviceList peers) {
         // list of devices in range
-        if (foodServicesNames == null) return;
-        for (SimWifiP2pDevice device : peers.getDeviceList()) {
-            if (connectedFoodService == null)
-                if (foodServicesNames.contains(device.deviceName)) {
-                    viewModel.addToFoodServiceQueue(campus, device.deviceName);
-                    connectedFoodService = device.deviceName; // ToDo change device name to handle spaces
-                    return;
-                } else if (connectedFoodService.equals(device.deviceName))
-                    return;
+        if (foodServicesList == null) {
+            return;
         }
+
         String uuid = sharedPreferences.getString(SHARED_PREFERENCES_UUID_KEY, "");
-        viewModel.removeFromFoodServiceQueue(campus, connectedFoodService, uuid);
-        connectedFoodService = null;
+
+        for (SimWifiP2pDevice device : peers.getDeviceList()) {
+
+            if (connectedFoodServiceBeaconName == null) {
+
+                for (FoodService fs : foodServicesList) {
+                    if (fs.getBeaconName().equals(device.deviceName)) {
+
+                        // connecting to a new device
+                        viewModel.addToFoodServiceQueue(campus, fs.getName());
+                        Log.d("ConnectingpeerChanged", fs.getName());
+                        Log.d("ConnectingpeerBeacon", fs.getBeaconName());
+                        connectedFoodServiceName = fs.getName();
+                        connectedFoodServiceBeaconName = fs.getBeaconName();
+                        return;
+                    }
+                }
+
+            } else {
+                // already connected to one => see if its in the peer list
+                // => true -> do nothing
+                // => false -> remove from queue
+                for (FoodService fs : foodServicesList) {
+                    if (fs.getBeaconName().equals(device.deviceName)) {
+                        return;
+                    }
+                }
+
+                Log.d("LeavingpeerChanged", connectedFoodServiceName);
+                Log.d("LeavingpeerBeacon", connectedFoodServiceBeaconName);
+                viewModel.removeFromFoodServiceQueue(campus, connectedFoodServiceName, uuid);
+                connectedFoodServiceName = null;
+                connectedFoodServiceBeaconName = null;
+            }
+        }
     }
 
-    private void retrieveFoodServicesNames() {
-        if (!campus.isEmpty() && !status.isEmpty())
+    private void retrieveFoodServices() {
+        if (!campus.isEmpty() && !status.isEmpty()) {
             viewModel.getFoodServices(campus, status).observe(this, foodServices -> {
-                for (FoodService fs : foodServices)
-                    foodServicesNames.add(fs.getName());
+                foodServicesList.addAll(foodServices);
             });
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        //unregisterReceiver(mReceiver);
+        unregisterReceiver(mReceiver);
     }
 }

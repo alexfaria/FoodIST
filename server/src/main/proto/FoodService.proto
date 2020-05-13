@@ -123,5 +123,4 @@ service FoodServer {
     rpc putDishRating(PutDishRatingRequest) returns (Empty);
     rpc addToFoodServiceQueue(AddToFoodServiceQueueRequest) returns (Empty);
     rpc removeFromFoodServiceQueue(RemoveFromFoodServiceQueueRequest) returns (Empty);
-    // rpc getWaitTime(GetWaitTimeRequest) returns (GetWaitTimeResponse);
 }
