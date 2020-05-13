@@ -25,7 +25,6 @@ import pt.ulisboa.tecnico.cmov.foodservice.GetDishRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesPhotosResponse;
 import pt.ulisboa.tecnico.cmov.foodservice.GetDishesRequest;
-import pt.ulisboa.tecnico.cmov.foodservice.GetDishesWithPhotosResponse;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServiceRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.GetFoodServicesRequest;
 import pt.ulisboa.tecnico.cmov.foodservice.PutDishPhotoRequest;
