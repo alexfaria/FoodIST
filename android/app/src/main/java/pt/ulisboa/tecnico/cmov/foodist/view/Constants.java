@@ -10,4 +10,7 @@ public class Constants {
     public static final String NAVHOST_ARGS_FOODSERVICE_NAME = "foodServiceName";
     public static final String NAVHOST_ARGS_DISH_NAME = "dishName";
     public static final String NAVHOST_ARGS_DISH_PHOTO = "dishPhoto";
+
+    public static final String INTENT_NOTIFICATION = "intentNotification";
+    public static final String INTENT_NOTIFICATION_FOODSERVICE_NAME = "foodServiceName";
 }

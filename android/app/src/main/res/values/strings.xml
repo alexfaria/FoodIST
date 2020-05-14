@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">FoodIST</string>
     <string name="action_settings">Settings</string>
-
     <!--Settings-->
     <string name="student">Student</string>
     <string name="professor">Professor</string>
@@ -29,7 +28,6 @@
     <string name="food_service_queue">Queue Time:</string>
     <string name="open_gmaps_prompt">Open Google Maps?</string>
     <string name="error_gmaps">Failed to open map</string>
-
     <!--Fragment Food Menu-->
     <string name="add_menu">Add Item</string>
     <!--Fragment Dish-->
@@ -71,4 +69,8 @@
     <string name="dietary_preference_prompt">Select the dietary category:</string>
     <string name="ratings_and_reviews" translatable="false"><![CDATA[Ratings & Reviews]]></string>
     <string name="show_all">Show all</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name" translatable="false">Notification Channel</string>
+    <string name="notification_channel_description" translatable="false">Notification Channel Description</string>
 </resources>

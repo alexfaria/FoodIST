@@ -1,18 +1,13 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.activities;
 
 import android.Manifest;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Messenger;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,25 +28,13 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
-import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
-import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
-import pt.inesc.termite.wifidirect.SimWifiP2pManager;
-import pt.inesc.termite.wifidirect.service.SimWifiP2pService;
 import pt.ulisboa.tecnico.cmov.foodist.R;
-import pt.ulisboa.tecnico.cmov.foodist.model.FoodService;
-import pt.ulisboa.tecnico.cmov.foodist.service.OnPeersChangedListener;
-import pt.ulisboa.tecnico.cmov.foodist.service.SimWifiP2pBroadcastReceiver;
-import pt.ulisboa.tecnico.cmov.foodist.view.App;
-import pt.ulisboa.tecnico.cmov.foodist.view.viewmodel.FoodServiceViewModel;
 
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.INTENT_NOTIFICATION;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.INTENT_NOTIFICATION_FOODSERVICE_NAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_LOCATION_KEY;
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_STATUS_KEY;
-import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_UUID_KEY;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location> {
 
@@ -233,11 +216,31 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         } else {
             checkCampus();
         }
+
+        // https://stackoverflow.com/questions/42040079/pendingintent-wont-launch-desired-fragment
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            final boolean intentBeaconAction = extras.getBoolean(INTENT_NOTIFICATION, false);
+
+            if (intentBeaconAction) {
+                final String foodServiceName = extras.getString(INTENT_NOTIFICATION_FOODSERVICE_NAME);
+                Bundle args = new Bundle();
+                args.putString(NAVHOST_ARGS_FOODSERVICE_NAME, foodServiceName);
+                Navigation.findNavController(findViewById(R.id.nav_host_fragment))
+                        .navigate(R.id.action_DiningOptions_to_FoodService, args);
+            }
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 }
