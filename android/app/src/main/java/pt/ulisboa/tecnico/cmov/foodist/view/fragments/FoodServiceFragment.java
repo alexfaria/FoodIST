@@ -127,8 +127,8 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     .navigate(R.id.action_FoodMenu_to_AddToMenu, getArguments());
         });
 
-        notAvailable = Toast.makeText(getContext(), "There are currently no dishes available!", Toast.LENGTH_LONG);
-        filtered = Toast.makeText(getContext(), "Some dishes were filtered!", Toast.LENGTH_SHORT);
+        notAvailable = Toast.makeText(getContext(), getString(R.string.no_dishes), Toast.LENGTH_LONG);
+        filtered = Toast.makeText(getContext(), getString(R.string.filtered_dishes), Toast.LENGTH_SHORT);
         showAllSwitch = view.findViewById(R.id.showAllSwitch);
         showAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked)
@@ -262,7 +262,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onInfoWindowClick(final Marker marker) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Open Google Maps?")
+        builder.setMessage(getString(R.string.open_gmaps_prompt))
                 .setCancelable(true)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) {
@@ -278,7 +278,7 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                             }
                         } catch (NullPointerException e) {
                             Log.e("directions", "onClick: NullPointerException: Couldn't open map." + e.getMessage());
-                            Toast.makeText(getActivity(), "Couldn't open map", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getString(R.string.error_gmaps), Toast.LENGTH_SHORT).show();
                         }
                     }
                 })

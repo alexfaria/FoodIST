@@ -1,0 +1,61 @@
+<resources>
+    <string name="app_name">FoodIST</string>
+    <string name="action_settings">Definições</string>
+    <!--Fragment Food Service-->
+    <string name="food_service_name">Nome:</string>
+    <string name="food_service_opening">Hora de abertura:</string>
+    <string name="food_service_queue">Tempo de espera na fila:</string>
+    <!--Fragment Food Menu-->
+    <string name="add_menu">Adicionar Item</string>
+    <!--Fragment Dish-->
+    <string name="dish_photo_viewer">Visualizador de Fotos</string>
+    <string name="next_dish_photo">Próximo</string>
+    <string name="previous_dish_photo">Anterior</string>
+    <string name="dish_name">Nome do Prato</string>
+    <string name="dish_price">Preço do Prato</string>
+    <!--Fragment Add to Menu-->
+    <string name="new_dish_name">Nome</string>
+    <string name="new_dish_price">Preço</string>
+    <string name="submit_button">Submeter</string>
+    <string name="upload_button">Enviar Foto</string>
+    <string name="optional">(Opcional)</string>
+    <!--Default Settings-->
+    <!--Campus Coordinates-->
+    <string name="upload_photo">Enviar Foto</string>
+    <string name="dish_content">dish</string>
+    <!--Dietary Preferences-->
+    <string name="meat">Carne</string>
+    <string name="fish">Peixe</string>
+    <string name="vegetarian">Vegetariano</string>
+    <string name="vegan">Vegano</string>
+    <string name="dietary_preference_prompt">Seleccione a categoria alimentar:</string>
+    <string name="show_all">Mostrar todos</string>
+    <string name="location">Localização</string>
+    <string name="enable_auto_location">Ativar localização automática</string>
+    <string name="choose_campus">Escolher o campus</string>
+    <string name="status">Estatuto</string>
+    <string name="dietary_preferences">Preferências alimentares</string>
+    <string name="choose_dietary_preferences">Escolher preferências alimentares</string>
+    <string name="choose_status">Escolher o estatuto</string>
+    <string name="help">Ajuda</string>
+    <string name="send_feedback">Enviar feedback</string>
+    <string name="report_issues">Reportar problemas técnicos ou sugerir novas funcionalidades</string>
+    <string name="student">Estudante</string>
+    <string name="professor">Professor</string>
+    <string name="researcher">Investigador</string>
+    <string name="staff">Funcionários</string>
+    <string name="general_public">Público Geral</string>
+    <string name="filtered_services">Alguns restaurantes foram filtrados!</string>
+    <string name="no_services">Não existem restaurantes disponívels neste momento</string>
+    <string name="filtered_dishes">Alguns pratos foram filtrados!</string>
+    <string name="no_dishes">Não existem pratos disponívels neste momento</string>
+    <string name="open_gmaps_prompt">Deseja abrir o Google Maps?</string>
+    <string name="error_gmaps">Falha ao abrir Google Maps</string>
+    <string name="error_no_connection">Não existe nenhuma coneção disponível!</string>
+    <string name="error_name_missing">Nome em falta!</string>
+    <string name="error_cost_missing">Preço em falta!</string>
+    <string name="error_already_exists">Já existe um prato com esse nome</string>
+    <string name="error_invalid_number">Preço inválido</string>
+    <string name="success_photo_upload">Foto enviada com sucesso!</string>
+    <string name="success_feedback">Avaliação enviada com sucesso!</string>
+</resources>

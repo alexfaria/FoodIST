@@ -103,7 +103,7 @@ public class DiningOptionsFragment extends Fragment implements
         recyclerView.setAdapter(adapter);
         layoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        filtered = Toast.makeText(getContext(), "Some services were filtered!", Toast.LENGTH_SHORT);
+        filtered = Toast.makeText(getContext(), getString(R.string.filtered_services), Toast.LENGTH_SHORT);
         showAllSwitch = view.findViewById(R.id.showAll);
         showAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (!isChecked)
@@ -112,7 +112,7 @@ public class DiningOptionsFragment extends Fragment implements
                 filtered.cancel();
             retrieveFoodServices();
         });
-        notAvailable = Toast.makeText(getContext(), "There are currently no services available!", Toast.LENGTH_LONG);
+        notAvailable = Toast.makeText(getContext(), getString(R.string.no_services), Toast.LENGTH_LONG);
         return view;
     }
 

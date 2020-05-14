@@ -38,6 +38,7 @@ import static android.app.Activity.RESULT_OK;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_DISH_PHOTO;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_UUID_KEY;
 
 public class DishFragment extends Fragment implements DishPhotosAdapter.OnImageClickListener {
 
@@ -70,7 +71,7 @@ public class DishFragment extends Fragment implements DishPhotosAdapter.OnImageC
             viewModel = ViewModelProviders.of(this).get(DishViewModel.class);
             viewModel.init((App) getContext().getApplicationContext());
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-            uuid = sharedPreferences.getString("uuid", "");
+            uuid = sharedPreferences.getString(SHARED_PREFERENCES_UUID_KEY, "");
         }
     }
 
@@ -88,11 +89,11 @@ public class DishFragment extends Fragment implements DishPhotosAdapter.OnImageC
         rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             if (fromUser) {
                 if (!((App)getContext().getApplicationContext()).isConnected()) {
-                    Toast.makeText(getContext(), "No connection available!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.error_no_connection), Toast.LENGTH_LONG).show();
                     return;
                 }
                 viewModel.putUserDishRating(foodServiceNameArg, dishNameArg, rating, uuid);
-                Toast.makeText(getContext(), "Your feedback was saved!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.success_feedback), Toast.LENGTH_SHORT).show();
             }
         });
         ratingReviews = view.findViewById(R.id.rating_reviews);
@@ -157,12 +158,12 @@ public class DishFragment extends Fragment implements DishPhotosAdapter.OnImageC
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             if (imageBitmap != null) {
                 if (!((App)getContext().getApplicationContext()).isConnected()) {
-                    Toast.makeText(getContext(), "No connection available!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.error_no_connection), Toast.LENGTH_LONG).show();
                     return;
                 }
                 viewModel.putDishPhoto(foodServiceNameArg, dishNameArg, imageBitmap);
                 adapter.addItem(imageBitmap);
-                Toast.makeText(getContext(), "Your photo was uploaded!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.success_photo_upload), Toast.LENGTH_SHORT).show();
             }
         }
     }

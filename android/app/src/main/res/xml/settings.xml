@@ -4,16 +4,16 @@
 
     <PreferenceCategory
         app:key="location_category"
-        app:title="Location">
+        app:title="@string/location">
 
         <SwitchPreferenceCompat
             app:key="location"
-            app:title="Enable automatic location"
+            app:title="@string/enable_auto_location"
             app:defaultValue="true"/>
 
         <ListPreference
             app:key="campus"
-            app:title="Choose your campus"
+            app:title="@string/choose_campus"
             app:defaultValue="@string/default_campus"
             app:entries="@array/locations"
             app:entryValues="@array/locations"/>
@@ -21,24 +21,24 @@
 
     <PreferenceCategory
         app:key="user_category"
-        app:title="Status">
+        app:title="@string/status">
 
         <ListPreference
             app:key="status"
-            app:title="Choose your status"
+            app:title="@string/choose_status"
             app:defaultValue="@string/default_status"
             app:entries="@array/status"
-            app:entryValues="@array/status">
+            app:entryValues="@array/status_values">
         </ListPreference>
     </PreferenceCategory>
 
     <PreferenceCategory
         app:key="dietary_category"
-        app:title="Dietary Preferences">
+        app:title="@string/dietary_preferences">
 
         <MultiSelectListPreference
             app:key="dietaryPreferenceList"
-            app:title="Select your dietary preferences"
+            app:title="@string/choose_dietary_preferences"
             app:defaultValue="@array/dietary_preferences_values"
             app:entries="@array/dietary_preferences"
             app:entryValues="@array/dietary_preferences_values">
@@ -47,12 +47,12 @@
 
     <PreferenceCategory
         app:key="help_category"
-        app:title="Help">
+        app:title="@string/help">
 
         <Preference
             app:key="feedback"
-            app:title="Send feedback"
-            app:summary="Report technical issues or suggest new features"/>
+            app:title="@string/send_feedback"
+            app:summary="@string/report_issues"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

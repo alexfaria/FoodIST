@@ -82,17 +82,17 @@ public class AddMenuFragment extends Fragment {
 
         view.findViewById(R.id.submitBtn).setOnClickListener(v -> {
             if (!((App)getContext().getApplicationContext()).isConnected()) {
-                Toast.makeText(getContext(), "No connection available!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getString(R.string.error_no_connection), Toast.LENGTH_LONG).show();
                 return;
             }
             String name = dishName.getText().toString();
             if (name.isEmpty()) {
-                dishName.setError("Name missing!");
+                dishName.setError(getString(R.string.error_name_missing));
                 return;
             }
             String costStr = dishCost.getText().toString();
             if (costStr.isEmpty()) {
-                dishCost.setError("Cost missing!");
+                dishCost.setError(getString(R.string.error_cost_missing));
                 return;
             }
 
@@ -109,11 +109,11 @@ public class AddMenuFragment extends Fragment {
                                 .findNavController(AddMenuFragment.this)
                                 .popBackStack();
                     } else {
-                        dishName.setError("Already exists a dish with the given name!");
+                        dishName.setError(getString(R.string.error_already_exists));
                     }
                 });
             } catch (NumberFormatException e) {
-                dishCost.setError("Not a valid number!");
+                dishCost.setError(getString(R.string.error_invalid_number));
             }
         });
         view.findViewById(R.id.uploadBtn).setOnClickListener(new View.OnClickListener() {
@@ -133,7 +133,7 @@ public class AddMenuFragment extends Fragment {
             if (imageBitmap != null) {
                 dishPhoto = imageBitmap;
                 dishPhotoCheckbox.setChecked(true);
-                Toast.makeText(this.getContext(), "Your photo was uploaded successfully!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this.getContext(), getString(R.string.success_photo_upload), Toast.LENGTH_LONG).show();
             }
         }
     }

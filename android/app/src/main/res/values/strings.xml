@@ -1,19 +1,35 @@
 <resources>
     <string name="app_name">FoodIST</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="title_activity_maps">Map</string>
+    <!--Settings-->
+    <string name="student">Student</string>
+    <string name="professor">Professor</string>
+    <string name="researcher">Researcher</string>
+    <string name="staff">Staff</string>
+    <string name="general_public">General Public</string>
+    <string name="location">location</string>
+    <string name="enable_auto_location">Enable automatic location</string>
+    <string name="choose_campus">Choose your campus</string>
+    <string name="status">Status</string>
+    <string name="choose_status">Choose your status</string>
+    <string name="dietary_preferences">Dietary Preferences</string>
+    <string name="choose_dietary_preferences">Select your dietary preferences</string>
+    <string name="help">Help</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="report_issues">Report technical issues or suggest new features</string>
+    <!--Fragment Dining Options-->
+    <string name="filtered_services">Some services were filtered!</string>
+    <string name="no_services">There are currently no services available!</string>
+    <string name="filtered_dishes">Some dishes were filtered!</string>
+    <string name="no_dishes">There are currently no dishes available!</string>
     <!--Fragment Food Service-->
-    <string name="food_service_name">Name</string>
+    <string name="food_service_name">Name:</string>
     <string name="food_service_opening">Opening Hours:</string>
     <string name="food_service_queue">Queue Time:</string>
-    <string name="menu_viewer">Menu</string>
-    <string name="fullscreen">Fullscreen</string>
+    <string name="open_gmaps_prompt">Open Google Maps?</string>
+    <string name="error_gmaps">Failed to open map</string>
+
     <!--Fragment Food Menu-->
     <string name="add_menu">Add Item</string>
     <!--Fragment Dish-->
@@ -28,16 +44,23 @@
     <string name="submit_button">Submit</string>
     <string name="upload_button">Upload photo</string>
     <string name="optional">(Optional)</string>
+    <string name="error_no_connection">No connection available!</string>
+    <string name="error_name_missing">Name missing!</string>
+    <string name="error_cost_missing">Cost missing!</string>
+    <string name="error_already_exists">"Already exists a dish with the given name!"</string>
+    <string name="error_invalid_number">"Not a valid number!"</string>
+    <string name="success_photo_upload">"Your photo was uploaded!"</string>
+    <string name="success_feedback">Your feedback was saved!</string>
     <!--Default Settings-->
-    <string name="default_campus">Alameda</string>
-    <string name="default_status">Student</string>
+    <string name="default_campus" translatable="false">Alameda</string>
+    <string name="default_status" translatable="false">Student</string>
     <!--Campus Coordinates-->
-    <string name="alameda_latitude">38.7368192</string>
-    <string name="alameda_longitude">-9.138705</string>
-    <string name="taguspark_latitude">38.7370274</string>
-    <string name="taguspark_longitude">-9.3026572</string>
-    <string name="ctn_latitude">38.811678</string>
-    <string name="ctn_longitude">-9.093845</string>
+    <string name="alameda_latitude" translatable="false">38.7368192</string>
+    <string name="alameda_longitude" translatable="false">-9.138705</string>
+    <string name="taguspark_latitude" translatable="false">38.7370274</string>
+    <string name="taguspark_longitude" translatable="false">-9.3026572</string>
+    <string name="ctn_latitude" translatable="false">38.811678</string>
+    <string name="ctn_longitude" translatable="false">-9.093845</string>
     <string name="upload_photo">Upload Photo</string>
     <string name="dish_content">dish</string>
     <!--Dietary Preferences-->
@@ -46,6 +69,6 @@
     <string name="vegetarian">Vegetarian</string>
     <string name="vegan">Vegan</string>
     <string name="dietary_preference_prompt">Select the dietary category:</string>
-    <string name="ratings_and_reviews"><![CDATA[Ratings & Reviews]]></string>
+    <string name="ratings_and_reviews" translatable="false"><![CDATA[Ratings & Reviews]]></string>
     <string name="show_all">Show all</string>
 </resources>

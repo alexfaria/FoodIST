@@ -7,6 +7,14 @@
     </string-array>
 
     <string-array name="status">
+        <item>@string/student</item>
+        <item>@string/professor</item>
+        <item>@string/researcher</item>
+        <item>@string/staff</item>
+        <item>@string/general_public</item>
+    </string-array>
+
+    <string-array name="status_values">
         <item>Student</item>
         <item>Professor</item>
         <item>Researcher</item>
