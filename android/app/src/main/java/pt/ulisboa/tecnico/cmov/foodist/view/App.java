@@ -323,6 +323,16 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
         bitmapCache.close();
         unregisterReceiver(mReceiver);
+
+        // leave queue on terminate (?)
+        if (connectedBeacon != null) {
+            FoodServer.serverExecutor.execute(() -> {
+                foodServer.removeFromFoodServiceQueue(campus, connectedBeacon.getFoodServiceName(), uuid);
+                notificationManager.notify(leavingNotificationId, leavingNotificationBuilder.build());
+                connectedBeacon = null;
+            });
+        }
+
         unbindService(mConnection);
     }
 }
