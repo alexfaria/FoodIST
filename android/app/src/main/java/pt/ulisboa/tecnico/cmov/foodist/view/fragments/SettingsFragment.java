@@ -14,6 +14,4 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         Log.i("SettingsFragment", "onCreatePreferences");
         addPreferencesFromResource(R.xml.settings);
     }
-
-
 }

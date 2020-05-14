@@ -69,8 +69,14 @@
     <string name="dietary_preference_prompt">Select the dietary category:</string>
     <string name="ratings_and_reviews" translatable="false"><![CDATA[Ratings & Reviews]]></string>
     <string name="show_all">Show all</string>
-
     <!-- Notifications -->
     <string name="notification_channel_name" translatable="false">Notification Channel</string>
     <string name="notification_channel_description" translatable="false">Notification Channel Description</string>
+    <!-- Localization -->
+    <string name="default_language" translatable="false">en</string>
+    <string name="language_pt" translatable="false">Português</string>
+    <string name="language_en" translatable="false">English</string>
+
+    <string name="language">Language</string>
+    <string name="choose_language">Choose Language</string>
 </resources>

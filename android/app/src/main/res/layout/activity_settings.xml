@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <fragment
+        android:tag="settingsFragmentTag"
         android:id="@+id/activity_settings"
         android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.SettingsFragment"
         android:layout_width="match_parent"

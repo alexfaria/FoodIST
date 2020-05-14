@@ -3,6 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        app:key="language_category"
+        app:title="@string/language">
+
+        <DropDownPreference
+            app:key="language"
+            app:title="@string/choose_language"
+            app:useSimpleSummaryProvider="true"
+            app:entries="@array/languages"
+            app:entryValues="@array/languages_values"
+            app:defaultValue="@string/default_language"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:key="location_category"
         app:title="@string/location">
 

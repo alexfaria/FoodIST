@@ -1,14 +1,19 @@
 package pt.ulisboa.tecnico.cmov.foodist.view.activities;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,12 +33,15 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.Locale;
+
 import pt.ulisboa.tecnico.cmov.foodist.R;
 
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.INTENT_NOTIFICATION;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.INTENT_NOTIFICATION_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_LANGUAGE_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_LOCATION_KEY;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, OnSuccessListener<Location> {
@@ -88,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 onSuccess(locationResult.getLastLocation());
             }
         };
+
+        setLocale();
     }
 
     @Override
@@ -119,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
             campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
             toolbar.setTitle("Técnico " + campus);
+        } else if (key.equals(SHARED_PREFERENCES_LANGUAGE_KEY)) {
+            setLocale();
         }
     }
 
@@ -242,5 +254,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+    }
+
+    // https://www.tutorialspoint.com/how-to-set-locale-programmatically-in-android-app
+    private void setLocale(){
+        String localeCode = sharedPreferences.getString(SHARED_PREFERENCES_LANGUAGE_KEY, getString(R.string.default_language));
+        Resources resources = getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(localeCode.toLowerCase()));
+        resources.updateConfiguration(configuration, displayMetrics);
+        configuration.locale = new Locale(localeCode.toLowerCase());
+        resources.updateConfiguration(configuration, displayMetrics);
     }
 }

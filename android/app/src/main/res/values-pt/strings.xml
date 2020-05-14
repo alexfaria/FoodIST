@@ -58,4 +58,6 @@
     <string name="error_invalid_number">Preço inválido</string>
     <string name="success_photo_upload">Foto enviada com sucesso!</string>
     <string name="success_feedback">Avaliação enviada com sucesso!</string>
+    <string name="language">Idioma</string>
+    <string name="choose_language">Escolher idioma</string>
 </resources>
