@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">FoodIST</string>
+    <string name="tecnico" translatable="false">Técnico </string>
     <string name="action_settings">Settings</string>
     <!--Settings-->
     <string name="student">Student</string>
@@ -72,11 +73,15 @@
     <!-- Notifications -->
     <string name="notification_channel_name" translatable="false">Notification Channel</string>
     <string name="notification_channel_description" translatable="false">Notification Channel Description</string>
+    <string name="notification_joined_queue">Joined the queue at </string>
+    <string name="notification_left_queue">Left the queue from </string>
+    <string name="notification_add_menu_items">"Help others by adding menu items to this restaurant "</string>
+    <string name="notification_add_photos">Help others by adding photos to this restaurant\'s menu</string>
+    <string name="notification_action">Open app</string>
     <!-- Localization -->
     <string name="default_language" translatable="false">en</string>
     <string name="language_pt" translatable="false">Português</string>
     <string name="language_en" translatable="false">English</string>
-
     <string name="language">Language</string>
     <string name="choose_language">Choose Language</string>
 </resources>

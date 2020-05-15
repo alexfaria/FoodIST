@@ -269,16 +269,15 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                        //TODO: hardcoded strings
                         NotificationCompat.Builder connectingNotificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                                         R.mipmap.ic_launcher))
-                                .setContentTitle("Joined queue @ " + connectedBeacon.getFoodServiceName())
-                                .setContentText("Please add some menu items")
+                                .setContentTitle(getString(R.string.notification_joined_queue) + connectedBeacon.getFoodServiceName())
+                                .setContentText(getString(R.string.notification_add_menu_items))
                                 .setDefaults(Notification.DEFAULT_ALL)
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                .addAction(R.drawable.common_google_signin_btn_icon_dark, "Open app", pendingIntent);
+                                .addAction(R.drawable.common_google_signin_btn_icon_dark, getString(R.string.notification_action), pendingIntent);
 
                         notificationManager.notify(connectingNotificationId, connectingNotificationBuilder.build());
                         return;
@@ -306,16 +305,15 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                //TODO: hardcoded strings
                 NotificationCompat.Builder leavingNotificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
                                 R.mipmap.ic_launcher))
-                        .setContentTitle("Left queue @ " + connectedBeacon.getFoodServiceName())
-                        .setContentText("Please take and upload photos of your plate")
+                        .setContentTitle(getString(R.string.notification_left_queue) + connectedBeacon.getFoodServiceName())
+                        .setContentText(getString(R.string.notification_add_photos))
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .addAction(R.drawable.common_google_signin_btn_icon_dark, "Open app",
+                        .addAction(R.drawable.common_google_signin_btn_icon_dark, getString(R.string.notification_action),
                                 pendingIntent);
                 notificationManager.notify(leavingNotificationId, leavingNotificationBuilder.build());
                 connectedBeacon = null;

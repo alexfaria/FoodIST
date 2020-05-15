@@ -120,7 +120,7 @@ public class DiningOptionsFragment extends Fragment implements
         super.onViewCreated(view, savedInstanceState);
         String campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Técnico " + campus);
+        toolbar.setTitle(getString(R.string.tecnico) + campus);
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {

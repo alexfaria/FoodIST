@@ -60,4 +60,9 @@
     <string name="success_feedback">Avaliação enviada com sucesso!</string>
     <string name="language">Idioma</string>
     <string name="choose_language">Escolher idioma</string>
+    <string name="notification_joined_queue">"Entrou na fila em "</string>
+    <string name="notification_left_queue">"Saiu da fila de "</string>
+    <string name="notification_add_menu_items">"Ajude outros utilizadores adicionando items a este restaurante "</string>
+    <string name="notification_add_photos">Ajude outros utilizadores adicionando fotos aos menus deste restaurante</string>
+    <string name="notification_action">Abrir aplicação</string>
 </resources>

@@ -10,7 +10,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
-        toolbar.setTitle("Técnico " + campus);
+        toolbar.setTitle(getString(R.string.tecnico) + campus);
 
         ALAMEDA.setLatitude(Double.parseDouble(getString(R.string.alameda_latitude)));
         ALAMEDA.setLongitude(Double.parseDouble(getString(R.string.alameda_longitude)));
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
             campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
-            toolbar.setTitle("Técnico " + campus);
+            toolbar.setTitle(getString(R.string.tecnico) + campus);
         } else if (key.equals(SHARED_PREFERENCES_LANGUAGE_KEY)) {
             setLocale();
         }
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         if (campus.isEmpty()) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
-            Toast.makeText(this, "Please choose your campus", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.choose_campus), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -183,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             if (isLocationEnabled()) {
                 fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this);
             } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.enable_auto_location), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
