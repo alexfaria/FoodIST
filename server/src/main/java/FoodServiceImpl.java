@@ -104,6 +104,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getBeacons(GetBeaconsRequest request, StreamObserver<BeaconDto> responseObserver) {
+        System.out.println("$ GetBeacons " + request.getCampus());
         foodServices.values().forEach(fs -> {
             if (fs.getCampus().equals(request.getCampus()))
                 responseObserver.onNext(BeaconDto
@@ -118,6 +119,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
     @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
         // LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
+        System.out.println("$ GetFoodServices " + request.getCampus());
         LocalTime current = LocalTime.of(14, 30);
         foodServices.values().forEach(fs -> {
             if (fs.getCampus().equals(request.getCampus())
@@ -139,6 +141,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getFoodService(GetFoodServiceRequest request, StreamObserver<FoodServiceDto> responseObserver) {
+        System.out.println("$ GetFoodService " + request.getFoodServiceName());
         FoodService fs = foodServices.get(request.getFoodServiceName());
         if (fs != null) {
             responseObserver.onNext(FoodServiceDto
@@ -158,6 +161,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getDishes(GetDishesRequest request, StreamObserver<DishDto> responseObserver) {
+        System.out.println("$ GetDishes " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null)
             foodService.getMenu().values().forEach(d ->
@@ -174,6 +178,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getDishesPhotos(GetDishesPhotosRequest request, StreamObserver<GetDishesPhotosResponse> responseObserver) {
+        System.out.println("$ GetDishesPhotos " + request.getNumberOfPhotos());
         for (FoodService fs : foodServices.values()) {
             for (Dish d : fs.getMenu().values()) {
                 if (d.hasPhotos()) {
@@ -196,6 +201,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getDish(GetDishRequest request, StreamObserver<DishWithPhotosDto> responseObserver) {
+        System.out.println("$ GetDish " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             Dish dish = foodService.getMenu().get(request.getDishName());
@@ -214,6 +220,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void putDish(PutDishRequest request, StreamObserver<PutDishResponse> responseObserver) {
+        System.out.println("$ PutDish " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         boolean success = false;
         if (foodService != null) {
@@ -229,6 +236,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void putDishPhoto(PutDishPhotoRequest request, StreamObserver<PutDishPhotoResponse> responseObserver) {
+        System.out.println("$ PutDishPhoto " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             Dish dish = foodService.getMenu().get(request.getDishName());
@@ -242,6 +250,7 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void putDishRating(PutDishRatingRequest request, StreamObserver<Empty> responseObserver) {
+        System.out.println("$ PutDishRating " + request.getFoodServiceName());
         FoodService foodService = foodServices.get(request.getFoodServiceName());
         if (foodService != null) {
             Dish dish = foodService.getMenu().get(request.getDishName());
