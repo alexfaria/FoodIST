@@ -21,8 +21,8 @@ public class FoodService {
     // TODO: use Tuple<LocalTime, Integer> as a value
     private HashMap<String, LocalTime> queueArrivalTime; // UUID -> ArrivalTime
     private HashMap<String, Integer> queueClientCount; // UUID -> other clients in queue on arrival
-    private ArrayList<Double> LRx; // time difference between arrival time and departure
-    private ArrayList<Double> LRy; // how many other clients were present upon arrival
+    private ArrayList<Double> LRx; // how many other clients were present upon arrival
+    private ArrayList<Double> LRy; // time difference between arrival time and departure
 
     public FoodService(String name, String campus, Map<String, List<OpeningHours>> openingHours, double latitude, double longitude, String beaconName) {
         this.name = name;
