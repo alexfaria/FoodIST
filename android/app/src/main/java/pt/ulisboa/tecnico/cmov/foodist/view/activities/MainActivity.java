@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.INTENT_NOTIFICATION
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.INTENT_NOTIFICATION_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.NAVHOST_ARGS_FOODSERVICE_NAME;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_CAMPUS_KEY;
+import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_FIRST_RUN_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_LANGUAGE_KEY;
 import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_LOCATION_KEY;
 
@@ -97,6 +99,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         };
 
         setLocale();
+
+        boolean firstRun = sharedPreferences.getBoolean(SHARED_PREFERENCES_FIRST_RUN_KEY, true);
+
+        if (firstRun) {
+            sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_FIRST_RUN_KEY, false).apply();
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            Toast toast = Toast.makeText(this, getString(R.string.toast_settings), Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
     }
 
     @Override
@@ -133,14 +146,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    private void checkCampus() {
-        if (campus.isEmpty()) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
-            Toast.makeText(this, getString(R.string.choose_campus), Toast.LENGTH_LONG).show();
-        }
-    }
-
     private boolean checkPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -172,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 getLastLocation();
             } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_LOCATION_KEY, false).apply();
-                checkCampus();
             }
         }
     }
@@ -207,8 +211,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 Log.d("MainActivity", "Located in Técnico CTN");
                 sharedPreferences.edit().putString(SHARED_PREFERENCES_CAMPUS_KEY, "CTN").apply();
             } else {
-                Log.d("MainActivity", "Not close to any campus");
-                checkCampus();
+                Log.d("MainActivity", "Not close to any campus -> DEFAULT TO ALAMEDA");
             }
         } else {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, null);
@@ -224,8 +227,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         super.onResume();
         if (sharedPreferences.getBoolean(SHARED_PREFERENCES_LOCATION_KEY, true)) {
             getLastLocation();
-        } else {
-            checkCampus();
         }
 
         // https://stackoverflow.com/questions/42040079/pendingintent-wont-launch-desired-fragment

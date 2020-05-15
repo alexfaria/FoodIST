@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.view;
 
 public class Constants {
+    public static final String SHARED_PREFERENCES_FIRST_RUN_KEY = "firstRun";
     public static final String SHARED_PREFERENCES_STATUS_KEY = "status";
     public static final String SHARED_PREFERENCES_CAMPUS_KEY = "campus";
     public static final String SHARED_PREFERENCES_LOCATION_KEY = "location";

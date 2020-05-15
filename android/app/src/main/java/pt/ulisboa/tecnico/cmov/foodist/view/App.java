@@ -132,7 +132,6 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
 */
                     ManagedChannel channel = null;
                     InputStream is;
-                    Log.d("idk", "criar servidor");
                     try {
                         is = getResources().getAssets().open("server.crt"); // devia ser CA mas pronto n sei fazer
                         channel = ChannelBuilder.buildTls(HOST, PORT, is);

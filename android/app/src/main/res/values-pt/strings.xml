@@ -66,4 +66,5 @@
     <string name="notification_add_photos">Ajude outros utilizadores adicionando fotos aos menus deste restaurante</string>
     <string name="notification_action">Abrir aplicação</string>
     <string name="settings">Definições</string>
+    <string name="toast_settings">Configure o seu perfil</string>
 </resources>
