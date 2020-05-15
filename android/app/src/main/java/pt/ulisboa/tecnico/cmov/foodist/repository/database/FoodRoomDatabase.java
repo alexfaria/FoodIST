@@ -55,11 +55,11 @@ public abstract class FoodRoomDatabase extends RoomDatabase {
 
             // If you want to keep data through app restarts,
             // comment out the following block
-            databaseWriteExecutor.execute(() -> {
+            /*databaseWriteExecutor.execute(() -> {
                 // Populate the database in the background.
                 // If you want to start with more words, just add them.
                 INSTANCE.clearAllTables();
-            });
+            });*/
         }
     };
 }

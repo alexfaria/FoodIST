@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -106,8 +107,8 @@ public class FoodServiceDBEntity {
                 range[0] = range[0].substring(1);
             int open = Integer.parseInt(range[0].replace(":", ""));
             int close = Integer.parseInt(range[1].replace(":", ""));
-            // int current = Integer.parseInt(formatter.format(new Date()).replace(":", "")); // Comment this line to ignore current time
-            int current = 1430; // Uncomment this line if you want to ignore current time
+            int current = Integer.parseInt(formatter.format(new Date()).replace(":", "")); // Comment this line to ignore current time
+            //int current = 1430; // Uncomment this line if you want to ignore current time
             if (open <= current && current < close)
                 return true;
         }

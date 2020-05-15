@@ -118,9 +118,9 @@ public class FoodServiceImpl extends FoodServerGrpc.FoodServerImplBase {
 
     @Override
     public void getFoodServices(GetFoodServicesRequest request, StreamObserver<FoodServiceDto> responseObserver) {
-        // LocalTime current = LocalTime.now(ZoneId.of("GMT+1"));
         System.out.println("$ GetFoodServices " + request.getCampus());
-        LocalTime current = LocalTime.of(14, 30);
+        LocalTime current = LocalTime.now(ZoneId.of("GMT+1")); // Comment this line to ignore current time
+        //LocalTime current = LocalTime.of(14, 30); // Uncomment this line too see all the food services
         foodServices.values().forEach(fs -> {
             if (fs.getCampus().equals(request.getCampus())
                     && fs.isAvailable(request.getStatus(), current))
