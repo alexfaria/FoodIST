@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.cmov.foodist.view;
 
 import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -34,7 +35,6 @@ import java.util.List;
 import java.util.UUID;
 
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import pt.inesc.termite.wifidirect.SimWifiP2pBroadcast;
 import pt.inesc.termite.wifidirect.SimWifiP2pDevice;
 import pt.inesc.termite.wifidirect.SimWifiP2pDeviceList;
@@ -60,15 +60,17 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_
 
 public class App extends Application implements SharedPreferences.OnSharedPreferenceChangeListener, SimWifiP2pManager.PeerListListener, OnPeersChangedListener {
 
+    private static final int NUMBER_OF_PREFETCH_ITEMS = 4;
+    // Notifications
+    private static final String CHANNEL_ID = "CHANNEL_ID";
+    private static int connectingNotificationId = 1;
+    private static int leavingNotificationId = 2;
     // private final String HOST = "192.168.1.41";
     private final String HOST = "server.foodist.com";
     private final int PORT = 8443;
-
     private boolean isConnected = false;
     private FoodServer foodServer;
     private BitmapCache bitmapCache;
-    private static final int NUMBER_OF_PREFETCH_ITEMS = 4;
-
     private SharedPreferences sharedPreferences;
     private SimWifiP2pBroadcastReceiver mReceiver;
     private SimWifiP2pManager mManager;
@@ -78,14 +80,22 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
     private String status;
     private List<Beacon> beacons;
     private Beacon connectedBeacon;
-
-    // Notifications
-    private static final String CHANNEL_ID = "CHANNEL_ID";
-    private static int connectingNotificationId = 1;
-    private static int leavingNotificationId = 2;
     private NotificationManagerCompat notificationManager;
-    private NotificationCompat.Builder connectingNotificationBuilder;
-    private NotificationCompat.Builder leavingNotificationBuilder;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        // callbacks for service binding, passed to bindService()
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            mManager = new SimWifiP2pManager(new Messenger(service));
+            mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mManager = null;
+            mChannel = null;
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -165,23 +175,6 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
 
         createNotificationChannel();
         notificationManager = NotificationManagerCompat.from(this);
-
-        //TODO: hardcoded strings
-        connectingNotificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                        R.mipmap.ic_launcher))
-                .setContentTitle("Joined queue")
-                .setContentText("Please add some menu items")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        leavingNotificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                        R.mipmap.ic_launcher))
-                .setContentTitle("Left queue")
-                .setContentText("Please take and upload photos of your plate")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
     }
 
     public boolean isConnected() {
@@ -236,7 +229,7 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.notification_channel_name);
             String description = getString(R.string.notification_channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
@@ -245,22 +238,6 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
             notificationManager.createNotificationChannel(channel);
         }
     }
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-        // callbacks for service binding, passed to bindService()
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mManager = new SimWifiP2pManager(new Messenger(service));
-            mChannel = mManager.initialize(getApplicationContext(), getMainLooper(), null);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mManager = null;
-            mChannel = null;
-        }
-    };
 
     @Override
     public void onPeersChanged() {
@@ -293,10 +270,15 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                         //TODO: hardcoded strings
-                        connectingNotificationBuilder
+                        NotificationCompat.Builder connectingNotificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                                        R.mipmap.ic_launcher))
                                 .setContentTitle("Joined queue @ " + connectedBeacon.getFoodServiceName())
-                                .addAction(R.drawable.common_google_signin_btn_icon_dark, "Open app",
-                                        pendingIntent);
+                                .setContentText("Please add some menu items")
+                                .setDefaults(Notification.DEFAULT_ALL)
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .addAction(R.drawable.common_google_signin_btn_icon_dark, "Open app", pendingIntent);
 
                         notificationManager.notify(connectingNotificationId, connectingNotificationBuilder.build());
                         return;
@@ -325,8 +307,14 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                 PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 100, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                 //TODO: hardcoded strings
-                leavingNotificationBuilder
+                NotificationCompat.Builder leavingNotificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setLargeIcon(BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                                R.mipmap.ic_launcher))
                         .setContentTitle("Left queue @ " + connectedBeacon.getFoodServiceName())
+                        .setContentText("Please take and upload photos of your plate")
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .addAction(R.drawable.common_google_signin_btn_icon_dark, "Open app",
                                 pendingIntent);
                 notificationManager.notify(leavingNotificationId, leavingNotificationBuilder.build());
@@ -346,7 +334,6 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
         if (connectedBeacon != null) {
             FoodServer.serverExecutor.execute(() -> {
                 foodServer.removeFromFoodServiceQueue(campus, connectedBeacon.getFoodServiceName(), uuid);
-                notificationManager.notify(leavingNotificationId, leavingNotificationBuilder.build());
                 connectedBeacon = null;
             });
         }
