@@ -10,7 +10,7 @@
     <string name="researcher">Researcher</string>
     <string name="staff">Staff</string>
     <string name="general_public">General Public</string>
-    <string name="location">Location</string>
+    <string name="location">location</string>
     <string name="enable_auto_location">Enable automatic location</string>
     <string name="choose_campus">Choose your campus</string>
     <string name="status">Status</string>
