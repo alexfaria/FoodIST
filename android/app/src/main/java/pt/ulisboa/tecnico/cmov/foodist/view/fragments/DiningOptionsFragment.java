@@ -14,13 +14,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.maps.DirectionsApiRequest;
-import com.google.maps.GeoApiContext;
-import com.google.maps.PendingResult;
-import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.LatLng;
-import com.google.maps.model.TravelMode;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -33,6 +26,13 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.TravelMode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,8 +66,8 @@ public class DiningOptionsFragment extends Fragment implements
 
     private GeoApiContext geoApiContext;
 
-    private Toast notAvailable;
     private Toast filtered;
+    private TextView emptyView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,6 +91,8 @@ public class DiningOptionsFragment extends Fragment implements
         refresh = view.findViewById(R.id.dining_options_refresh);
         refresh.setOnRefreshListener(this);
         recyclerView = view.findViewById(R.id.dining_recycler_view);
+        emptyView = view.findViewById(R.id.empty_view);
+
         recyclerView.setHasFixedSize(true);
         adapter = new FoodServicesAdapter(v -> {
             Bundle args = new Bundle();
@@ -106,13 +108,13 @@ public class DiningOptionsFragment extends Fragment implements
         filtered = Toast.makeText(getContext(), getString(R.string.filtered_services), Toast.LENGTH_SHORT);
         showAllSwitch = view.findViewById(R.id.showAll);
         showAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (!isChecked)
+            if (!isChecked) {
                 filtered.show();
-            else
+            } else {
                 filtered.cancel();
+            }
             retrieveFoodServices();
         });
-        notAvailable = Toast.makeText(getContext(), getString(R.string.no_services), Toast.LENGTH_LONG);
         return view;
     }
 
@@ -132,14 +134,16 @@ public class DiningOptionsFragment extends Fragment implements
     @Override
     public void onRefresh() {
         retrieveFoodServices();
-        if (refresh.isRefreshing())
+        if (refresh.isRefreshing()) {
             refresh.setRefreshing(false);
+        }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY) || key.equals(SHARED_PREFERENCES_STATUS_KEY))
+        if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY) || key.equals(SHARED_PREFERENCES_STATUS_KEY)) {
             retrieveFoodServices();
+        }
     }
 
     private void retrieveFoodServices() {
@@ -150,35 +154,48 @@ public class DiningOptionsFragment extends Fragment implements
         if (!campus.isEmpty() && !status.isEmpty()) {
             viewModel.getFoodServices(campus, status).observe(this, data -> {
                 if (data != null && data.size() > 0) {
-                    notAvailable.cancel();
                     calculateDirectionsTo(data);
                     adapter.setData(data);
                     if (showAllSwitch.getVisibility() == View.VISIBLE && showAllSwitch.isChecked()) {
                         calculateDirectionsTo(data);
                         adapter.setData(data);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
                     } else {
                         List<FoodService> filteredData = new ArrayList<>();
                         for (FoodService fs : data) {
-                            if (fs.getCategories().size() == 0)
+                            if (fs.getCategories().size() == 0) {
                                 filteredData.add(fs);
-                            else
+                            } else {
                                 for (String preference : dietaryPreferences)
                                     if (fs.getCategories().contains(Integer.parseInt(preference))) {
                                         filteredData.add(fs);
                                         break;
                                     }
+                            }
                         }
                         if (filteredData.size() != data.size()) {
                             filtered.setGravity(Gravity.CENTER, 0, 0);
                             filtered.show();
                             showAllSwitch.setVisibility(View.VISIBLE);
                         }
+
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
+
+                        if (filteredData.isEmpty()) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                            emptyView.setText(getString(R.string.filtered_services));
+                        }
+
                         calculateDirectionsTo(filteredData);
                         adapter.setData(filteredData);
                     }
                 } else {
-                    notAvailable.setGravity(Gravity.CENTER, 0, 0);
-                    notAvailable.show();
+                    recyclerView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyView.setText(getString(R.string.no_services));
                 }
             });
         }
@@ -186,7 +203,9 @@ public class DiningOptionsFragment extends Fragment implements
 
     private void calculateDirectionsTo(List<FoodService> foodServices) {
         Location location = ((MainActivity) getActivity()).getLocation();
-        if (location == null) return;
+        if (location == null) {
+            return;
+        }
         int index = 0;
         for (FoodService fs : foodServices) {
             final int i = index++;

@@ -70,13 +70,13 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     // Dish
     private FoodMenuAdapter adapter;
     private RecyclerView recyclerView;
+    private TextView emptyView;
     private DishViewModel dishViewModel;
     private RecyclerView.LayoutManager layoutManager;
     private boolean showAll = false;
     private Switch showAllSwitch;
 
     // Toasts
-    private Toast notAvailable;
     private Toast filtered;
 
     @Override
@@ -100,6 +100,9 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
     ) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_food_service, container, false);
+
+        recyclerView = view.findViewById(R.id.menu_recycler_view);
+        emptyView = view.findViewById(R.id.empty_view);
 
         mapView = view.findViewById(R.id.foodServiceMap);
 
@@ -127,7 +130,6 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                     .navigate(R.id.action_FoodMenu_to_AddToMenu, getArguments());
         });
 
-        notAvailable = Toast.makeText(getContext(), getString(R.string.no_dishes), Toast.LENGTH_LONG);
         filtered = Toast.makeText(getContext(), getString(R.string.filtered_dishes), Toast.LENGTH_SHORT);
         showAllSwitch = view.findViewById(R.id.showAllSwitch);
         showAllSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -184,9 +186,11 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
         if (foodServiceName != null) {
             dishViewModel.getDishes(foodServiceName).observe(this, data -> {
                 if (data != null && data.size() > 0) {
-                    notAvailable.cancel();
                     if (showAllSwitch.getVisibility() == View.VISIBLE && showAllSwitch.isChecked()) {
+                        Log.d("showAllSwitch", "it be checked and be showing all " + data.size());
                         adapter.setData(data);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
                     } else {
                         ArrayList<Dish> filteredData = new ArrayList<>();
                         for (Dish d : data) {
@@ -203,11 +207,22 @@ public class FoodServiceFragment extends Fragment implements OnMapReadyCallback,
                             filtered.show();
                             showAllSwitch.setVisibility(View.VISIBLE);
                         }
+
+                        recyclerView.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
+
+                        if(filteredData.isEmpty()) {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                            emptyView.setText(getString(R.string.filtered_dishes));
+                        }
+
                         adapter.setData(filteredData);
                     }
                 } else {
-                    notAvailable.setGravity(Gravity.CENTER, 0, 0);
-                    notAvailable.show();
+                    recyclerView.setVisibility(View.GONE);
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyView.setText(getString(R.string.no_dishes));
                 }
             });
         }
