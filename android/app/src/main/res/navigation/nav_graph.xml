@@ -58,4 +58,11 @@
         android:label="Fullscreen Photo Fragment"
         tools:layout="@layout/fragment_dish_photo_fullscreen">
     </fragment>
+
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="pt.ulisboa.tecnico.cmov.foodist.view.fragments.SettingsFragment"
+        android:label="Settings Fragment"
+        tools:layout="@layout/activity_settings">
+    </fragment>
 </navigation>
