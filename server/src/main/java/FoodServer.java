@@ -21,7 +21,7 @@ public class FoodServer {
         FoodServiceImpl service = new FoodServiceImpl();
         Server svc = ServerBuilder
                 .forPort(8443)
-                .useTransportSecurity(certChainFile, privateKeyFile)
+                //.useTransportSecurity(certChainFile, privateKeyFile)
                 .addService(service)
                 .build()
                 .start();
