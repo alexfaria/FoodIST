@@ -16,7 +16,8 @@ public class DishViewModel extends ViewModel {
     private DishRepository repository;
 
     public void init(App application) {
-        repository = new DishRepository(application);
+        if (repository == null)
+            repository = new DishRepository(application);
     }
 
     public LiveData<List<Dish>> getDishes(String foodServiceName) {

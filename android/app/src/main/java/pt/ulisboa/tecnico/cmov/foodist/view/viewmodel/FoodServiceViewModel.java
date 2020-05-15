@@ -16,7 +16,8 @@ public class FoodServiceViewModel extends ViewModel {
     private FoodServiceRepository repository;
 
     public void init(Context context) {
-        repository = new FoodServiceRepository(context);
+        if (repository == null)
+            repository = new FoodServiceRepository(context);
     }
 
     public LiveData<List<FoodService>> getFoodServices(String campus, String status) {
