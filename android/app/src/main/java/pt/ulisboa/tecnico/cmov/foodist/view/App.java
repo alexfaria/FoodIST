@@ -28,6 +28,7 @@ import androidx.preference.PreferenceManager;
 
 import com.google.protobuf.ByteString;
 
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +44,7 @@ import pt.ulisboa.tecnico.cmov.foodist.R;
 import pt.ulisboa.tecnico.cmov.foodist.model.Beacon;
 import pt.ulisboa.tecnico.cmov.foodist.model.Dish;
 import pt.ulisboa.tecnico.cmov.foodist.repository.cache.BitmapCache;
+import pt.ulisboa.tecnico.cmov.foodist.repository.server.ChannelBuilder;
 import pt.ulisboa.tecnico.cmov.foodist.repository.server.FoodServer;
 import pt.ulisboa.tecnico.cmov.foodist.service.OnPeersChangedListener;
 import pt.ulisboa.tecnico.cmov.foodist.service.SimWifiP2pBroadcastReceiver;
@@ -58,8 +60,10 @@ import static pt.ulisboa.tecnico.cmov.foodist.view.Constants.SHARED_PREFERENCES_
 
 public class App extends Application implements SharedPreferences.OnSharedPreferenceChangeListener, SimWifiP2pManager.PeerListListener, OnPeersChangedListener {
 
-    private final String HOST = "192.168.1.41";
-    private final int PORT = 8080;
+    // private final String HOST = "192.168.1.41";
+    private final String HOST = "server.foodist.com";
+    private final int PORT = 8443;
+
     private boolean isConnected = false;
     private FoodServer foodServer;
     private BitmapCache bitmapCache;
@@ -112,10 +116,24 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                 Log.d("App", "Network onAvailable");
                 if (numOfAvailableNetworks++ == 0) {
                     isConnected = true;
+/*
                     ManagedChannel channel = ManagedChannelBuilder
                             .forAddress(HOST, PORT)
                             .usePlaintext()
                             .build();
+*/
+                    ManagedChannel channel = null;
+                    InputStream is = null;
+                    Log.d("idk", "criar servidor");
+                    try {
+                        is = getResources().getAssets().open("server.crt"); // devia ser CA mas pronto n sei fazer
+                        channel = ChannelBuilder.buildTls(HOST, PORT, is);
+                        is.close();
+                    } catch (Throwable e) {
+                        isConnected = false;
+                        e.printStackTrace();
+                    }
+
                     foodServer = new FoodServer(channel);
                     retrieveBeacons();
                 }
