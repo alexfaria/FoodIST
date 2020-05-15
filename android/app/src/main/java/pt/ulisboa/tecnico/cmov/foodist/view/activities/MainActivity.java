@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
         campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
-        toolbar.setTitle(getString(R.string.tecnico) + campus);
+        toolbar.setTitle(getString(R.string.tecnico) + " " + campus);
 
         ALAMEDA.setLatitude(Double.parseDouble(getString(R.string.alameda_latitude)));
         ALAMEDA.setLongitude(Double.parseDouble(getString(R.string.alameda_longitude)));
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(SHARED_PREFERENCES_CAMPUS_KEY)) {
             campus = sharedPreferences.getString(SHARED_PREFERENCES_CAMPUS_KEY, getString(R.string.default_campus));
-            toolbar.setTitle(getString(R.string.tecnico) + campus);
+            toolbar.setTitle(getString(R.string.tecnico) + " " + campus);
         } else if (key.equals(SHARED_PREFERENCES_LANGUAGE_KEY)) {
             setLocale();
         }
