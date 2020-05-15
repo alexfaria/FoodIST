@@ -124,16 +124,14 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
             @Override
             public void onAvailable(@NonNull Network network) {
                 Log.d("App", "Network onAvailable");
-                if (numOfAvailableNetworks++ == 0) {
-                    isConnected = true;
-/*
+                if (numOfAvailableNetworks++ == 0) {/*
                     ManagedChannel channel = ManagedChannelBuilder
                             .forAddress(HOST, PORT)
                             .usePlaintext()
                             .build();
 */
                     ManagedChannel channel = null;
-                    InputStream is = null;
+                    InputStream is;
                     Log.d("idk", "criar servidor");
                     try {
                         is = getResources().getAssets().open("server.crt"); // devia ser CA mas pronto n sei fazer
@@ -145,6 +143,7 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                     }
 
                     foodServer = new FoodServer(channel);
+                    isConnected = true;
                     retrieveBeacons();
                 }
                 if (!connectivityManager.isActiveNetworkMetered())
