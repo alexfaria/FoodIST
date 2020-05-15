@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">FoodIST</string>
     <string name="tecnico" translatable="false">Técnico</string>
+    <string name="settings">Settings</string>
     <string name="action_settings">Settings</string>
     <!--Settings-->
     <string name="student">Student</string>

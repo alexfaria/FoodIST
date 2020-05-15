@@ -65,4 +65,5 @@
     <string name="notification_add_menu_items">"Ajude outros utilizadores adicionando items a este restaurante "</string>
     <string name="notification_add_photos">Ajude outros utilizadores adicionando fotos aos menus deste restaurante</string>
     <string name="notification_action">Abrir aplicação</string>
+    <string name="settings">Definições</string>
 </resources>

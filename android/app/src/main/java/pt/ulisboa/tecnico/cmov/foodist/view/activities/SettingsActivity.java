@@ -34,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         ActionBar actionBar = this.getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.settings));
         }
         Log.i("SettingsActivity", "onCreate");
     }

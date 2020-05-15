@@ -25,6 +25,9 @@ public class FoodServer {
                 .addService(service)
                 .build()
                 .start();
+
+        System.out.println("Server started");
+
         Scanner scanner = new Scanner(System.in);
         while (!scanner.next().equals("shutdown"));
         svc.shutdown();
