@@ -66,7 +66,8 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
     private static int connectingNotificationId = 1;
     private static int leavingNotificationId = 2;
     // private final String HOST = "192.168.1.41";
-    private final String HOST = "server.foodist.com";
+    private final String OVERRIDE_HOST = "server.foodist.com";
+    private final String HOST = "192.168.1.64";
     private final int PORT = 8443;
     private boolean isConnected = false;
     private FoodServer foodServer;
@@ -134,7 +135,8 @@ public class App extends Application implements SharedPreferences.OnSharedPrefer
                     InputStream is;
                     try {
                         is = getResources().getAssets().open("server.crt"); // devia ser CA mas pronto n sei fazer
-                        channel = ChannelBuilder.buildTls(HOST, PORT, is);
+                        // channel = ChannelBuilder.buildTls(HOST, PORT, is);
+                        channel = ChannelBuilder.buildTls(HOST, PORT, is, OVERRIDE_HOST);
                         is.close();
                     } catch (Throwable e) {
                         isConnected = false;
